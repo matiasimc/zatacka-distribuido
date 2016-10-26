@@ -1,14 +1,14 @@
 package cl.uchile.dcc.cc5303;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Board extends Canvas{
 
     public int width, height;
-
+    
     // Jugadores y elementos del juego acá
-    public Player p1, p2;
-
+    public ArrayList<Snake> snakes;
 
     // doble buffer para dibujar
     public Image img;
@@ -36,10 +36,10 @@ public class Board extends Canvas{
         this.buffer.fillRect(0, 0, getWidth(), getHeight());
 
         // dibujar elementos del juego
-        buffer.setColor(Color.red);
-        p1.draw(buffer);
-        buffer.setColor(Color.blue);
-        p2.draw(buffer);
+        for (Snake s: snakes) {
+        	buffer.setColor(s.color);
+        	s.draw(buffer);
+        }
 
         graphics.drawImage(img, 0, 0, null);
     }
