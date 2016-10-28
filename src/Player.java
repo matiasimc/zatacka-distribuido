@@ -1,22 +1,44 @@
-
-
-import java.awt.*;
-import java.rmi.Naming;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-public class Player {
-	
-	public static void main(String[] args) {
-		try {
-			iSnake mySnake = (iSnake) Naming.lookup("");
-			iSnakeList snakeList = (iSnakeList) Naming.lookup("snakeList (CAMBIAR)");
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
 
+public class Player extends UnicastRemoteObject implements iPlayer{
+	public int angle;
+	public Color color;
+	private ArrayList<Point> body;
+	
+	public Player(Color color, Point head) throws RemoteException {
+		this.color = color;
+		body = new ArrayList<Point>();
+		this.body.add(head);
 	}
 	
-	public Player() {
+	public void moveUp() {
+        this.angle = (this.angle + 10) % 360;
+    }
+
+    public void moveDown() {
+        this.angle = (this.angle - 10) % 360;
+    }
+    
+    public void growUp(boolean visibility) throws RemoteException {
+        Point head = this.body.get(this.body.size() - 1);
+        int x = (int) (head.x + Point.dHip*Math.cos(Math.toRadians(this.angle)));
+        int y = (int) (head.y + Point.dHip*Math.sin(Math.toRadians(this.angle)));
+        this.body.add(new Point(x,y, visibility));
+    }
+
+	@Override
+	public Color getColor() throws RemoteException {
+		return this.color;
 	}
+
+	@Override
+	public ArrayList<Point> getBody() throws RemoteException {
+		return this.body;
+	}
+
 }

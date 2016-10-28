@@ -5,7 +5,7 @@ import java.rmi.*;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-public class Snake extends UnicastRemoteObject implements iSnake {
+public class Snake{
 	public int angle;
 	public Color color;
 	public String name;

@@ -4,21 +4,21 @@ import java.awt.*;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+
 public class Board extends Canvas{
 
+	public ClientGame cGame;
     public int width, height;
-    
-    // Jugadores y elementos del juego acá
-    public ArrayList<Snake> snakes;
 
     // doble buffer para dibujar
     public Image img;
     public Graphics buffer;
 
 
-    public Board(int width, int height) {
+    public Board(int width, int height,ClientGame cGame) {
         this.width = width;
         this.height = height;
+    	this.cGame =cGame;
     }
 
     @Override
@@ -37,15 +37,22 @@ public class Board extends Canvas{
         this.buffer.fillRect(0, 0, getWidth(), getHeight());
 
         // dibujar elementos del juego
-        for (Snake s: snakes) {
-        	buffer.setColor(s.color);
-        	try {
-				s.draw(buffer);
-			} catch (RemoteException e) {
-				e.printStackTrace();
-			}
-        }
+        try {
+        	for(iPlayer player: this.cGame.gamePlayers()){
+            	buffer.setColor(player.getColor());
+            	drawSnake(player,buffer);
+        	}
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         graphics.drawImage(img, 0, 0, null);
+    }
+
+	public void drawSnake(iPlayer player,Graphics graphics) throws RemoteException {
+        for (Point p : player.getBody())
+            if (p.visible)
+                graphics.fillOval(p.x - Point.dHip/2, p.y - Point.dHip/2, Point.dHip, Point.dHip);
     }
 }

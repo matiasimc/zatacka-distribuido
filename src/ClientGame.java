@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 public class ClientGame extends UnicastRemoteObject implements iClientGame {
 
 	public iGame game;
+	public iPlayer player;
 	
 	public boolean[] keys;
     private final static String TITLE = "Juego - CC5303";
@@ -23,10 +24,12 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
     
     public ClientGame(iGame game)throws RemoteException{
 		this.game= game;
+		this.player=player;
     }
 	
 	@Override
 	public void start() throws RemoteException {
+		this.game.gettingPlayer();
 		System.out.println("Hola");
         keys = new boolean[KeyEvent.KEY_LAST];
         
@@ -81,6 +84,11 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
             }
         }
     }
+
+	@Override
+	public ArrayList<iPlayer> gamePlayers() throws RemoteException {
+		return this.game.players();
+	}
 }
 
 
