@@ -5,16 +5,14 @@ import java.rmi.*;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-public class Snake extends UnicastRemoteObject implements iSnake {
+public class Snake extends UnicastRemoteObject implements ISnake {
 	public int angle;
 	public Color color;
-	public String name;
 	private int id;
 	private ArrayList<Point> body;
 	
-	public Snake(Color color, Point head, int id, String name) throws RemoteException {
+	public Snake(Color color, Point head, int id) throws RemoteException {
 		this.id = id;
-		this.name = name;
 		this.color = color;
 		body = new ArrayList<Point>();
 		this.body.add(head);

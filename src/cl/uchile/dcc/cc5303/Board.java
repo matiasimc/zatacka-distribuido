@@ -1,6 +1,7 @@
 package cl.uchile.dcc.cc5303;
 
 import java.awt.*;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 public class Board extends Canvas{
@@ -38,7 +39,11 @@ public class Board extends Canvas{
         // dibujar elementos del juego
         for (Snake s: snakes) {
         	buffer.setColor(s.color);
-        	s.draw(buffer);
+        	try {
+				s.draw(buffer);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
         }
 
         graphics.drawImage(img, 0, 0, null);
