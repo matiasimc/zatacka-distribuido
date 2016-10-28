@@ -18,12 +18,12 @@ public class Server extends UnicastRemoteObject implements iServer{
 	}
 	@Override
 	public void addClient(iClient client) throws RemoteException{
-		clients.add(client);
-		System.out.println(client.getClientGame().toString());
-		game.addThread(client.getClientGame());
-		if(clients.size()>=2){
+		this.clients.add(client);
+		client.getClientGame();
+		this.game.addClient(client.getClientGame());
+		if(this.clients.size()>=2){
 			System.out.println("YEY");
-			game.startGame(clients);
+			this.game.startGame(this.clients);
 		}
 	}
 

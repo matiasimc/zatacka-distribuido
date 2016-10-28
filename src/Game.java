@@ -15,8 +15,10 @@ public class Game extends UnicastRemoteObject implements iGame{
 
 	public void startGame(ArrayList<iClient> clients) throws RemoteException {
 		for (iClientGame cGame: gameThreads){
-			((ClientGame)cGame).run();
+			GameThreads gt= new GameThreads(cGame);
+			gt.start();
 			System.out.println("x");
+			
 		}
 	}
 	public synchronized void moveClient(iClient client){
@@ -25,7 +27,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 	}
 
 	@Override
-	public void addThread(iClientGame clientGame) throws RemoteException {
+	public void addClient(iClientGame clientGame) throws RemoteException {
 
 		System.out.println("ayura");
 		gameThreads.add(clientGame);

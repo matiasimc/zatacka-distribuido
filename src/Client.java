@@ -8,14 +8,13 @@ public class Client extends UnicastRemoteObject implements iClient {
 	public iClientGame cGame;
 	
 	public Client(iServer server) throws RemoteException {
-		super();
+		//super();
 		this.server = server;
 		cGame = new ClientGame(this.server.getGame());
 
-		// TODO Auto-generated constructor stub
 	}
 	
-	public iClientGame getClientGame(){
+	public iClientGame getClientGame() throws RemoteException{
 		return this.cGame;
 	}
 

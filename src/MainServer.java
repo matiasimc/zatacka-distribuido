@@ -22,8 +22,8 @@ public class MainServer {
 	public static void main(String[] args) {
 		try {
 			iServer server = new Server();
-			System.out.println("SIII");
 			Naming.bind("//localhost/ABC", server);
+			System.out.println("Server UP");
 		}catch(Exception e){
 			e.printStackTrace();
 		}
