@@ -7,5 +7,7 @@ public interface iClient extends Remote {
 
 	iClientGame getClientGame()throws RemoteException;
 
+	int getID() throws RemoteException;
+
 
 }

@@ -20,9 +20,13 @@ public class MainServer {
 			e.printStackTrace();
 		}**/
 	public static void main(String[] args) {
+		String ip = args[0];
+		System.out.println(ip);
 		try {
+			System.setProperty("java.rmi.server.hostaname", ip);
+			
 			iServer server = new Server();
-			Naming.bind("//localhost/ABC", server);
+			Naming.bind("rmi://"+ip+":1099/ABC", server);
 			System.out.println("Server UP");
 		}catch(Exception e){
 			e.printStackTrace();

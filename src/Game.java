@@ -33,6 +33,12 @@ public class Game extends UnicastRemoteObject implements iGame{
 		gameThreads.add(clientGame);
 		
 	}
+
+	@Override
+	public void doSomething() throws RemoteException {
+		System.out.println(42);
+		
+	}
 }
 	
 

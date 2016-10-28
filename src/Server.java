@@ -11,10 +11,12 @@ public class Server extends UnicastRemoteObject implements iServer{
 
 	iGame game;
 	ArrayList<iClient> clients;
+	int id;
 	
 	public Server() throws RemoteException{
 		game = new Game(); 
 		clients = new ArrayList<iClient>();
+		id=0;
 	}
 	@Override
 	public void addClient(iClient client) throws RemoteException{
@@ -35,6 +37,18 @@ public class Server extends UnicastRemoteObject implements iServer{
 	
 	public iGame getGame() throws RemoteException{
 		return this.game;
+	}
+	@Override
+	public void gettingInformation(iClient client) throws RemoteException {
+		System.out.print("Client "+ client.getID() +"hizo algo");
+		
+	}
+	
+	@Override
+	public synchronized int getIDClient() throws RemoteException {
+		int idGived= id;
+		id++;
+		return idGived;
 	}
 }
 
