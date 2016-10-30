@@ -59,9 +59,8 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 keys[e.getKeyCode()] = false;
             }
         });
-        frame.setVisible(true);
         frame.pack();
-
+        frame.setVisible(true);
 		int frames = 0;
         while (true) { // Main loop
             // Controles
