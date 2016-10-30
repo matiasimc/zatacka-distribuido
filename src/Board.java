@@ -15,7 +15,7 @@ public class Board extends Canvas{
     public Graphics buffer;
 
 
-    public Board(int width, int height,ClientGame cGame) {
+    public Board(int width, int height, ClientGame cGame) {
         this.width = width;
         this.height = height;
     	this.cGame =cGame;
