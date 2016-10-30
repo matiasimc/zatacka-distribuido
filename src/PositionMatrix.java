@@ -21,7 +21,7 @@ public class PositionMatrix {
 	public int checkCircle(int cx, int cy, int r) throws CollisionException {
 		for (int i = cx-r; i < cx+r; i++) {
 			for (int j = cy-r; j < cy+r; j++) {
-				if (Math.pow((i-cx),2) + Math.pow((j-cy),2) < Math.pow(r,2)) {
+				if (Math.pow((i-cx),2) + Math.pow((j-cy),2) <= Math.pow(r,2)) {
 					try {
 						if (matrix[i][j] != 0) return matrix[i][j];
 					}
@@ -37,7 +37,7 @@ public class PositionMatrix {
 	public void deleteCircle(int cx, int cy, int r, int id) {
 		for (int i = cx-r; i < cx+r; i++) {
 			for (int j = cy-r; j < cy+r; j++) {
-				if (Math.pow((i-cx),2) + Math.pow((j-cy),2) < Math.pow(r,2)) {
+				if (Math.pow((i-cx),2) + Math.pow((j-cy),2) <= Math.pow(r,2)) {
 					try {
 						if (matrix[i][j] == id) matrix[i][j] = 0;
 					}
@@ -52,7 +52,7 @@ public class PositionMatrix {
 	public void fillCircle(int cx, int cy, int r, int id) {
 		for (int i = cx-r; i < cx+r; i++) {
 			for (int j = cy-r; j < cy+r; j++) {
-				if (Math.pow((i-cx),2) + Math.pow((j-cy),2) < Math.pow(r,2)) {
+				if (Math.pow((i-cx),2) + Math.pow((j-cy),2) <= Math.pow(r,2)) {
 					matrix[i][j] = id;
 				}
 			}

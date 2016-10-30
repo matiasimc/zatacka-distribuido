@@ -3,6 +3,7 @@ import java.awt.event.KeyListener;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.JFrame;
 
@@ -17,7 +18,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
     private final static String TITLE = "Juego - CC5303";
 
     private final static int UPDATE_RATE = 30;
-    private final static int GROW_RATE = 3;
+    private final static int GROW_RATE = 2;
     
     private int width;
     private int height;
@@ -59,10 +60,12 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 keys[e.getKeyCode()] = false;
             }
         });
-        frame.setVisible(true);
+       
         frame.pack();
+        frame.setVisible(true);
 
 		int frames = 0;
+		int skipFrames = 0;
         while (true) { // Main loop
             // Controles
             if (keys[KeyEvent.VK_UP]) {
@@ -78,13 +81,22 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
             ++frames;
             if (frames == GROW_RATE && player.isAlive()){
             	if(!this.game.checkCollision(player)){
-                	System.out.println("Avanzando");
-                    player.growUp(true);
+            		if (skipFrames-- > 0){
+                        player.growUp(false);
+                    }else {
+                    	skipFrames = 0;
+                        player.growUp(true);
+                        if(ThreadLocalRandom.current().nextFloat() < 0.035){
+                        	System.out.println(skipFrames);
+                            skipFrames = ThreadLocalRandom.current().nextInt(2,4);
+                        }
+                    }
+                    frames = 0;
                 }
             	else {
             		System.out.print("Te moriste");
             	}
-                frames = 0;
+  
             }
             
             tablero.repaint();

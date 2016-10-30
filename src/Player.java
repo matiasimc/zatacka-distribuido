@@ -34,8 +34,8 @@ public class Player extends UnicastRemoteObject implements iPlayer{
     @Override
     public void growUp(boolean visibility) throws RemoteException {
         Point head = this.body.get(this.body.size() - 1);
-        int x = (int) (head.x + Point.dHip*Math.cos(Math.toRadians(this.angle)));
-        int y = (int) (head.y + Point.dHip*Math.sin(Math.toRadians(this.angle)));
+        int x = (int) (head.x + (Point.dHip+2)*Math.cos(Math.toRadians(this.angle)));
+        int y = (int) (head.y + (Point.dHip+2)*Math.sin(Math.toRadians(this.angle)));
         this.body.add(new Point(x,y, visibility));
     }
 
