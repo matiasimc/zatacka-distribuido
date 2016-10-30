@@ -47,7 +47,7 @@ public class MainServer {
 			System.exit(1);
 		}
 		try {
-			System.setProperty("java.rmi.server.hostaname", ip);
+			System.setProperty("java.rmi.server.hostname", ip);
 
 			
 			iServer server = new Server(waitPlayers);
