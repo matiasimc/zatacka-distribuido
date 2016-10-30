@@ -14,6 +14,8 @@ public interface iGame extends Remote {
 
 	iPlayer gettingPlayer(int id) throws RemoteException;
 	
+	public int getAlives() throws RemoteException;
+	
 	boolean checkCollision(iPlayer player) throws RemoteException;
 	
 

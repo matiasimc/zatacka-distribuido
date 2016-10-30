@@ -12,6 +12,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 	public iGame game;
 	public iPlayer player;
 	public int id;
+	public boolean running;
 	
 	public boolean[] keys;
     private final static String TITLE = "Juego - CC5303";
@@ -28,7 +29,6 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 		this.id = id;
     }
 	
-	@Override
 	public void start() throws RemoteException {
 		player = this.game.gettingPlayer(id);
 		Random random = new Random();
@@ -105,8 +105,16 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
             }
         }
     }
+	
+	public boolean isRunning() throws RemoteException {
+		return this.running;
+	}
+	
+	public void setRunning(boolean running) throws RemoteException {
+		this.running = running;
+	}
 
-	@Override
+	
 	public ArrayList<iPlayer> gamePlayers() throws RemoteException {
 		return this.game.players();
 	}

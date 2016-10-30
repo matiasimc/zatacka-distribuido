@@ -22,9 +22,12 @@ public class Game extends UnicastRemoteObject implements iGame{
 
 	public void startGame(ArrayList<iClient> clients) throws RemoteException {
 		for (iClientGame cGame: gameThreads){
-			GameThreads gt= new GameThreads(cGame);
-			gt.start();
-			System.out.println("x");
+			if (!cGame.isRunning()) {
+				GameThreads gt= new GameThreads(cGame);
+				gt.start();
+				cGame.setRunning(true);
+				System.out.println("x");
+			}
 			
 		}
 	}
@@ -40,7 +43,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 		}
 	}
 	
-	@Override
+	
 	public void addClient(iClientGame clientGame) throws RemoteException {
 
 		System.out.println("ayura");
@@ -48,16 +51,24 @@ public class Game extends UnicastRemoteObject implements iGame{
 		
 	}
 
-	@Override
+	
 	public ArrayList<iPlayer> players() throws RemoteException {
 		return this.players;
 	}
 
-	@Override
+	
 	public synchronized iPlayer gettingPlayer(int clientId) throws RemoteException {
 		iPlayer player = new Player(assignColor(clientId), assignPoint(), clientId + 1);
 		players.add(player);
 		return player;
+	}
+	
+	public synchronized int getAlives() throws RemoteException {
+		int n = 0;
+		for (iPlayer p: players()) {
+			if (p.isAlive()) n++;
+		}
+		return n;
 	}
 	
 	private Point assignPoint() {

@@ -20,7 +20,7 @@ public class Client extends UnicastRemoteObject implements iClient {
 		return this.cGame;
 	}
 
-	@Override
+	
 	public int getID() throws RemoteException {
 		return id;
 	}

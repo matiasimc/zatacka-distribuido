@@ -36,12 +36,12 @@ public class Player extends UnicastRemoteObject implements iPlayer{
         this.body.add(new Point(x,y, visibility));
     }
 
-	@Override
+	
 	public Color getColor() throws RemoteException {
 		return this.color;
 	}
 
-	@Override
+	
 	public ArrayList<Point> getBody() throws RemoteException {
 		return this.body;
 	}
@@ -58,7 +58,7 @@ public class Player extends UnicastRemoteObject implements iPlayer{
 		return this.alive;
 	}
 
-	@Override
+	
 	public void die() throws RemoteException {
 		alive = false;
 	}
