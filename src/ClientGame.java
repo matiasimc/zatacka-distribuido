@@ -11,6 +11,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 
 	public iGame game;
 	public iPlayer player;
+	public int id;
 	
 	public boolean[] keys;
     private final static String TITLE = "Juego - CC5303";
@@ -22,20 +23,25 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
     private JFrame frame;
     private Board tablero;
     
-    public ClientGame(iGame game)throws RemoteException{
-		this.game= game;
-		this.player=player;
+    public ClientGame(iGame game, int id)throws RemoteException{
+		this.game = game;
+		this.id = id;
     }
 	
 	@Override
 	public void start() throws RemoteException {
-		this.game.gettingPlayer();
+		player = this.game.gettingPlayer(id);
 		System.out.println("Hola");
         keys = new boolean[KeyEvent.KEY_LAST];
         
         frame = new JFrame(TITLE);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        
+        tablero = new Board(WIDTH, HEIGHT, this);
+
+        frame.add(tablero);
+        tablero.setSize(WIDTH, HEIGHT);
 
         frame.pack();
         frame.addKeyListener(new KeyListener() {

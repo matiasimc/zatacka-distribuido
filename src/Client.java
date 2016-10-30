@@ -12,7 +12,7 @@ public class Client extends UnicastRemoteObject implements iClient {
 		//super();
 		this.server = server;
 		this.id = server.getIDClient();
-		cGame = new ClientGame(this.server.getGame());
+		cGame = new ClientGame(this.server.getGame(), id);
 
 	}
 	

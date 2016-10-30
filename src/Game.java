@@ -15,7 +15,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 	
 	protected Game() throws RemoteException {
 		super();
-		
+		players = new ArrayList<iPlayer>();
 		gameThreads = new ArrayList<iClientGame>();
 	}
 
@@ -52,18 +52,18 @@ public class Game extends UnicastRemoteObject implements iGame{
 	}
 
 	@Override
-	public synchronized iPlayer gettingPlayer() throws RemoteException {
-		iPlayer player = new Player(assignColor(), assignPoint());
+	public synchronized iPlayer gettingPlayer(int id) throws RemoteException {
+		iPlayer player = new Player(assignColor(id), assignPoint());
 		players.add(player);
 		return player;
 	}
 	
 	private Point assignPoint() {
-		return null;
+		return new Point(1,1);
 	}
 
-	private Color assignColor(){
-		return null;
+	private Color assignColor(int id){
+		return colorList[id];
 	}
 }
 	

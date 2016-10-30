@@ -14,7 +14,7 @@ public interface iGame extends Remote {
 
 	ArrayList<iPlayer> players() throws RemoteException;
 
-	iPlayer gettingPlayer() throws RemoteException;
+	iPlayer gettingPlayer(int id) throws RemoteException;
 	
 
 }
