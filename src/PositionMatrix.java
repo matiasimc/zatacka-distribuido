@@ -13,11 +13,16 @@ public class PositionMatrix {
 		matrix = new int[WIDTH][HEIGHT];
 	}
 	
-	public int checkCircle(int cx, int cy, int r) {
+	public int checkCircle(int cx, int cy, int r) throws CollisionException {
 		for (int i = cx-r; i < cx+r; i++) {
 			for (int j = cy-r; j < cy+r; j++) {
 				if (Math.pow((i-cx),2) + Math.pow((j-cy),2) < Math.pow(r,2)) {
-					if (matrix[i][j] != 0) return matrix[i][j];
+					try {
+						if (matrix[i][j] != 0) return matrix[i][j];
+					}
+					catch (Exception e) {
+						throw new CollisionException();
+					}
 				}
 			}
 		}
