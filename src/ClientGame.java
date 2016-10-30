@@ -39,7 +39,6 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
         keys = new boolean[KeyEvent.KEY_LAST];
         
         frame = new JFrame(TITLE);
-        frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         tablero = new Board(width, height, this);
 
@@ -60,7 +59,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 keys[e.getKeyCode()] = false;
             }
         });
-        
+        frame.setVisible(true);
         frame.pack();
 
 		int frames = 0;
