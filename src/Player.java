@@ -7,9 +7,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Player extends UnicastRemoteObject implements iPlayer{
 	public int angle;
-	public int id;
+	private int id;
 	public Color color;
 	private ArrayList<Point> body;
+	private boolean alive;
 	
 	public Player(Color color, Point head, int id) throws RemoteException {
 		this.color = color;
@@ -17,6 +18,7 @@ public class Player extends UnicastRemoteObject implements iPlayer{
 		this.body.add(head);
 		this.id = id;
 		this.angle = ThreadLocalRandom.current().nextInt(0, 361);
+		this.alive = true;
 	}
 	
 	public void moveUp() {
@@ -42,6 +44,23 @@ public class Player extends UnicastRemoteObject implements iPlayer{
 	@Override
 	public ArrayList<Point> getBody() throws RemoteException {
 		return this.body;
+	}
+	
+	public Point getHead() throws RemoteException {
+		return this.body.get(this.body.size() - 1);
+	}
+	
+	public int getId() throws RemoteException {
+		return this.id;
+	}
+	
+	public boolean isAlive() throws RemoteException {
+		return this.alive;
+	}
+
+	@Override
+	public void die() throws RemoteException {
+		alive = false;
 	}
 
 }

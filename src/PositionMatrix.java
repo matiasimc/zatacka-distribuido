@@ -1,3 +1,5 @@
+import java.util.concurrent.ThreadLocalRandom;
+
 class CollisionException extends Exception {}
 
 public class PositionMatrix {
@@ -20,7 +22,7 @@ public class PositionMatrix {
 					try {
 						if (matrix[i][j] != 0) return matrix[i][j];
 					}
-					catch (Exception e) {
+					catch (IndexOutOfBoundsException e) {
 						throw new CollisionException();
 					}
 				}
@@ -39,8 +41,23 @@ public class PositionMatrix {
 		}
 	}
 	
-	public void fill(int x, int y, int id) throws CollisionException {
-		if (checkCircle(x,y, Point.dHip/2) != 0) throw new CollisionException();
-		else fillCircle(x,y, Point.dHip/2, id);
+	public void fill(int x, int y, int id, boolean visible) throws CollisionException {
+		if (checkCircle(x,y, Point.dHip/2) != 0 && visible) throw new CollisionException();
+		else if (visible) fillCircle(x,y, Point.dHip/2, id);
+	}
+	
+	public Point getPlace(){
+			int w = WIDTH/10;
+			int h = HEIGHT/10;
+		int x,y;
+		while(true){
+			x = ThreadLocalRandom.current().nextInt(w, 8*w+1);
+			y = ThreadLocalRandom.current().nextInt(h, 8*h+1);
+			System.out.println("Buscando un punto");
+			if (matrix[x][y] == 0) {
+				System.out.println("Te encontré un punto");
+				return new Point(x, y, true);
+			}
+		}
 	}
 }

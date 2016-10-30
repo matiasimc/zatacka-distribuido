@@ -12,5 +12,9 @@ public interface iPlayer extends Remote {
 	void moveDown() throws RemoteException;
 	void growUp(boolean visibility) throws RemoteException;
 	ArrayList<Point> getBody() throws RemoteException;
+	Point getHead() throws RemoteException;
+	int getId() throws RemoteException;
+	boolean isAlive() throws RemoteException;
+	void die() throws RemoteException;
 
 }

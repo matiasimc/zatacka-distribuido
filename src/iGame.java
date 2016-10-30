@@ -10,11 +10,11 @@ public interface iGame extends Remote {
 
 	void addClient(iClientGame clientGame)throws RemoteException;
 
-	void doSomething() throws RemoteException;
-
 	ArrayList<iPlayer> players() throws RemoteException;
 
 	iPlayer gettingPlayer(int id) throws RemoteException;
+	
+	boolean checkCollision(iPlayer player) throws RemoteException;
 	
 
 }

@@ -73,9 +73,14 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
             	System.out.println("Abajo");
             }
             
+            
             ++frames;
-            if (frames == GROW_RATE){
-                if (skipFrames-- > 0){
+            if (frames == GROW_RATE && player.isAlive()){
+            	if(this.game.checkCollision(player)) {
+                	System.out.println("Te moriste");
+                	player.die();
+                }
+            	else if (skipFrames-- > 0){
                 	System.out.println("Skipping");
                     player.growUp(false);
                 }else {
