@@ -23,7 +23,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
     private JFrame frame;
     private Board tablero;
     
-    public ClientGame(iGame game, int id)throws RemoteException{
+    public ClientGame(iGame game, int id) throws RemoteException{
 		this.game = game;
 		this.id = id;
     }
@@ -31,19 +31,18 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 	@Override
 	public void start() throws RemoteException {
 		player = this.game.gettingPlayer(id);
+		Random random = new Random();
 		System.out.println("Hola");
         keys = new boolean[KeyEvent.KEY_LAST];
         
         frame = new JFrame(TITLE);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
         tablero = new Board(WIDTH, HEIGHT, this);
 
         frame.add(tablero);
         tablero.setSize(WIDTH, HEIGHT);
 
-        frame.pack();
         frame.addKeyListener(new KeyListener() {
             
             public void keyTyped(KeyEvent e) {}
@@ -58,31 +57,42 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 keys[e.getKeyCode()] = false;
             }
         });
+        
+        frame.pack();
 
 		int frames = 0;
         int skipFrames = 0;
         while (true) { // Main loop
             // Controles
             if (keys[KeyEvent.VK_UP]) {
+            	player.moveUp();
             	System.out.println("Arriba");
             }
             if (keys[KeyEvent.VK_DOWN]) {
+            	player.moveDown();
             	System.out.println("Abajo");
             }
-
-            if (keys[KeyEvent.VK_S]) {
-            	this.game.doSomething();
-            }
-
-
+            
             ++frames;
             if (frames == GROW_RATE){
                 if (skipFrames-- > 0){
                 	System.out.println("Skipping");
-            	}
-            }
-            frames = 0;
+                    player.growUp(false);
+                }else {
+                	System.out.println("Avanzando");
+                    skipFrames = 0;
+                    player.growUp(true);
 
+                    if(random.nextFloat()< 0.1){
+                        skipFrames = 2 + random.nextInt(4);
+                        System.out.println(skipFrames);
+                    }
+                }
+                frames = 0;
+            }
+            
+            tablero.repaint();
+            
             try {
                 Thread.sleep(1000 / UPDATE_RATE);
             } catch (InterruptedException ex) {

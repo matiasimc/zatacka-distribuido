@@ -1,6 +1,6 @@
+import java.io.Serializable;
 
-
-public class Point {
+public class Point implements Serializable{
     public int x,y;
     public boolean visible;
 

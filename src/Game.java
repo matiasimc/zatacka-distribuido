@@ -11,7 +11,6 @@ public class Game extends UnicastRemoteObject implements iGame{
 	ArrayList<iPlayer> players;
 	static int numberOfPlayers = 5;
 	static final Color[] colorList = {Color.blue, Color.red, Color.green, Color.yellow, Color.orange};
-	static final Point[] pointList = {null, null, null, null, null};
 	
 	protected Game() throws RemoteException {
 		super();
@@ -27,7 +26,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 			
 		}
 	}
-	public synchronized void moveClient(iClient client){
+	public synchronized void movePlayer(iPlayer player){
 		System.out.println("asdgasdf");
 		
 	}
@@ -52,14 +51,14 @@ public class Game extends UnicastRemoteObject implements iGame{
 	}
 
 	@Override
-	public synchronized iPlayer gettingPlayer(int id) throws RemoteException {
-		iPlayer player = new Player(assignColor(id), assignPoint());
+	public synchronized iPlayer gettingPlayer(int clientId) throws RemoteException {
+		iPlayer player = new Player(assignColor(clientId), assignPoint(clientId+2), clientId + 1);
 		players.add(player);
 		return player;
 	}
 	
-	private Point assignPoint() {
-		return new Point(1,1);
+	private Point assignPoint(int id) {
+		return new Point(id*id+20,id*id+20);
 	}
 
 	private Color assignColor(int id){

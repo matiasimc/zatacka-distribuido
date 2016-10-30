@@ -1,19 +1,22 @@
 import java.awt.Color;
-import java.awt.Graphics;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 
 public class Player extends UnicastRemoteObject implements iPlayer{
 	public int angle;
+	public int id;
 	public Color color;
 	private ArrayList<Point> body;
 	
-	public Player(Color color, Point head) throws RemoteException {
+	public Player(Color color, Point head, int id) throws RemoteException {
 		this.color = color;
 		body = new ArrayList<Point>();
 		this.body.add(head);
+		this.id = id;
+		this.angle = ThreadLocalRandom.current().nextInt(0, 361);
 	}
 	
 	public void moveUp() {
