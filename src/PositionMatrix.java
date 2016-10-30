@@ -17,7 +17,7 @@ public class PositionMatrix {
 		for (int i = cx-r; i < cx+r; i++) {
 			for (int j = cy-r; j < cy+r; j++) {
 				if (Math.pow((i-cx),2) + Math.pow((j-cy),2) < Math.pow(r,2)) {
-					return matrix[i][j];
+					if (matrix[i][j] != 0) return matrix[i][j];
 				}
 			}
 		}
