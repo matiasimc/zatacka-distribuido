@@ -16,5 +16,8 @@ public interface iGame extends Remote {
 	
 	boolean checkCollision(iPlayer player) throws RemoteException;
 	
+	int getHeight() throws RemoteException;
+	
+	int getWidth() throws RemoteException;
 
 }

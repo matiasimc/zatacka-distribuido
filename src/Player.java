@@ -21,14 +21,17 @@ public class Player extends UnicastRemoteObject implements iPlayer{
 		this.alive = true;
 	}
 	
-	public void moveUp() {
+	@Override
+		public void moveUp() throws RemoteException {
         this.angle = (this.angle + 10) % 360;
     }
 
-    public void moveDown() {
+	@Override
+    public void moveDown() throws RemoteException {
         this.angle = (this.angle - 10) % 360;
     }
     
+    @Override
     public void growUp(boolean visibility) throws RemoteException {
         Point head = this.body.get(this.body.size() - 1);
         int x = (int) (head.x + Point.dHip*Math.cos(Math.toRadians(this.angle)));
@@ -46,21 +49,25 @@ public class Player extends UnicastRemoteObject implements iPlayer{
 		return this.body;
 	}
 	
+	@Override
 	public Point getHead() throws RemoteException {
 		return this.body.get(this.body.size() - 1);
 	}
 	
+	@Override
 	public int getId() throws RemoteException {
 		return this.id;
 	}
 	
+	@Override
 	public boolean isAlive() throws RemoteException {
 		return this.alive;
 	}
 
 	@Override
 	public void die() throws RemoteException {
-		alive = false;
+		this.body = new ArrayList<Point>();
+		this.alive = false;
 	}
 
 }

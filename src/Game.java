@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 public class Game extends UnicastRemoteObject implements iGame{
 
+	private int height = 800;
+	private int width = 800;
 	PositionMatrix matrix; 
 	public ArrayList<iClientGame> gameThreads;
 	ArrayList<iPlayer> players;
@@ -17,10 +19,11 @@ public class Game extends UnicastRemoteObject implements iGame{
 		super();
 		players = new ArrayList<iPlayer>();
 		gameThreads = new ArrayList<iClientGame>();
-		matrix = new PositionMatrix();
+		matrix = new PositionMatrix(height, width);
 	}
 
-	public void startGame(ArrayList<iClient> clients) throws RemoteException {
+	@Override
+	public synchronized void startGame(ArrayList<iClient> clients) throws RemoteException {
 		for (iClientGame cGame: gameThreads){
 			GameThreads gt= new GameThreads(cGame);
 			gt.start();
@@ -29,19 +32,32 @@ public class Game extends UnicastRemoteObject implements iGame{
 		}
 	}
 	
-	public boolean checkCollision(iPlayer player) throws RemoteException {
+	@Override
+	public int getHeight() throws RemoteException{
+		return this.height;
+	}
+	
+	@Override
+	public int getWidth() throws RemoteException{
+		return this.width;
+	}
+	
+	@Override
+	public synchronized boolean checkCollision(iPlayer player) throws RemoteException {
 		Point head = player.getHead();
 		try{
 			matrix.fill(head.x, head.y, player.getId(), head.visible);
 			return false;
 		}
 		catch (CollisionException e) {
+			matrix.deletePlayer(player.getBody(), player.getId());
+			player.die();
 			return true;
 		}
 	}
 	
 	@Override
-	public void addClient(iClientGame clientGame) throws RemoteException {
+	public synchronized void addClient(iClientGame clientGame) throws RemoteException {
 
 		System.out.println("ayura");
 		gameThreads.add(clientGame);
@@ -49,7 +65,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 	}
 
 	@Override
-	public ArrayList<iPlayer> players() throws RemoteException {
+	public synchronized ArrayList<iPlayer> players() throws RemoteException {
 		return this.players;
 	}
 
@@ -60,11 +76,11 @@ public class Game extends UnicastRemoteObject implements iGame{
 		return player;
 	}
 	
-	private Point assignPoint() {
+	private synchronized Point assignPoint() {
 		return matrix.getPlace();
 	}
 
-	private Color assignColor(int id){
+	private synchronized Color assignColor(int id){
 		return colorList[id];
 	}
 }

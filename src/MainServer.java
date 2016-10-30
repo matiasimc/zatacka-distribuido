@@ -1,5 +1,4 @@
 
-import java.awt.Color;
 import java.rmi.Naming;
 
 public class MainServer {
@@ -24,7 +23,6 @@ public class MainServer {
 		System.out.println(ip);
 		try {
 			System.setProperty("java.rmi.server.hostaname", ip);
-			
 			iServer server = new Server();
 			Naming.bind("rmi://"+ip+":1099/ABC", server);
 			System.out.println("Server UP");

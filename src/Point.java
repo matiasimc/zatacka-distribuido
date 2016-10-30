@@ -17,6 +17,6 @@ public class Point implements Serializable{
         this.y = y;
         this.visible = visibility;
     }
-
+    
 }
 
