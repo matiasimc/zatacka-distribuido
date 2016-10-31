@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 cd src
-rmiregistry &
 javac *.java
+java MainClient "$1"
