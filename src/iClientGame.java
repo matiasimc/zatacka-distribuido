@@ -11,5 +11,7 @@ public interface iClientGame extends Remote {
 	public boolean isRunning() throws RemoteException;
 	public ArrayList<iPlayer> gamePlayers() throws RemoteException;
 	public void resetVote() throws RemoteException;
+	public void resetBuffer() throws RemoteException;
+	public void close() throws RemoteException;
 
 }

@@ -17,7 +17,7 @@ public class Board extends Canvas{
 	private Color headColor = Color.yellow;
 	public ClientGame cGame;
     public int width, height;
-
+    private boolean show;
     // doble buffer para dibujar
     public Image img;
     public Graphics buffer;
@@ -26,7 +26,8 @@ public class Board extends Canvas{
     public Board(int width, int height, ClientGame cGame) {
         this.width = width;
         this.height = height;
-    	this.cGame =cGame;
+    	this.cGame = cGame;
+    	this.show = false;
     }
 
     @Override
@@ -49,11 +50,12 @@ public class Board extends Canvas{
         	for(iPlayer player: this.cGame.gamePlayers()){
             	drawSnake(player,buffer);
         	}
+        	if(show) showScores(this.cGame.gamePlayers());
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+       
         graphics.drawImage(img, 0, 0, null);
     }
 
@@ -90,6 +92,9 @@ public class Board extends Canvas{
 		}
 		buffer.setColor(Color.WHITE);
 		buffer.drawString("Apreta Y para seguir jugando o N para abandonar", 140, 200+offset);
-		buffer.dispose();
+	}
+	
+	public void setShow(boolean bool){
+		show = bool;
 	}
 }

@@ -27,6 +27,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
     private JFrame frame;
     private Board tablero;
     private boolean voted;
+    private int frames;
     
     public ClientGame(iGame game, int id) throws RemoteException{
 		this.game = game;
@@ -34,6 +35,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 		this.width = game.getWidth();
 		this.height = game.getHeight();
 		this.voted = false;
+		this.frames = 0;
     }
 	
     
@@ -67,7 +69,6 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
         frame.pack();
         frame.setVisible(true);
         
-		int frames = 0;
 		int skipFrames = 0;
         while (true) { // Main loop
             // Controles
@@ -85,6 +86,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
             
             
             if (frames == GROW_RATE && player.isAlive() && this.game.isPlaying()){
+            	System.out.println("hola");
             	if(!this.game.checkCollision(player)){
             		if (skipFrames-- > 0){
                         player.growUp(false);
@@ -108,8 +110,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
             tablero.repaint();
             
             if (!this.game.isPlaying() && !voted){
-            	System.out.println("m");
-            	this.tablero.showScores(this.gamePlayers());
+            	this.tablero.setShow(true);
             	if (keys[KeyEvent.VK_Y]) {
             		voted = true;
                 	System.out.println("Votaste si");
@@ -119,7 +120,6 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 	voted = true;
                 	System.out.println("Votaste no");
                 	this.game.voteNo();
-                	System.exit(0);
                 }
             	frames = 0;
             }
@@ -132,6 +132,10 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
         }
     }
 	
+	@Override
+	public void close() throws RemoteException {
+		System.exit(1);
+	}
 	@Override
 	public boolean isRunning() throws RemoteException {
 		return this.running;
@@ -150,6 +154,13 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 	@Override
 	public void resetVote(){
 		voted = false;
+	}
+	
+	@Override
+	public void resetBuffer() throws RemoteException{
+		tablero.buffer = null;
+		tablero.setShow(false);
+		frames = 0;
 	}
 	
 }

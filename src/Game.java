@@ -68,11 +68,12 @@ public class Game extends UnicastRemoteObject implements iGame{
 		catch (CollisionException e) {
 			matrix.deletePlayer(player.getBody(), player.getId());
 			player.die();
+			sortPlayers();
 			updateScores();
 			if (getAlives() == 1){
 				playing = false;
 				votes = 0;
-				new PositionMatrix(height, width);
+				matrix = new PositionMatrix(height, width);
 				for (iClientGame cGame: gameThreads) cGame.resetVote();
 				for (iPlayer p: players()) p.resetBody();
 				futurePlayers = new ArrayList<iPlayer>();
@@ -91,29 +92,36 @@ public class Game extends UnicastRemoteObject implements iGame{
 	@Override
 	public synchronized void addPlayer(iPlayer p) throws RemoteException {
 		futurePlayers.add(p);
+		System.out.print("Agregado");
 		votes++;
-		if (votes == players.size()){
-			players = futurePlayers;
-			if (players.size() < 2) System.exit(1);
-			for (iPlayer pl: players){
-				pl.revive(assignPoint());
-			}
-			playing = true;
-		}
+		reset();
 	}
 
 	@Override
 	public synchronized void voteNo() throws RemoteException {
 		votes++;
+		reset();
+	}
+	
+	private void reset() throws RemoteException{
 		if (votes == players.size()){
+			for (iClientGame cgame: gameThreads) cgame.resetBuffer();
 			players = futurePlayers;
-			if (players.size() < 2) System.exit(1);
-			for (iPlayer p: players){
-				p.revive(assignPoint());
+			if (players.size() < 2) {
+				for (iClientGame cgame: gameThreads) {
+					System.out.println("Mate un cgame\n\n\n\n\n\n\n");
+					cgame.close();
+				}
+				System.exit(1);
+			}
+			for (iPlayer pl: players){
+				System.out.println("Revivido");
+				pl.revive(assignPoint());
 			}
 			playing = true;
 		}
 	}
+	
 	@Override
 	public synchronized ArrayList<iPlayer> players() throws RemoteException {
 
@@ -141,7 +149,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 	        public int compare(iPlayer p2, iPlayer p1)
 	        {
 	        	try {
-	        		return  p1.getScore() - p2.getScore();
+	        		return  p2.getScore() - p1.getScore();
 	        	}
 	        	catch (RemoteException e){
 	        		return 0;
