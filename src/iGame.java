@@ -21,5 +21,11 @@ public interface iGame extends Remote {
 	int getHeight() throws RemoteException;
 	
 	int getWidth() throws RemoteException;
+	
+	void updateScores() throws RemoteException;
+	
+	void sortPlayers() throws RemoteException;
+	
+	boolean isPlaying() throws RemoteException;
 
 }

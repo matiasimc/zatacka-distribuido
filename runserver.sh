@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ./finish.sh
 ./compile.sh

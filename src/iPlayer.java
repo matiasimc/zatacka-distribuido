@@ -16,5 +16,8 @@ public interface iPlayer extends Remote {
 	int getId() throws RemoteException;
 	boolean isAlive() throws RemoteException;
 	void die() throws RemoteException;
+	void addScore() throws RemoteException;
+	int getScore() throws RemoteException;
+	void resetBody() throws RemoteException;
 
 }

@@ -11,6 +11,7 @@ public class Player extends UnicastRemoteObject implements iPlayer{
 	public Color color;
 	private ArrayList<Point> body;
 	private boolean alive;
+	private int score;
 	
 	public Player(Color color, Point head, int id) throws RemoteException {
 		this.color = color;
@@ -19,6 +20,8 @@ public class Player extends UnicastRemoteObject implements iPlayer{
 		this.id = id;
 		this.angle = ThreadLocalRandom.current().nextInt(0, 361);
 		this.alive = true;
+		this.score = 0;
+		
 	}
 	
 	@Override
@@ -64,10 +67,25 @@ public class Player extends UnicastRemoteObject implements iPlayer{
 		return this.alive;
 	}
 
-	
+	@Override
 	public void die() throws RemoteException {
-		this.body = new ArrayList<Point>();
+		resetBody();
 		this.alive = false;
+	}
+	
+	@Override
+	public int getScore() throws RemoteException {
+		return this.score;
+	}
+	
+	@Override
+	public void addScore() throws RemoteException {
+		score++;
+	}
+	
+	@Override
+	public void resetBody() throws RemoteException {
+		this.body = new ArrayList<Point>();
 	}
 
 }

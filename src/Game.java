@@ -4,6 +4,8 @@ import java.awt.Color;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Game extends UnicastRemoteObject implements iGame{
 
@@ -13,15 +15,25 @@ public class Game extends UnicastRemoteObject implements iGame{
 	public ArrayList<iClientGame> gameThreads;
 	ArrayList<iPlayer> players;
 	static int numberOfPlayers = 5;
-	static final Color[] colorList = {Color.blue, Color.red, Color.green, Color.yellow, Color.orange};
+	static final Color[] colorList = {Color.red, Color.green, Color.pink, Color.blue, Color.orange};
+	private boolean playing;
 	
 	protected Game() throws RemoteException {
 		super();
 		players = new ArrayList<iPlayer>();
 		gameThreads = new ArrayList<iClientGame>();
 		matrix = new PositionMatrix(height, width);
+		playing = true;
 	}
-
+	
+	@Override
+	public synchronized void updateScores() throws RemoteException{
+		for (iPlayer p : players()){
+			if (p.isAlive()) {
+				p.addScore();
+			}
+		}
+	}
 	@Override
 	public synchronized void startGame(ArrayList<iClient> clients) throws RemoteException {
 		for (iClientGame cGame: gameThreads){
@@ -55,15 +67,18 @@ public class Game extends UnicastRemoteObject implements iGame{
 		catch (CollisionException e) {
 			matrix.deletePlayer(player.getBody(), player.getId());
 			player.die();
+			updateScores();
+			if (getAlives() == 1){
+				playing = false;
+				for (iPlayer p: players()) p.resetBody();
+			}
 			return true;
 		}
 	}
 	
 	@Override
 	public synchronized void addClient(iClientGame clientGame) throws RemoteException {
-
-
-		System.out.println("ayura");
+;
 		gameThreads.add(clientGame);
 		
 	}
@@ -90,6 +105,24 @@ public class Game extends UnicastRemoteObject implements iGame{
 		return n;
 	}
 
+	public synchronized void sortPlayers() throws RemoteException {
+		Collections.sort(this.players, new Comparator<iPlayer>() {
+	        @Override
+	        public int compare(iPlayer p2, iPlayer p1)
+	        {
+	        	try {
+	        		return  p1.getScore() - p2.getScore();
+	        	}
+	        	catch (RemoteException e){
+	        		return 0;
+	        	}
+	        }	
+	    });
+	}
+	
+	public synchronized boolean isPlaying() throws RemoteException {
+		return this.playing;
+	}
 	private synchronized Point assignPoint() {
 
 		return matrix.getPlace();

@@ -54,6 +54,7 @@ public class MainServer {
 			Naming.bind("rmi://"+ip+":1099/ABC", server);
 			System.out.println("Server UP");
 		}catch(Exception e){
+			System.out.println("La excepcion la capture en el main");
 			e.printStackTrace();
 		}
 	}	

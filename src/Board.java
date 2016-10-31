@@ -3,6 +3,7 @@
 import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -71,10 +72,24 @@ public class Board extends Canvas{
                 g2.draw(new Line2D.Float(p1.x,p1.y,p2.x,p2.y));
         	}
 		}
-        if (player.isAlive()){
+        if (len > 0){
 	        Point head = player.getHead();
 			graphics.setColor(headColor);
 			graphics.fillOval(head.x - Point.dHip/2, head.y - Point.dHip/2, 5, 5);
         }
     }
+	public void showScores(ArrayList<iPlayer> players) throws RemoteException{
+		buffer.setColor(Color.WHITE);
+		buffer.setFont(new Font("Impact", Font.PLAIN, 20));
+		buffer.drawString("Puntajes:" , 350 , 200);
+		int offset = 50;
+		for (iPlayer p: players){
+			buffer.setColor(p.getColor());
+			buffer.drawString("Player "+p.getId()+": "+p.getScore() , 350, 200+offset);
+			offset += 50;
+		}
+		buffer.setColor(Color.WHITE);
+		buffer.drawString("Apreta Y para seguir jugando o N para abandonar", 140, 200+offset);
+		buffer.dispose();
+	}
 }

@@ -3,6 +3,8 @@ import java.awt.event.KeyListener;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javax.swing.JFrame;
@@ -72,14 +74,16 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
             	player.moveUp();
             	System.out.println("Arriba");
             }
-            if (keys[KeyEvent.VK_DOWN]) {
+            if (keys[KeyEvent.VK_DOWN]) {	
             	player.moveDown();
             	System.out.println("Abajo");
             }
             
             
             ++frames;
-            if (frames == GROW_RATE && player.isAlive()){
+            
+            
+            if (frames == GROW_RATE && player.isAlive() && this.game.isPlaying()){
             	if(!this.game.checkCollision(player)){
             		if (skipFrames-- > 0){
                         player.growUp(false);
@@ -95,11 +99,23 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 }
             	else {
             		System.out.print("Te moriste");
-            	}
+            	}	
   
             }
             
+            
             tablero.repaint();
+            
+            if (!this.game.isPlaying()){
+            	this.tablero.showScores(this.gamePlayers());
+            	if (keys[KeyEvent.VK_Y]) {
+                	player.moveUp();
+                }
+                if (keys[KeyEvent.VK_N]) {	
+                	player.moveDown();
+                }
+            	frames = 0;
+            }
             
             try {
                 Thread.sleep(1000 / UPDATE_RATE);
@@ -121,6 +137,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 	public ArrayList<iPlayer> gamePlayers() throws RemoteException {
 		return this.game.players();
 	}
+	
 }
 
 
