@@ -10,6 +10,8 @@ import java.awt.Image;
 import java.awt.geom.Line2D;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 
 public class Board extends Canvas{
@@ -85,6 +87,16 @@ public class Board extends Canvas{
 		buffer.setFont(new Font("Impact", Font.PLAIN, 20));
 		buffer.drawString("Puntajes:" , 350 , 200);
 		int offset = 50;
+		Collections.sort(players, new Comparator<iPlayer>() {
+			public int compare(iPlayer p1, iPlayer p2) {
+				try {
+					return p2.getScore() - p1.getScore();
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					return 1;
+				}
+			}
+		});
 		for (iPlayer p: players){
 			buffer.setColor(p.getColor());
 			buffer.drawString("Player "+p.getId()+": "+p.getScore() , 350, 200+offset);

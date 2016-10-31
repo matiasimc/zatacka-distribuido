@@ -35,16 +35,18 @@ public class MainServer {
 				System.out.println("Usage: MainServer.java <ip> -n <waitPlayer>");
 				System.exit(1);
 			}
+			else {
+				try {
+					waitPlayers = Integer.parseInt(args[2]);
+				}
+				catch (Exception e) {
+					System.out.println("Usage: MainServer.java <ip> -n <waitPlayer>");
+					System.exit(1);
+				}
+			}
 		}
 		catch (Exception e) {
 			// Do nothing
-		}
-		try {
-			waitPlayers = Integer.parseInt(args[2]);
-		}
-		catch (Exception e) {
-			System.out.println("Usage: MainServer.java <ip> -n <waitPlayer>");
-			System.exit(1);
 		}
 		try {
 			System.setProperty("java.rmi.server.hostname", ip);
