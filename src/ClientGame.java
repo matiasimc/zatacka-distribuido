@@ -110,6 +110,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
             tablero.repaint();
             
             if (!this.game.isPlaying() && !voted){
+            	System.out.println("VOTA QLO");
             	this.tablero.setShow(true);
             	if (keys[KeyEvent.VK_Y]) {
             		voted = true;

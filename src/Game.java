@@ -60,6 +60,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 	
 	@Override
 	public synchronized boolean checkCollision(iPlayer player) throws RemoteException {
+		if (player.getBody().size() == 0) return false;
 		Point head = player.getHead();
 		try{
 			matrix.fill(head.x, head.y, player.getId(), head.visible);
@@ -68,9 +69,9 @@ public class Game extends UnicastRemoteObject implements iGame{
 		catch (CollisionException e) {
 			matrix.deletePlayer(player.getBody(), player.getId());
 			player.die();
-			sortPlayers();
 			updateScores();
 			if (getAlives() == 1){
+				sortPlayers();
 				playing = false;
 				votes = 0;
 				matrix = new PositionMatrix(height, width);
@@ -149,7 +150,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 	        public int compare(iPlayer p2, iPlayer p1)
 	        {
 	        	try {
-	        		return  p2.getScore() - p1.getScore();
+	        		return  p1.getScore() - p2.getScore();
 	        	}
 	        	catch (RemoteException e){
 	        		return 0;
