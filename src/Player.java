@@ -87,5 +87,11 @@ public class Player extends UnicastRemoteObject implements iPlayer{
 	public void resetBody() throws RemoteException {
 		this.body = new ArrayList<Point>();
 	}
+	
+	@Override
+	public void revive(Point p) throws RemoteException {
+		this.alive = true;
+		this.body.add(p);
+	}
 
 }

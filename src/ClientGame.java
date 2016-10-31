@@ -26,19 +26,20 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
     private int height;
     private JFrame frame;
     private Board tablero;
+    private boolean voted;
     
     public ClientGame(iGame game, int id) throws RemoteException{
 		this.game = game;
 		this.id = id;
 		this.width = game.getWidth();
 		this.height = game.getHeight();
+		this.voted = false;
     }
 	
     
 	@Override
 	public void start() throws RemoteException {
 		player = this.game.gettingPlayer(id);
-		System.out.println("Hola");
         keys = new boolean[KeyEvent.KEY_LAST];
         
         frame = new JFrame(TITLE);
@@ -106,13 +107,19 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
             
             tablero.repaint();
             
-            if (!this.game.isPlaying()){
+            if (!this.game.isPlaying() && !voted){
+            	System.out.println("m");
             	this.tablero.showScores(this.gamePlayers());
             	if (keys[KeyEvent.VK_Y]) {
-                	player.moveUp();
+            		voted = true;
+                	System.out.println("Votaste si");
+                	this.game.addPlayer(player);
                 }
-                if (keys[KeyEvent.VK_N]) {	
-                	player.moveDown();
+                if (keys[KeyEvent.VK_N]) {
+                	voted = true;
+                	System.out.println("Votaste no");
+                	this.game.voteNo();
+                	System.exit(0);
                 }
             	frames = 0;
             }
@@ -125,17 +132,24 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
         }
     }
 	
+	@Override
 	public boolean isRunning() throws RemoteException {
 		return this.running;
 	}
 	
+	@Override
 	public void setRunning(boolean running) throws RemoteException {
 		this.running = running;
 	}
 
-	
+	@Override
 	public ArrayList<iPlayer> gamePlayers() throws RemoteException {
 		return this.game.players();
+	}
+	
+	@Override
+	public void resetVote(){
+		voted = false;
 	}
 	
 }

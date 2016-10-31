@@ -14,6 +14,8 @@ public class Game extends UnicastRemoteObject implements iGame{
 	PositionMatrix matrix; 
 	public ArrayList<iClientGame> gameThreads;
 	ArrayList<iPlayer> players;
+	ArrayList<iPlayer> futurePlayers;
+	private int votes;
 	static int numberOfPlayers = 5;
 	static final Color[] colorList = {Color.red, Color.green, Color.pink, Color.blue, Color.orange};
 	private boolean playing;
@@ -41,7 +43,6 @@ public class Game extends UnicastRemoteObject implements iGame{
 				GameThreads gt= new GameThreads(cGame);
 				gt.start();
 				cGame.setRunning(true);
-				System.out.println("x");
 			}
 			
 		}
@@ -70,7 +71,11 @@ public class Game extends UnicastRemoteObject implements iGame{
 			updateScores();
 			if (getAlives() == 1){
 				playing = false;
+				votes = 0;
+				new PositionMatrix(height, width);
+				for (iClientGame cGame: gameThreads) cGame.resetVote();
 				for (iPlayer p: players()) p.resetBody();
+				futurePlayers = new ArrayList<iPlayer>();
 			}
 			return true;
 		}
@@ -82,8 +87,33 @@ public class Game extends UnicastRemoteObject implements iGame{
 		gameThreads.add(clientGame);
 		
 	}
+	
+	@Override
+	public synchronized void addPlayer(iPlayer p) throws RemoteException {
+		futurePlayers.add(p);
+		votes++;
+		if (votes == players.size()){
+			players = futurePlayers;
+			if (players.size() < 2) System.exit(1);
+			for (iPlayer pl: players){
+				pl.revive(assignPoint());
+			}
+			playing = true;
+		}
+	}
 
-
+	@Override
+	public synchronized void voteNo() throws RemoteException {
+		votes++;
+		if (votes == players.size()){
+			players = futurePlayers;
+			if (players.size() < 2) System.exit(1);
+			for (iPlayer p: players){
+				p.revive(assignPoint());
+			}
+			playing = true;
+		}
+	}
 	@Override
 	public synchronized ArrayList<iPlayer> players() throws RemoteException {
 

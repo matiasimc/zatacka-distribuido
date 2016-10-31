@@ -19,5 +19,6 @@ public interface iPlayer extends Remote {
 	void addScore() throws RemoteException;
 	int getScore() throws RemoteException;
 	void resetBody() throws RemoteException;
+	void revive(Point p) throws RemoteException;
 
 }
