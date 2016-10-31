@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-./finish.sh
-./compile.sh
 cd src
+rmiregistry &
+javac *.java
 java MainServer "$1" "$2" "$3"
