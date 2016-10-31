@@ -13,12 +13,17 @@ public class Server extends UnicastRemoteObject implements iServer{
 	ArrayList<iClient> clients;
 	int id;
 	int waitPlayers;
+	private static final int maxPlayers = 5;
 	
 	public Server(int waitPlayers) throws RemoteException{
 		game = new Game(); 
 		clients = new ArrayList<iClient>();
 		id=0;
 		this.waitPlayers = waitPlayers;
+	}
+	
+	public boolean canPlay() throws RemoteException{
+		return clients.size() < maxPlayers;
 	}
 	
 	public void addClient(iClient client) throws RemoteException{

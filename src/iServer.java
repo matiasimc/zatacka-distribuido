@@ -11,4 +11,5 @@ public interface iServer extends Remote {
 	public void gettingInformation(iClient client) throws RemoteException;
 	public iGame getGame() throws RemoteException;
 	public int getIDClient() throws RemoteException;
+	public boolean canPlay() throws RemoteException;
 }
