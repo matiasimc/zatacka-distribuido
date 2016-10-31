@@ -27,5 +27,9 @@ public interface iGame extends Remote {
 	void sortPlayers() throws RemoteException;
 	
 	boolean isPlaying() throws RemoteException;
+	
+	public void addPlayer(iPlayer player) throws RemoteException;
+	
+	public void voteNo() throws RemoteException;
 
 }
