@@ -1,3 +1,4 @@
+package game;
 
 
 import java.awt.Color;
@@ -7,9 +8,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import client.ClientGame;
+import client.iClient;
+import client.iClientGame;
+import server.iServer;
+
 public class Game extends UnicastRemoteObject implements iGame{
 
-	private int height = 800;
+	private int height = 600;
 	private int width = 800;
 	PositionMatrix matrix; 
 	public ArrayList<iClientGame> gameThreads;
@@ -19,13 +25,13 @@ public class Game extends UnicastRemoteObject implements iGame{
 	static int numberOfPlayers = 5;
 	static final Color[] colorList = {Color.red, Color.green, Color.pink, Color.blue, Color.orange};
 	private boolean playing;
+	private iServer server;
 	
-	protected Game() throws RemoteException {
-		super();
+	public Game() throws RemoteException {
 		players = new ArrayList<iPlayer>();
 		gameThreads = new ArrayList<iClientGame>();
-		matrix = new PositionMatrix(height, width);
-		playing = true;
+		matrix = new PositionMatrix(width, height);
+		playing = false;
 	}
 	
 	@Override
@@ -38,14 +44,11 @@ public class Game extends UnicastRemoteObject implements iGame{
 	}
 	@Override
 	public synchronized void startGame(ArrayList<iClient> clients) throws RemoteException {
-		for (iClientGame cGame: gameThreads){
-			if (!cGame.isRunning()) {
-				GameThreads gt= new GameThreads(cGame);
-				gt.start();
-				cGame.setRunning(true);
-			}
-			
+		for (iClient client: clients){
+			client.getClientGame().setStarted(true);
+			client.getClientGame().setCountdown(300);
 		}
+		playing = true;
 	}
 	
 	@Override
@@ -104,7 +107,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 		reset();
 	}
 	
-	private void reset() throws RemoteException{
+	private synchronized void reset() throws RemoteException{
 		if (votes == players.size()){
 			for (iClientGame cgame: gameThreads) cgame.resetBuffer();
 			players = futurePlayers;
@@ -166,7 +169,11 @@ public class Game extends UnicastRemoteObject implements iGame{
 
 		return matrix.getPlace();
 	}
-
+	
+	public ArrayList<iClientGame> getClientGames() throws RemoteException {
+		return this.gameThreads;
+	}
+	
 	private synchronized Color assignColor(int id){
 		return colorList[id];
 	}

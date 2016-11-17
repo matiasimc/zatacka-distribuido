@@ -1,3 +1,4 @@
+package game;
 import java.awt.Color;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -35,7 +36,8 @@ public class Player extends UnicastRemoteObject implements iPlayer{
     }
     
     @Override
-    public void growUp(boolean visibility) throws RemoteException {
+    public synchronized void growUp(boolean visibility) throws RemoteException {
+    	if (this.body.isEmpty()) return;
         Point head = this.body.get(this.body.size() - 1);
         int x = (int) (head.x + (Point.dHip+2)*Math.cos(Math.toRadians(this.angle)));
         int y = (int) (head.y + (Point.dHip+2)*Math.sin(Math.toRadians(this.angle)));
@@ -92,6 +94,16 @@ public class Player extends UnicastRemoteObject implements iPlayer{
 	public void revive(Point p) throws RemoteException {
 		this.alive = true;
 		this.body.add(p);
+	}
+	
+	public boolean equals(Object p) {
+		try {
+			return ((Player) p).getId() == this.getId();
+		} catch (RemoteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 }

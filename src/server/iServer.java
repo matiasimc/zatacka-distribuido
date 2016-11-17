@@ -1,7 +1,11 @@
+package server;
 
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+
+import client.iClient;
+import game.iGame;
 
 public interface iServer extends Remote {
 	

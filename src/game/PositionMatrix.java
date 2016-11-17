@@ -1,3 +1,4 @@
+package game;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -15,7 +16,7 @@ public class PositionMatrix {
 	public PositionMatrix(int Width, int Height) {
 		this.Width = Width;
 		this.Height = Height;
-		matrix = new int[Width][Height];
+		matrix = new int[Height][Width];
 	}
 	
 	public int checkCircle(int cx, int cy, int r) throws CollisionException {
@@ -78,9 +79,14 @@ public class PositionMatrix {
 			x = ThreadLocalRandom.current().nextInt(w, 8*w+1);
 			y = ThreadLocalRandom.current().nextInt(h, 8*h+1);
 			System.out.println("Buscando un punto");
-			if (matrix[x][y] == 0) {
-				System.out.println("Te encontré un punto");
-				return new Point(x, y, true);
+			try {
+				if (matrix[x][y] == 0) {
+					System.out.println("Te encontré un punto");
+					return new Point(x, y, true);
+				}
+			}
+			catch (IndexOutOfBoundsException e) {
+				continue;
 			}
 		}
 	}

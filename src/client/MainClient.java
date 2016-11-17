@@ -1,6 +1,9 @@
+package client;
 
 
 import java.rmi.*;
+
+import server.iServer;
 
 public class MainClient {
 	public static void main(String[] args) {

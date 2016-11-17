@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 localip=$(ip route get 8.8.8.8 | head -1 | cut -d' ' -f8)
-echo "your local ip is $localip"
+echo "your local hostname is $localip"
 cd src
-javac *.java
-java -Djava.rmi.server.hostname="$localip" MainClient "$1"
+for dir in ./*/ ; do
+	echo "Compiling in package $dir..."
+	javac "$dir"/*.java
+done
+java -Djava.rmi.server.hostname="$localip" client.MainClient "$1"

@@ -1,7 +1,10 @@
+package client;
 
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+
+import server.iServer;
 
 public class Client extends UnicastRemoteObject implements iClient {
 	public iServer server;
@@ -19,10 +22,27 @@ public class Client extends UnicastRemoteObject implements iClient {
 	public iClientGame getClientGame() throws RemoteException{
 		return this.cGame;
 	}
+	
+	public void start() {
+		new Thread() {
+			public void run() {
+				try {
+					cGame.start();
+				} catch (RemoteException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}.start();
+	}
 
 	
 	public int getID() throws RemoteException {
 		return id;
+	}
+
+	public iClientGame getcGame() {
+		return this.cGame;
 	}
 
 }

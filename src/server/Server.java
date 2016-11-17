@@ -1,3 +1,4 @@
+package server;
 
 
 import java.awt.Color;
@@ -5,6 +6,10 @@ import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+
+import client.iClient;
+import game.Game;
+import game.iGame;
 
 public class Server extends UnicastRemoteObject implements iServer{
 
@@ -16,7 +21,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	private static final int maxPlayers = 5;
 	
 	public Server(int waitPlayers) throws RemoteException{
-		game = new Game(); 
+		game = new Game();
 		clients = new ArrayList<iClient>();
 		id=0;
 		this.waitPlayers = waitPlayers;
@@ -30,9 +35,11 @@ public class Server extends UnicastRemoteObject implements iServer{
 		this.clients.add(client);
 		client.getClientGame();
 		this.game.addClient(client.getClientGame());
+		client.start();
 		if(this.clients.size()>=this.waitPlayers){
 			System.out.println("Comenzando juego...");
-			this.game.startGame(this.clients);
+			if (!this.game.isPlaying()) this.game.startGame(this.clients);
+			else client.getClientGame().setStarted(true);
 		}
 		else {
 			System.out.println("Esperando jugadores...");

@@ -1,8 +1,12 @@
+package game;
 
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+
+import client.iClient;
+import client.iClientGame;
 
 public interface iGame extends Remote {
 
@@ -31,5 +35,7 @@ public interface iGame extends Remote {
 	public void addPlayer(iPlayer player) throws RemoteException;
 	
 	public void voteNo() throws RemoteException;
+	
+	public ArrayList<iClientGame> getClientGames() throws RemoteException;
 
 }

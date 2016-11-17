@@ -1,3 +1,4 @@
+package ui;
 
 
 import java.awt.BasicStroke;
@@ -12,6 +13,10 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+
+import client.ClientGame;
+import game.Point;
+import game.iPlayer;
 
 
 public class Board extends Canvas{
@@ -30,6 +35,7 @@ public class Board extends Canvas{
         this.height = height;
     	this.cGame = cGame;
     	this.show = false;
+    	this.setSize(width, height);
     }
 
     @Override
@@ -39,20 +45,19 @@ public class Board extends Canvas{
 
     @Override
     public void paint(Graphics graphics) {
-        if(this.buffer==null){
-            this.img = createImage(getWidth(), getHeight());
-            this.buffer = this.img.getGraphics();
-        }
 
+        this.img = createImage(this.width, this.height);
+        this.buffer = this.img.getGraphics();
         this.buffer.setColor(Color.black);
-        this.buffer.fillRect(0, 0, getWidth(), getHeight());
+        this.buffer.fillRect(0, 0, this.width, this.height);
 
         // dibujar elementos del juego
         try {
         	for(iPlayer player: this.cGame.gamePlayers()){
             	drawSnake(player,buffer);
         	}
-        	if(show) showScores(this.cGame.gamePlayers());
+        	if (!this.cGame.started || this.cGame.countdown > 0) showWaitingMessage();
+        	if(show) showVotation (this.cGame.gamePlayers());
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -61,9 +66,13 @@ public class Board extends Canvas{
         graphics.drawImage(img, 0, 0, null);
     }
 
+
 	public void drawSnake(iPlayer player,Graphics graphics) throws RemoteException {
+		if (graphics == null) graphics = this.img.getGraphics();
 		ArrayList<Point> points = player.getBody();
 		Graphics2D g2 = (Graphics2D) graphics;
+		if (graphics == null) System.out.println("wat wea");
+		if (g2 == null) System.out.println("error incoming");
 		g2.setColor(player.getColor());
 		g2.setStroke(new BasicStroke(4));
 		
@@ -82,18 +91,23 @@ public class Board extends Canvas{
 			graphics.fillOval(head.x - Point.dHip/2, head.y - Point.dHip/2, 5, 5);
         }
     }
-	public void showScores(ArrayList<iPlayer> players) throws RemoteException{
+	
+	private void showWaitingMessage() {
+		if (this.buffer == null) this.buffer = this.img.getGraphics();
 		buffer.setColor(Color.WHITE);
 		buffer.setFont(new Font("Impact", Font.PLAIN, 20));
-		buffer.drawString("Puntajes:" , 350 , 200);
-		int offset = 50;
-		for (iPlayer p: players){
-			buffer.setColor(p.getColor());
-			buffer.drawString("Player "+p.getId()+": "+p.getScore() , 350, 200+offset);
-			offset += 50;
+		if (cGame.started && cGame.countdown > 0) {
+			buffer.drawString("Partida inicia en "+cGame.countdown/30+" segundos", 140, 300);
 		}
+		else buffer.drawString("Esperando a otros jugadores...", 140, 300);
+		
+	}
+	
+	private void showVotation(ArrayList<iPlayer> players) {
+		if (this.buffer == null) this.buffer = this.img.getGraphics();
 		buffer.setColor(Color.WHITE);
-		buffer.drawString("Apreta Y para seguir jugando o N para abandonar", 140, 200+offset);
+		buffer.setFont(new Font("Impact", Font.PLAIN, 20));
+		buffer.drawString("Apreta Y para seguir jugando o N para abandonar", 140, 300);
 	}
 	
 	public void setShow(boolean bool){

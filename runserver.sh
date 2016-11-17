@@ -1,11 +1,29 @@
 #!/usr/bin/env bash
 
+ctrl_c() {
+	echo ""
+	echo "Closing server..."
+	ps -ef | grep rmiregistry | awk '{print  $2}' | xargs kill
+	exit
+}
+
+trap 'ctrl_c' SIGINT
+
+if [ "$#" -ne 1 ] && [ "$#" -ne 3 ]
+then
+	echo "Bad number of arguments"
+	exit
+fi
 cd src
 rmiregistry &
-javac *.java
+for dir in ./*/ ; do
+	echo "Compiling in package $dir..."
+	javac "$dir"/*.java
+done
 if [ "$2" == "-n" ]
 then
-java MainServer "$1" "$2" "$3"
+	java server.MainServer "$1" "$2" "$3"
 else
-java MainServer "$1"
+	java server.MainServer "$1"
 fi
+ctrl_c
