@@ -81,19 +81,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 			return false;
 		}
 		catch (CollisionException e) {
-			matrix.deletePlayer(player.getBody(), player.getId());
-			player.die();
-			updateScores();
-			if (getAlives() == 1){
-				sortPlayers();
-				playing = false;
-				votes = 0;
-				matrix = new PositionMatrix(height, width);
-				for (iClientGame cGame: gameThreads.values()) cGame.resetVote();
-				for (iPlayer p: players()) p.resetBody();
-				futurePlayers = new HashMap<Integer, iPlayer>();
-			}
-			return true;
+			return false;
 		}
 	}
 	
