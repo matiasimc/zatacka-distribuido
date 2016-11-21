@@ -1,6 +1,5 @@
 package game;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;

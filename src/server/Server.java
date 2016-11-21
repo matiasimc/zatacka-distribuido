@@ -1,9 +1,7 @@
 package server;
 
 
-import java.awt.Color;
 import java.net.MalformedURLException;
-import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -17,6 +15,10 @@ import game.iGame;
 public class Server extends UnicastRemoteObject implements iServer{
 
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5827401619662767775L;
 	iGame game;
 	ArrayList<iClient> clients;
 	int id;
@@ -32,7 +34,6 @@ public class Server extends UnicastRemoteObject implements iServer{
 	public Server(int waitPlayers, String myDir) throws RemoteException {
 		this.setIdCounter(0);
 		this.serverQueue = new LinkedList<iServer>();
-		this.serverQueue.add(this);
 		this.myDir = myDir;
 		this.waitPlayers = waitPlayers;
 		this.game = new Game(this);
@@ -49,18 +50,18 @@ public class Server extends UnicastRemoteObject implements iServer{
 	}
 	
 	public void migrate() throws RemoteException, MalformedURLException, NotBoundException {
-		this.serverQueue.removeFirst();
-		iServer newServer = serverQueue.peek();
-		newServer.setQueue(this.serverQueue);
-		newServer.setIdCounter(this.id);
-		newServer.setWaitPlayers(this.waitPlayers);
-		this.game.setServer(newServer);
-		newServer.setGame(this.game);
-		newServer.setClients(this.clients);
-		for (iClient c: this.clients) {
-			c.setServer(newServer);
+		if(!this.serverQueue.isEmpty()){
+			iServer newServer = this.serverQueue.removeFirst();
+			newServer.setQueue(this.serverQueue);
+			newServer.setIdCounter(this.id);
+			newServer.setWaitPlayers(this.waitPlayers);
+			newServer.setGame(this.game);
+			newServer.setClients(this.clients);
+			for (iClient c: this.clients) {
+				c.setServer(newServer);
+			}
+			System.out.println("Migrated to "+newServer.getDir());
 		}
-		System.out.println("Migrated to "+newServer.getDir());
 	}
 	
 	public void setWaitPlayers(int w) throws RemoteException {

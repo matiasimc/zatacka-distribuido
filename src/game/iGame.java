@@ -1,8 +1,6 @@
 package game;
 
 import java.awt.Color;
-import java.net.MalformedURLException;
-import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -65,8 +63,6 @@ public interface iGame extends Remote {
 	public Color getColor(int clientId) throws RemoteException;
 
 	//public ArrayList<iClientGame> getClientGames() throws RemoteException;
-	
-	public void setServer(iServer server) throws MalformedURLException, RemoteException, NotBoundException;
 	
 	public iServer getServer() throws RemoteException;
 

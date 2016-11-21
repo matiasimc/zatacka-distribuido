@@ -7,13 +7,16 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Collection;
 
 import client.ClientGame;
 import game.iPlayer;
 
 public class Scores extends Canvas {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -597291296125874865L;
 	public int height;
 	public final int width = 200;
 	private ClientGame cGame;

@@ -2,9 +2,6 @@ package game;
 
 
 import java.awt.Color;
-import java.net.MalformedURLException;
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -16,6 +13,11 @@ import client.iClientGame;
 import server.iServer;
 
 class fHashMap extends HashMap<Integer, Boolean>{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5928979478291137596L;
+
 	@Override
 	public Boolean get(Object key) {
 		if (super.get(key)==null) return false;
@@ -24,6 +26,10 @@ class fHashMap extends HashMap<Integer, Boolean>{
 }
 public class Game extends UnicastRemoteObject implements iGame{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3463318830429467314L;
 	private int height = 600;
 	private int width = 800;
 	private int growRate = 2; 
@@ -36,33 +42,19 @@ public class Game extends UnicastRemoteObject implements iGame{
 	static int numberOfPlayers = 5;
 	static final Color[] colorList = {Color.red, Color.green, Color.pink, Color.blue, Color.orange};
 	private boolean playing;
-	private iServer server;
 	private int frames;
+	private iServer server;
 	
-	public Game() throws RemoteException {
-		players = new HashMap<Integer, iPlayer>();
-		gameThreads = new HashMap<Integer, iClientGame>();
-	}
-		
 	public Game(iServer server) throws RemoteException {
 		players = new HashMap<Integer, iPlayer>();
 		gameThreads = new HashMap<Integer, iClientGame>();
+		this.server = server;
 		matrix = new PositionMatrix(width, height);
 		askFrames = new fHashMap();
 		frames = 0;
 		playing = false;
-		this.server = server;
 	}
 	
-	public iServer getServer() {
-		return server;
-	}
-
-	public void setServer(iServer server) throws MalformedURLException, RemoteException, NotBoundException {
-		this.server = server;
-		this.server = (iServer) Naming.lookup("rmi://"+server.getDir()+":1099/ABC");
-	}
-
 	@Override
 	public synchronized void updateScores() throws RemoteException{
 		for (iPlayer p : players()){
@@ -260,6 +252,11 @@ public class Game extends UnicastRemoteObject implements iGame{
 	
 	public synchronized Color getColor(int clientId) throws RemoteException{
 		return this.gettingPlayer(clientId).getColor();
+	}
+
+	@Override
+	public iServer getServer() throws RemoteException {
+		return this.server;
 	}
 }
 	

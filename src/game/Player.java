@@ -8,6 +8,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 
 public class Player extends UnicastRemoteObject implements iPlayer, Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3495319638631365240L;
 	public int angle;
 	private int id;
 	public Color color;

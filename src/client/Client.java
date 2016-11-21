@@ -10,6 +10,10 @@ import java.rmi.server.UnicastRemoteObject;
 import server.iServer;
 
 public class Client extends UnicastRemoteObject implements iClient {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3466890429648781313L;
 	public iServer server;
 	public iClientGame cGame;
 	public int id;
@@ -18,13 +22,17 @@ public class Client extends UnicastRemoteObject implements iClient {
 		//super();
 		this.server = server;
 		this.id = server.getIDClient();
-		cGame = new ClientGame(this.server.getGame(), id);
+		this.cGame = new ClientGame(this, this.server.getGame(), id);
 
 	}
 	
 	public void setServer(iServer server) throws MalformedURLException, RemoteException, NotBoundException {
-		this.server = server;
+		System.out.println("cambiando server");
 		this.server = (iServer) Naming.lookup("rmi://"+server.getDir()+":1099/ABC");
+		System.out.println("esta deberia ser "+server.getDir());
+		System.out.println("esta es "+this.server.getDir());
+		System.exit(1);
+		this.cGame.setGame(this.server.getGame());
 	}
 	
 	public iClientGame getClientGame() throws RemoteException{
@@ -49,8 +57,12 @@ public class Client extends UnicastRemoteObject implements iClient {
 		return id;
 	}
 
-	public iClientGame getcGame() {
+	public iClientGame getcGame() throws RemoteException {
 		return this.cGame;
+	}
+	
+	public iServer getServer() throws RemoteException  {
+		return this.server;
 	}
 
 }

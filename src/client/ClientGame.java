@@ -17,8 +17,13 @@ import ui.Window;
 
 public class ClientGame extends UnicastRemoteObject implements iClientGame {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7891867468608129190L;
 	public iGame game;
 	public int id;
+	private iClient client;
 	public boolean running;
 	public volatile boolean started;
 	
@@ -36,7 +41,8 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
     private Scores scores;
     public volatile int countdown = 0;
     
-    public ClientGame(iGame game, int id) throws RemoteException{
+    public ClientGame(iClient client, iGame game, int id) throws RemoteException{
+    	this.client = client;
 		this.game = game;
 		this.id = id;
 		this.width = game.getWidth();
@@ -86,12 +92,12 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 if (keys[KeyEvent.VK_UP]) {
                 	this.game.moveUp(id);
                 	System.out.println("Arriba");
-                	System.out.println(this.game.getServer().getDir());
+                	System.out.println(this.client.getServer().getDir());
                 }
                 if (keys[KeyEvent.VK_DOWN]) {	
                 	this.game.moveDown(id);
                 	System.out.println("Abajo");
-                	System.out.println(this.game.getServer().getDir());
+                	System.out.println(this.client.getServer().getDir());
                 }
                 
                 if (keys[KeyEvent.VK_M]) {
@@ -208,6 +214,10 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 	
 	public HashSet<Integer> clientIds() throws RemoteException{
 		return this.game.clientIds();
+	}
+	
+	public void setGame(iGame game){
+		this.game = game;
 	}
 }
 

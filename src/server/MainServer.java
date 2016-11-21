@@ -71,7 +71,7 @@ public class MainServer {
 				iServer bossServer = (iServer) Naming.lookup("rmi://"+ipS+":1099/ABC");
 				bossServer.addServer(server);
 				Naming.bind("rmi://"+ip+":1099/ABC", server);
-				System.out.println("Server waiting for migration from server "+ipS);
+				System.out.println("Server " + ip + " waiting for migration from server "+ipS);
 			}
 			else {
 				iServer serverS = new Server(waitPlayers, ip);

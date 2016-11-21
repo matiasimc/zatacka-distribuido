@@ -2,7 +2,12 @@ package game;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-class CollisionException extends Exception {}
+class CollisionException extends Exception {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1067667527103670246L;}
 
 public class PositionMatrix {
 	/*

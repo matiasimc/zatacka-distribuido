@@ -9,7 +9,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.Line2D;
-import java.io.EOFException;
 import java.rmi.RemoteException;
 import java.rmi.UnmarshalException;
 import java.util.ArrayList;
@@ -21,6 +20,10 @@ import game.iPlayer;
 
 public class Board extends Canvas{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1642281734724797682L;
 	private Color headColor = Color.yellow;
 	public ClientGame cGame;
     public int width, height;

@@ -3,18 +3,19 @@ package ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.rmi.RemoteException;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class Window extends JFrame{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4948804788331042112L;
 	private int width;
     private int height;
     private Board tablero;
-    private String title;
     private Scores scores;
     
     public Window(String title, Board tablero, Scores scores) {
@@ -23,7 +24,6 @@ public class Window extends JFrame{
     	this.scores = scores;
     	this.width = tablero.width+scores.width+20;
     	this.height = tablero.height*105/100;
-    	this.title = title;
     	buildWindow();
     }
     
