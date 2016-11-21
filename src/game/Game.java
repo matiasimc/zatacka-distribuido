@@ -256,7 +256,7 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	}
 
 	@Override
-	public synchronized boolean isAlive(int clientId)  {
+	public synchronized boolean isAlive(int clientId) throws RemoteException {
 		return this.gettingPlayer(clientId).isAlive();
 	}
 
@@ -286,27 +286,27 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		return this.server;
 	}
 	
-	public PositionMatrix getPositionMatrix() {
+	public PositionMatrix getPositionMatrix() throws RemoteException{
 		return this.matrix;
 	}
 	
-	public HashMap<Integer, Boolean> getAskFrames() {
+	public HashMap<Integer, Boolean> getAskFrames() throws RemoteException{
 		return this.askFrames;
 	}
 	
-	public HashMap<Integer, iPlayer> getPlayers() {
+	public HashMap<Integer, iPlayer> getPlayers() throws RemoteException{
 		return this.players;
 	}
 	
-	public HashMap<Integer, iPlayer> getFuturePlayers() {
+	public HashMap<Integer, iPlayer> getFuturePlayers() throws RemoteException {
 		return this.futurePlayers;
 	}
 	
-	public int getVotes(){
+	public int getVotes() throws RemoteException{
 		return this.votes;
 	}
 	
-	public HashMap<Integer,iClientGame> getClientGames() {
+	public HashMap<Integer,iClientGame> getClientGames() throws RemoteException{
 		return this.gameThreads;
 	}
 }

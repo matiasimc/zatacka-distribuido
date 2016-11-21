@@ -15,68 +15,68 @@ public interface iGame extends Remote {
 
 	void startGame(ArrayList<iClient> clients) throws RemoteException ;
 
-	void addClient(int id, iClientGame clientGame);
+	void addClient(int id, iClientGame clientGame) throws RemoteException;
 
-	ArrayList<iPlayer> players() ;
+	ArrayList<iPlayer> players() throws RemoteException ;
 
-	iPlayer gettingPlayer(int id) ;
+	iPlayer gettingPlayer(int id) throws RemoteException;
 	
-	iPlayer newPlayer(int id) ;
+	iPlayer newPlayer(int id) throws RemoteException;
 	
-	public int getAlives() ;
+	public int getAlives() throws RemoteException;
 	
-	boolean checkCollision(int clientId) ;
+	boolean checkCollision(int clientId) throws RemoteException;
 	
-	int getHeight() ;
+	int getHeight() throws RemoteException;
 	
-	int getWidth() ;
+	int getWidth() throws RemoteException;
 	
-	void updateScores() ;
+	void updateScores() throws RemoteException ;
 	
-	void sortPlayers() ;
+	void sortPlayers() throws RemoteException;
 	
-	boolean isPlaying() ;
+	boolean isPlaying() throws RemoteException;
 	
 	public void addPlayer(iPlayer player) throws RemoteException ;
 	
 	public void voteNo() throws RemoteException ;
 
-	public void increaseFrames(int id) ;
+	public void increaseFrames(int id) throws RemoteException ;
 	
-	public int getFrames() ;
+	public int getFrames() throws RemoteException;
 	
-	public int getGrowRate() ;
+	public int getGrowRate() throws RemoteException ;
 	
-	public boolean isAlive(int clientId) ;
+	public boolean isAlive(int clientId) throws RemoteException;
 	
-	public void growUp(int clientId, boolean visibility) ;
+	public void growUp(int clientId, boolean visibility) throws RemoteException;
 	
-	public void moveDown(int clientId) ;
+	public void moveDown(int clientId) throws RemoteException ;
 	
-	public void moveUp(int clientId) ;
+	public void moveUp(int clientId) throws RemoteException;
 	
-	public HashSet<Integer> clientIds() ;
+	public HashSet<Integer> clientIds() throws RemoteException;
 	
-	public Point getHead(int clientId) ;
+	public Point getHead(int clientId) throws RemoteException;
 	
-	public ArrayList<Point> getBody(int clientId) ;
+	public ArrayList<Point> getBody(int clientId) throws RemoteException;
 	
-	public Color getColor(int clientId) ;
+	public Color getColor(int clientId) throws RemoteException;
 
 	//public ArrayList<iClientGame> getClientGames() ;
 	
-	public iServer getServer() ;
+	public iServer getServer() throws RemoteException;
 	
-	public PositionMatrix getPositionMatrix();
+	public PositionMatrix getPositionMatrix() throws RemoteException;
 	
-	public HashMap<Integer, Boolean> getAskFrames();
+	public HashMap<Integer, Boolean> getAskFrames() throws RemoteException;
 	
-	public HashMap<Integer, iPlayer> getPlayers();
+	public HashMap<Integer, iPlayer> getPlayers() throws RemoteException;
 	
-	public HashMap<Integer, iPlayer> getFuturePlayers(); 
+	public HashMap<Integer, iPlayer> getFuturePlayers() throws RemoteException; 
 	
-	public int getVotes();
+	public int getVotes() throws RemoteException;
 	
-	public HashMap<Integer,iClientGame> getClientGames();
+	public HashMap<Integer,iClientGame> getClientGames() throws RemoteException;
 
 }
