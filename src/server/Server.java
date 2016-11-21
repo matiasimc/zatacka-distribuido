@@ -58,6 +58,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 		for (iClient c: this.clients) {
 			c.setServer(newServer);
 		}
+		System.out.println("Migrated to "+newServer.getDir());
 	}
 	
 	public void setWaitPlayers(int w) throws RemoteException {
@@ -70,6 +71,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	
 	public void setClients(ArrayList<iClient> l) throws RemoteException {
 		this.clients = l;
+		System.out.println("Te migre desde "+this.getDir());
 	}
 	
 	public void setIdCounter(int id) throws RemoteException {
