@@ -98,7 +98,6 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 
                 
                 game.increaseFrames(id);
-                System.out.println(game.getFrames());
                 
                 
                 if (game.getFrames() == GROW_RATE && player.isAlive() && this.game.isPlaying()){
