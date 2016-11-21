@@ -28,7 +28,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
     private final static String TITLE = "Juego - CC5303";
 
     private final static int UPDATE_RATE = 30;
-    private final static int GROW_RATE = 2;
+    private int GROW_RATE;
     
     private int width;
     private int height;
@@ -46,7 +46,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 		this.height = game.getHeight();
 		this.voted = false;
 		this.started = false;
-		this.frames = 0;
+		this.GROW_RATE = game.getGrowRate();
     }
 	
     
@@ -97,10 +97,11 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 }
                 
                 
-                ++frames;
+                game.increaseFrames(id);
+                System.out.println(game.getFrames());
                 
                 
-                if (frames == GROW_RATE && player.isAlive() && this.game.isPlaying()){
+                if (game.getFrames() == GROW_RATE && player.isAlive() && this.game.isPlaying()){
                 	System.out.println("hola");
                 	if(!this.game.checkCollision(player)){
                 		if (skipFrames-- > 0){
@@ -109,11 +110,9 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                         	skipFrames = 0;
                             player.growUp(true);
                             if(ThreadLocalRandom.current().nextFloat() < 0.035){
-                            	System.out.println(skipFrames);
                                 skipFrames = ThreadLocalRandom.current().nextInt(2,4);
                             }
                         }
-                        frames = 0;
                     }
                 	else {
                 		System.out.print("Te moriste");
@@ -133,7 +132,6 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                     	System.out.println("Votaste no");
                     	this.game.voteNo();
                     }
-                	frames = 0;
                 }
                 
         	}
@@ -173,7 +171,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 	public void resetBuffer() throws RemoteException{
 		tablero.buffer = null;
 		tablero.setShow(false);
-		frames = 0;
+		//frames = 0;
 	}
 
 

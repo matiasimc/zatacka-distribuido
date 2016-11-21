@@ -67,12 +67,10 @@ public class Board extends Canvas{
     }
 
 
-	public void drawSnake(iPlayer player,Graphics graphics) throws RemoteException {
+	public void drawSnake(iPlayer player, Graphics graphics) throws RemoteException {
 		if (graphics == null) graphics = this.img.getGraphics();
 		ArrayList<Point> points = player.getBody();
 		Graphics2D g2 = (Graphics2D) graphics;
-		if (graphics == null) System.out.println("wat wea");
-		if (g2 == null) System.out.println("error incoming");
 		g2.setColor(player.getColor());
 		g2.setStroke(new BasicStroke(4));
 		

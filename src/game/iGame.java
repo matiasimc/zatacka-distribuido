@@ -12,7 +12,7 @@ public interface iGame extends Remote {
 
 	void startGame(ArrayList<iClient> clients) throws RemoteException;
 
-	void addClient(iClientGame clientGame)throws RemoteException;
+	void addClient(int id, iClientGame clientGame)throws RemoteException;
 
 	ArrayList<iPlayer> players() throws RemoteException;
 
@@ -36,6 +36,10 @@ public interface iGame extends Remote {
 	
 	public void voteNo() throws RemoteException;
 	
-	public ArrayList<iClientGame> getClientGames() throws RemoteException;
+	public void increaseFrames(int id) throws RemoteException;
+	
+	public int getFrames() throws RemoteException;
+	
+	public int getGrowRate() throws RemoteException;
 
 }

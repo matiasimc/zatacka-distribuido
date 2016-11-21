@@ -7,18 +7,27 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 
-import client.ClientGame;
 import client.iClient;
 import client.iClientGame;
 import server.iServer;
 
+class fHashMap extends HashMap<Integer, Boolean>{
+	@Override
+	public Boolean get(Object key) {
+		if (super.get(key)==null) return false;
+		else return super.get(key);
+	}
+}
 public class Game extends UnicastRemoteObject implements iGame{
 
 	private int height = 600;
 	private int width = 800;
+	private int growRate = 2; 
 	PositionMatrix matrix; 
-	public ArrayList<iClientGame> gameThreads;
+	private HashMap<Integer, iClientGame> gameThreads;
+	private fHashMap askFrames = new fHashMap();
 	ArrayList<iPlayer> players;
 	ArrayList<iPlayer> futurePlayers;
 	private int votes;
@@ -26,10 +35,11 @@ public class Game extends UnicastRemoteObject implements iGame{
 	static final Color[] colorList = {Color.red, Color.green, Color.pink, Color.blue, Color.orange};
 	private boolean playing;
 	private iServer server;
+	private int frames = 0;
 	
 	public Game() throws RemoteException {
 		players = new ArrayList<iPlayer>();
-		gameThreads = new ArrayList<iClientGame>();
+		gameThreads = new HashMap<Integer, iClientGame>();
 		matrix = new PositionMatrix(width, height);
 		playing = false;
 	}
@@ -78,7 +88,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 				playing = false;
 				votes = 0;
 				matrix = new PositionMatrix(height, width);
-				for (iClientGame cGame: gameThreads) cGame.resetVote();
+				for (iClientGame cGame: gameThreads.values()) cGame.resetVote();
 				for (iPlayer p: players()) p.resetBody();
 				futurePlayers = new ArrayList<iPlayer>();
 			}
@@ -87,9 +97,9 @@ public class Game extends UnicastRemoteObject implements iGame{
 	}
 	
 	@Override
-	public synchronized void addClient(iClientGame clientGame) throws RemoteException {
+	public synchronized void addClient(int id, iClientGame clientGame) throws RemoteException {
 ;
-		gameThreads.add(clientGame);
+		gameThreads.put(id, clientGame);
 		
 	}
 	
@@ -109,10 +119,10 @@ public class Game extends UnicastRemoteObject implements iGame{
 	
 	private synchronized void reset() throws RemoteException{
 		if (votes == players.size()){
-			for (iClientGame cgame: gameThreads) cgame.resetBuffer();
+			for (iClientGame cgame: gameThreads.values()) cgame.resetBuffer();
 			players = futurePlayers;
 			if (players.size() < 2) {
-				for (iClientGame cgame: gameThreads) {
+				for (iClientGame cgame: gameThreads.values()) {
 					System.out.println("Mate un cgame\n\n\n\n\n\n\n");
 					cgame.close();
 				}
@@ -170,12 +180,40 @@ public class Game extends UnicastRemoteObject implements iGame{
 		return matrix.getPlace();
 	}
 	
-	public synchronized ArrayList<iClientGame> getClientGames() throws RemoteException {
-		return this.gameThreads;
-	}
-	
 	private synchronized Color assignColor(int id){
 		return colorList[id];
+	}
+	public synchronized int getFrames() throws RemoteException{
+		return this.frames;
+	}
+	public synchronized void increaseFrames(int id) throws RemoteException{
+		boolean someoneask = false;
+		for(int id2 : gameThreads.keySet()){
+			if (askFrames.get(id2) == true){
+				someoneask = true;
+				break;
+			}
+		}
+		if (!someoneask) {
+			if (this.frames==this.growRate) this.frames = 1;
+			else this.frames++;
+		}
+		askFrames.put(id, true);
+		boolean allask = true;
+		for(int id2 : gameThreads.keySet()){
+			if (askFrames.get(id2) == false){
+				allask = false;
+				break;
+			}
+		}
+		if (allask){
+			for(int id2 : gameThreads.keySet()){
+				askFrames.put(id2, false);
+			}
+		}
+	}
+	public synchronized int getGrowRate() throws RemoteException{
+		return this.growRate;
 	}
 }
 	

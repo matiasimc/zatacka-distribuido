@@ -34,7 +34,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	public void addClient(iClient client) throws RemoteException{
 		this.clients.add(client);
 		client.getClientGame();
-		this.game.addClient(client.getClientGame());
+		this.game.addClient(client.getID(), client.getClientGame());
 		client.start();
 		if(this.clients.size()>=this.waitPlayers){
 			System.out.println("Comenzando juego...");
