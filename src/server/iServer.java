@@ -26,4 +26,5 @@ public interface iServer extends Remote {
 	public void setClients(ArrayList<iClient> l) throws RemoteException;
 	public void addServer(iServer server) throws RemoteException;
 	public String getDir() throws RemoteException;
+	public void migrate() throws RemoteException;
 }

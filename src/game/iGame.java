@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import client.iClient;
 import client.iClientGame;
+import server.iServer;
 
 public interface iGame extends Remote {
 
@@ -37,5 +38,9 @@ public interface iGame extends Remote {
 	public void voteNo() throws RemoteException;
 	
 	public ArrayList<iClientGame> getClientGames() throws RemoteException;
+	
+	public void setServer(iServer server) throws RemoteException;
+	
+	public iServer getServer() throws RemoteException;
 
 }

@@ -33,7 +33,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 		this.serverQueue.add(this);
 		this.myDir = myDir;
 		this.waitPlayers = waitPlayers;
-		this.game = new Game();
+		this.game = new Game(this);
 		this.clients = new ArrayList<iClient>();
 	}
 	
@@ -52,6 +52,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 		newServer.setQueue(this.serverQueue);
 		newServer.setIdCounter(this.id);
 		newServer.setWaitPlayers(this.waitPlayers);
+		this.game.setServer(newServer);
 		newServer.setGame(this.game);
 		newServer.setClients(this.clients);
 		for (iClient c: this.clients) {

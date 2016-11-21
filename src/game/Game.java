@@ -27,13 +27,22 @@ public class Game extends UnicastRemoteObject implements iGame{
 	private boolean playing;
 	private iServer server;
 	
-	public Game() throws RemoteException {
+	public Game(iServer server) throws RemoteException {
 		players = new ArrayList<iPlayer>();
 		gameThreads = new ArrayList<iClientGame>();
 		matrix = new PositionMatrix(width, height);
 		playing = false;
+		this.server = server;
 	}
 	
+	public iServer getServer() {
+		return server;
+	}
+
+	public void setServer(iServer server) {
+		this.server = server;
+	}
+
 	@Override
 	public synchronized void updateScores() throws RemoteException{
 		for (iPlayer p : players()){

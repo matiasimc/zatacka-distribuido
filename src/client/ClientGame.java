@@ -96,6 +96,10 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 	System.out.println("Abajo");
                 }
                 
+                if (keys[KeyEvent.VK_M]) {
+                	this.game.getServer().migrate();
+                }
+                
                 
                 ++frames;
                 
