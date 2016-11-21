@@ -97,7 +97,12 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 }
                 
                 if (keys[KeyEvent.VK_M]) {
-                	this.game.getServer().migrate();
+                	try{
+                		this.game.getServer().migrate();
+                	}
+                	catch (Exception e) {
+                		e.printStackTrace();
+                	}
                 }
                 
                 
