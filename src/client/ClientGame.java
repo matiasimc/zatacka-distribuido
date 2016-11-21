@@ -86,10 +86,21 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 if (keys[KeyEvent.VK_UP]) {
                 	this.game.moveUp(id);
                 	System.out.println("Arriba");
+                	System.out.println(this.game.getServer().getDir());
                 }
                 if (keys[KeyEvent.VK_DOWN]) {	
                 	this.game.moveDown(id);
                 	System.out.println("Abajo");
+                	System.out.println(this.game.getServer().getDir());
+                }
+                
+                if (keys[KeyEvent.VK_M]) {
+                	try{
+                		this.game.getServer().migrate();
+                	}
+                	catch (Exception e) {
+                		e.printStackTrace();
+                	}
                 }
                 
                 

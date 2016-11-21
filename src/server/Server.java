@@ -2,10 +2,13 @@ package server;
 
 
 import java.awt.Color;
+import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 import client.iClient;
 import game.Game;
@@ -19,16 +22,69 @@ public class Server extends UnicastRemoteObject implements iServer{
 	int id;
 	int waitPlayers;
 	private static final int maxPlayers = 5;
+	private LinkedList<iServer> serverQueue;
+	private String myDir;
 	
-	public Server(int waitPlayers) throws RemoteException{
-		game = new Game();
-		clients = new ArrayList<iClient>();
-		id=0;
+	public Server(String myDir) throws RemoteException {
+		this.myDir = myDir;
+	}
+	
+	public Server(int waitPlayers, String myDir) throws RemoteException {
+		this.setIdCounter(0);
+		this.serverQueue = new LinkedList<iServer>();
+		this.serverQueue.add(this);
+		this.myDir = myDir;
 		this.waitPlayers = waitPlayers;
+		this.game = new Game(this);
+		this.clients = new ArrayList<iClient>();
+	}
+	
+	public String getDir() throws RemoteException {
+		return myDir;
+	}
+	
+	public void addServer(iServer server) throws RemoteException {
+		this.serverQueue.add(server);
+		System.out.println("Server "+server.getDir()+" enqueued");
+	}
+	
+	public void migrate() throws RemoteException, MalformedURLException, NotBoundException {
+		this.serverQueue.removeFirst();
+		iServer newServer = serverQueue.peek();
+		newServer.setQueue(this.serverQueue);
+		newServer.setIdCounter(this.id);
+		newServer.setWaitPlayers(this.waitPlayers);
+		this.game.setServer(newServer);
+		newServer.setGame(this.game);
+		newServer.setClients(this.clients);
+		for (iClient c: this.clients) {
+			c.setServer(newServer);
+		}
+		System.out.println("Migrated to "+newServer.getDir());
+	}
+	
+	public void setWaitPlayers(int w) throws RemoteException {
+		this.waitPlayers = w;
+	}
+	
+	public void setGame(iGame g) throws RemoteException {
+		this.game = g;
+	}
+	
+	public void setClients(ArrayList<iClient> l) throws RemoteException {
+		this.clients = l;
+	}
+	
+	public void setIdCounter(int id) throws RemoteException {
+		this.id = id;
 	}
 	
 	public boolean canPlay() throws RemoteException{
 		return clients.size() < maxPlayers;
+	}
+	
+	public void setQueue(LinkedList<iServer> s) {
+		this.serverQueue = s;
 	}
 	
 	public void addClient(iClient client) throws RemoteException{

@@ -1,7 +1,8 @@
 package game;
 
-
 import java.awt.Color;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.HashSet;
 
 import client.iClient;
 import client.iClientGame;
+import server.iServer;
 
 public interface iGame extends Remote {
 
@@ -39,7 +41,7 @@ public interface iGame extends Remote {
 	public void addPlayer(iPlayer player) throws RemoteException;
 	
 	public void voteNo() throws RemoteException;
-	
+
 	public void increaseFrames(int id) throws RemoteException;
 	
 	public int getFrames() throws RemoteException;
@@ -61,5 +63,11 @@ public interface iGame extends Remote {
 	public ArrayList<Point> getBody(int clientId) throws RemoteException;
 	
 	public Color getColor(int clientId) throws RemoteException;
+
+	//public ArrayList<iClientGame> getClientGames() throws RemoteException;
+	
+	public void setServer(iServer server) throws MalformedURLException, RemoteException, NotBoundException;
+	
+	public iServer getServer() throws RemoteException;
 
 }
