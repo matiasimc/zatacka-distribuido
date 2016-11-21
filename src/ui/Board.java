@@ -9,10 +9,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.Line2D;
+import java.io.EOFException;
 import java.rmi.RemoteException;
+import java.rmi.UnmarshalException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 import client.ClientGame;
 import game.Point;
@@ -53,8 +53,8 @@ public class Board extends Canvas{
 
         // dibujar elementos del juego
         try {
-        	for(iPlayer player: this.cGame.gamePlayers()){
-            	drawSnake(player,buffer);
+        	for(int clientId: this.cGame.clientIds()){
+            	drawSnake(clientId);
         	}
         	if (!this.cGame.started || this.cGame.countdown > 0) showWaitingMessage();
         	if(show) showVotation (this.cGame.gamePlayers());
@@ -65,13 +65,19 @@ public class Board extends Canvas{
        
         graphics.drawImage(img, 0, 0, null);
     }
+    
 
-
-	public void drawSnake(iPlayer player, Graphics graphics) throws RemoteException {
-		if (graphics == null) graphics = this.img.getGraphics();
-		ArrayList<Point> points = player.getBody();
-		Graphics2D g2 = (Graphics2D) graphics;
-		g2.setColor(player.getColor());
+	public void drawSnake(int clientId) throws RemoteException {
+		if (this.buffer == null) this.buffer = this.img.getGraphics();
+		ArrayList<Point> points;
+		try{
+			points = this.cGame.getBody(clientId);
+		}
+		catch(UnmarshalException e){
+			return;
+		}
+		Graphics2D g2 = (Graphics2D) this.buffer;
+		g2.setColor(this.cGame.getColor(clientId));
 		g2.setStroke(new BasicStroke(4));
 		
 		
@@ -84,9 +90,9 @@ public class Board extends Canvas{
         	}
 		}
         if (len > 0){
-	        Point head = player.getHead();
-			graphics.setColor(headColor);
-			graphics.fillOval(head.x - Point.dHip/2, head.y - Point.dHip/2, 5, 5);
+	        Point head = this.cGame.getHead(clientId);
+			this.buffer.setColor(headColor);
+			this.buffer.fillOval(head.x - Point.dHip/2, head.y - Point.dHip/2, 5, 5);
         }
     }
 	

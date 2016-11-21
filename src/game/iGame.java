@@ -1,10 +1,11 @@
 package game;
 
 
+import java.awt.Color;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashSet;
 
 import client.iClient;
 import client.iClientGame;
@@ -52,5 +53,13 @@ public interface iGame extends Remote {
 	public void moveDown(int clientId) throws RemoteException;
 	
 	public void moveUp(int clientId) throws RemoteException;
+	
+	public HashSet<Integer> clientIds() throws RemoteException;
+	
+	public Point getHead(int clientId) throws RemoteException;
+	
+	public ArrayList<Point> getBody(int clientId) throws RemoteException;
+	
+	public Color getColor(int clientId) throws RemoteException;
 
 }

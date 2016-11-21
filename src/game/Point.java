@@ -2,7 +2,8 @@ package game;
 import java.io.Serializable;
 
 public class Point implements Serializable{
-    public int x,y;
+	private static final long serialVersionUID = 3263274068129421164L;
+	public int x,y;
     public boolean visible;
 
     public static final int dHip = 4;

@@ -1,11 +1,14 @@
 package client;
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.concurrent.ThreadLocalRandom;
 
+import game.Point;
 import game.iGame;
 import game.iPlayer;
 import ui.Board;
@@ -30,7 +33,6 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
     private Window window;
     private Board tablero;
     private boolean voted;
-    private int frames;
     private Scores scores;
     public volatile int countdown = 0;
     
@@ -181,6 +183,21 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 		return this.game.gettingPlayer(id);
 	}
 	
+	public synchronized ArrayList<Point> getBody(int clientId) throws RemoteException{
+		return this.game.getBody(clientId);
+	}
+	
+	public Point getHead(int clientId) throws RemoteException{
+		return this.game.getHead(clientId);
+	}
+	
+	public Color getColor(int clientId) throws RemoteException{
+		return this.game.getColor(clientId);
+	}
+	
+	public HashSet<Integer> clientIds() throws RemoteException{
+		return this.game.clientIds();
+	}
 }
 
 

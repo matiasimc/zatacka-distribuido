@@ -6,6 +6,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import client.iClient;
 import client.iClientGame;
@@ -218,13 +219,29 @@ public class Game extends UnicastRemoteObject implements iGame{
 	}
 
 	@Override
-	public boolean isAlive(int clientId) throws RemoteException {
+	public synchronized boolean isAlive(int clientId) throws RemoteException {
 		return this.gettingPlayer(clientId).isAlive();
 	}
 
 	@Override
-	public void growUp(int clientId, boolean visibility) throws RemoteException {
+	public synchronized void growUp(int clientId, boolean visibility) throws RemoteException {
 		this.gettingPlayer(clientId).growUp(visibility);
+	}
+	
+	public synchronized ArrayList<Point> getBody(int clientId) throws RemoteException{
+		return this.gettingPlayer(clientId).getBody();
+	}
+	
+	public synchronized Point getHead(int clientId) throws RemoteException{
+		return this.gettingPlayer(clientId).getHead();
+	}
+	
+	public synchronized HashSet<Integer> clientIds() throws RemoteException{
+		return new HashSet<Integer>(this.gameThreads.keySet());
+	}
+	
+	public synchronized Color getColor(int clientId) throws RemoteException{
+		return this.gettingPlayer(clientId).getColor();
 	}
 }
 	
