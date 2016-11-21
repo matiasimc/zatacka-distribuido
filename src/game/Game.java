@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 
 import client.iClient;
@@ -27,20 +25,22 @@ public class Game extends UnicastRemoteObject implements iGame{
 	private int growRate = 2; 
 	PositionMatrix matrix; 
 	private HashMap<Integer, iClientGame> gameThreads;
-	private fHashMap askFrames = new fHashMap();
-	ArrayList<iPlayer> players;
-	ArrayList<iPlayer> futurePlayers;
+	private fHashMap askFrames;
+	private HashMap<Integer, iPlayer> players;
+	private HashMap<Integer, iPlayer> futurePlayers;
 	private int votes;
 	static int numberOfPlayers = 5;
 	static final Color[] colorList = {Color.red, Color.green, Color.pink, Color.blue, Color.orange};
 	private boolean playing;
 	private iServer server;
-	private int frames = 0;
+	private int frames;
 	
 	public Game() throws RemoteException {
-		players = new ArrayList<iPlayer>();
+		players = new HashMap<Integer, iPlayer>();
 		gameThreads = new HashMap<Integer, iClientGame>();
 		matrix = new PositionMatrix(width, height);
+		askFrames = new fHashMap();
+		frames = 0;
 		playing = false;
 	}
 	
@@ -72,7 +72,8 @@ public class Game extends UnicastRemoteObject implements iGame{
 	}
 	
 	@Override
-	public synchronized boolean checkCollision(iPlayer player) throws RemoteException {
+	public synchronized boolean checkCollision(int clientId) throws RemoteException {
+		iPlayer player = gettingPlayer(clientId);
 		if (player.getBody().size() == 0) return false;
 		Point head = player.getHead();
 		try{
@@ -90,7 +91,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 				matrix = new PositionMatrix(height, width);
 				for (iClientGame cGame: gameThreads.values()) cGame.resetVote();
 				for (iPlayer p: players()) p.resetBody();
-				futurePlayers = new ArrayList<iPlayer>();
+				futurePlayers = new HashMap<Integer, iPlayer>();
 			}
 			return true;
 		}
@@ -105,7 +106,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 	
 	@Override
 	public synchronized void addPlayer(iPlayer p) throws RemoteException {
-		futurePlayers.add(p);
+		futurePlayers.put(p.getId()-1,p);
 		System.out.print("Agregado");
 		votes++;
 		reset();
@@ -128,7 +129,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 				}
 				System.exit(1);
 			}
-			for (iPlayer pl: players){
+			for (iPlayer pl: players.values()){
 				System.out.println("Revivido");
 				pl.revive(assignPoint());
 			}
@@ -139,16 +140,19 @@ public class Game extends UnicastRemoteObject implements iGame{
 	@Override
 	public synchronized ArrayList<iPlayer> players() throws RemoteException {
 
-		return this.players;
+		return new ArrayList<iPlayer>(this.players.values());
 	}
 
 	
 	public synchronized iPlayer gettingPlayer(int clientId) throws RemoteException {
-		iPlayer player = new Player(assignColor(clientId), assignPoint(), clientId + 1);
-		players.add(player);
-		return player;
+		return players.get(clientId);
 	}
 	
+	public synchronized iPlayer newPlayer(int clientId) throws RemoteException {
+		iPlayer player = new Player(assignColor(clientId), assignPoint(), clientId + 1);
+		players.put(clientId,player);
+		return player;
+	}
 	public synchronized int getAlives() throws RemoteException {
 		int n = 0;
 		for (iPlayer p: players()) {
@@ -158,7 +162,8 @@ public class Game extends UnicastRemoteObject implements iGame{
 	}
 
 	public synchronized void sortPlayers() throws RemoteException {
-		Collections.sort(this.players, new Comparator<iPlayer>() {
+		return;
+		/*Collections.sort(this.players, new Comparator<iPlayer>() {
 	        @Override
 	        public int compare(iPlayer p2, iPlayer p1)
 	        {
@@ -169,7 +174,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 	        		return 0;
 	        	}
 	        }	
-	    });
+	    });*/
 	}
 	
 	public synchronized boolean isPlaying() throws RemoteException {
@@ -214,6 +219,24 @@ public class Game extends UnicastRemoteObject implements iGame{
 	}
 	public synchronized int getGrowRate() throws RemoteException{
 		return this.growRate;
+	}
+	
+	public synchronized void moveUp(int clientId) throws RemoteException{
+		this.gettingPlayer(clientId).moveUp();
+	}
+	
+	public synchronized void moveDown(int clientId) throws RemoteException{
+		this.gettingPlayer(clientId).moveDown();
+	}
+
+	@Override
+	public boolean isAlive(int clientId) throws RemoteException {
+		return this.gettingPlayer(clientId).isAlive();
+	}
+
+	@Override
+	public void growUp(int clientId, boolean visibility) throws RemoteException {
+		this.gettingPlayer(clientId).growUp(visibility);
 	}
 }
 	

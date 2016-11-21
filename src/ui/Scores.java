@@ -7,6 +7,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import client.ClientGame;
 import game.iPlayer;
@@ -55,7 +56,7 @@ public class Scores extends Canvas {
 		int offset = 50;
 		for (iPlayer p: players){
 			String toDraw = "Player "+p.getId();
-			if (cGame.player.getId() == p.getId()) toDraw = toDraw+" (you)";
+			if (cGame.getPlayer().getId() == p.getId()) toDraw = toDraw+" (you)";
 			toDraw = toDraw + ": "+p.getScore();
 			buffer.setColor(p.getColor());
 			buffer.drawString(toDraw, 10, 100+offset);

@@ -27,7 +27,7 @@ public class Player extends UnicastRemoteObject implements iPlayer, Serializable
 	}
 	
 	@Override
-		public void moveUp() throws RemoteException {
+	public void moveUp() throws RemoteException {
         this.angle = (this.angle + 10) % 360;
     }
 

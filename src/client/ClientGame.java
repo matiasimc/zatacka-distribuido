@@ -4,11 +4,7 @@ import java.awt.event.KeyListener;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.concurrent.ThreadLocalRandom;
-
-import javax.swing.JFrame;
 
 import game.iGame;
 import game.iPlayer;
@@ -19,7 +15,6 @@ import ui.Window;
 public class ClientGame extends UnicastRemoteObject implements iClientGame {
 
 	public iGame game;
-	public iPlayer player;
 	public int id;
 	public boolean running;
 	public volatile boolean started;
@@ -52,9 +47,8 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
     
 	@Override
 	public void start() throws RemoteException {
-		player = this.game.gettingPlayer(id);
         keys = new boolean[KeyEvent.KEY_LAST];
-        
+        game.newPlayer(id);
         tablero = new Board(width, height, this);
         scores = new Scores(height, this);
         window = new Window(TITLE, tablero, scores);
@@ -88,11 +82,11 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
             if (started && countdown < 1) {
         		// Controles
                 if (keys[KeyEvent.VK_UP]) {
-                	player.moveUp();
+                	this.game.moveUp(id);
                 	System.out.println("Arriba");
                 }
                 if (keys[KeyEvent.VK_DOWN]) {	
-                	player.moveDown();
+                	this.game.moveDown(id);
                 	System.out.println("Abajo");
                 }
                 
@@ -100,14 +94,14 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 game.increaseFrames(id);
                 
                 
-                if (game.getFrames() == GROW_RATE && player.isAlive() && this.game.isPlaying()){
+                if (game.getFrames() == GROW_RATE && this.game.isAlive(id) && this.game.isPlaying()){
                 	System.out.println("hola");
-                	if(!this.game.checkCollision(player)){
+                	if(!this.game.checkCollision(id)){
                 		if (skipFrames-- > 0){
-                            player.growUp(false);
+                			this.game.growUp(id, false);
                         }else {
                         	skipFrames = 0;
-                            player.growUp(true);
+                        	this.game.growUp(id, true);
                             if(ThreadLocalRandom.current().nextFloat() < 0.035){
                                 skipFrames = ThreadLocalRandom.current().nextInt(2,4);
                             }
@@ -124,7 +118,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 	if (keys[KeyEvent.VK_Y]) {
                 		voted = true;
                     	System.out.println("Votaste si");
-                    	this.game.addPlayer(player);
+                    	this.game.addPlayer(this.game.gettingPlayer(id));
                     }
                     if (keys[KeyEvent.VK_N]) {
                     	voted = true;
@@ -181,6 +175,10 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 
 	public void setCountdown(int n) throws RemoteException {
 		this.countdown = n;
+	}
+	
+	public iPlayer getPlayer() throws RemoteException{
+		return this.game.gettingPlayer(id);
 	}
 	
 }

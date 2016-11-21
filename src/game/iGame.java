@@ -4,6 +4,7 @@ package game;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import client.iClient;
 import client.iClientGame;
@@ -18,9 +19,11 @@ public interface iGame extends Remote {
 
 	iPlayer gettingPlayer(int id) throws RemoteException;
 	
+	iPlayer newPlayer(int id) throws RemoteException;
+	
 	public int getAlives() throws RemoteException;
 	
-	boolean checkCollision(iPlayer player) throws RemoteException;
+	boolean checkCollision(int clientId) throws RemoteException;
 	
 	int getHeight() throws RemoteException;
 	
@@ -41,5 +44,13 @@ public interface iGame extends Remote {
 	public int getFrames() throws RemoteException;
 	
 	public int getGrowRate() throws RemoteException;
+	
+	public boolean isAlive(int clientId) throws RemoteException;
+	
+	public void growUp(int clientId, boolean visibility) throws RemoteException;
+	
+	public void moveDown(int clientId) throws RemoteException;
+	
+	public void moveUp(int clientId) throws RemoteException;
 
 }
