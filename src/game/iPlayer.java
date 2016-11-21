@@ -5,20 +5,21 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 
 
-public interface iPlayer extends Remote {
+public interface iPlayer {
 
-	Color getColor() throws RemoteException;
-	void moveUp() throws RemoteException;
-	void moveDown() throws RemoteException;
-	void growUp(boolean visibility) throws RemoteException;
-	ArrayList<Point> getBody() throws RemoteException;
-	Point getHead() throws RemoteException;
-	int getId() throws RemoteException;
-	boolean isAlive() throws RemoteException;
-	void die() throws RemoteException;
-	void addScore() throws RemoteException;
-	int getScore() throws RemoteException;
-	void resetBody() throws RemoteException;
-	void revive(Point p) throws RemoteException;
+	Color getColor();
+	void moveUp();
+	void moveDown();
+	void growUp(boolean visibility);
+	ArrayList<Point> getBody();
+	Point getHead();
+	int getId();
+	boolean isAlive();
+	void die();
+	void addScore();
+	int getScore();
+	void resetBody();
+	void revive(Point p);
+	int getAngle();
 
 }

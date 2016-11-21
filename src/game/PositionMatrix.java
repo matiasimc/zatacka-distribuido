@@ -24,6 +24,12 @@ public class PositionMatrix {
 		matrix = new int[Height][Width];
 	}
 	
+	public PositionMatrix(PositionMatrix m) {
+		this.Width = m.Width;
+		this.Height = m.Height;
+		matrix = m.matrix.clone();
+	}
+	
 	public int checkCircle(int cx, int cy, int r) throws CollisionException {
 		for (int i = cx-r; i < cx+r; i++) {
 			for (int j = cy-r; j < cy+r; j++) {
@@ -95,4 +101,5 @@ public class PositionMatrix {
 			}
 		}
 	}
+	
 }

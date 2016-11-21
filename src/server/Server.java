@@ -69,7 +69,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	}
 	
 	public void setGame(iGame g) throws RemoteException {
-		this.game = g;
+		this.game = new Game(this, g);
 	}
 	
 	public void setClients(ArrayList<iClient> l) throws RemoteException {

@@ -2,6 +2,7 @@ package game;
 
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -12,19 +13,7 @@ import client.iClient;
 import client.iClientGame;
 import server.iServer;
 
-class fHashMap extends HashMap<Integer, Boolean>{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -5928979478291137596L;
-
-	@Override
-	public Boolean get(Object key) {
-		if (super.get(key)==null) return false;
-		else return super.get(key);
-	}
-}
-public class Game extends UnicastRemoteObject implements iGame{
+public class Game extends UnicastRemoteObject implements iGame, Serializable{
 
 	/**
 	 * 
@@ -35,7 +24,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 	private int growRate = 2; 
 	PositionMatrix matrix; 
 	private HashMap<Integer, iClientGame> gameThreads;
-	private fHashMap askFrames;
+	private HashMap<Integer, Boolean> askFrames;
 	private HashMap<Integer, iPlayer> players;
 	private HashMap<Integer, iPlayer> futurePlayers;
 	private int votes;
@@ -45,18 +34,56 @@ public class Game extends UnicastRemoteObject implements iGame{
 	private int frames;
 	private iServer server;
 	
-	public Game(iServer server) throws RemoteException {
+	public Game(iServer server) throws RemoteException{
 		players = new HashMap<Integer, iPlayer>();
 		gameThreads = new HashMap<Integer, iClientGame>();
 		this.server = server;
 		matrix = new PositionMatrix(width, height);
-		askFrames = new fHashMap();
+		askFrames = new HashMap<Integer, Boolean>();
 		frames = 0;
 		playing = false;
 	}
 	
+	public Game(iServer server, iGame g) throws RemoteException {
+		this.server = server;
+		
+		HashMap<Integer, iClientGame> oClientGames = g.getClientGames();
+		HashMap<Integer, iPlayer> oPlayers = g.getPlayers();
+		HashMap<Integer, iPlayer> oFuture = g.getFuturePlayers();
+		PositionMatrix oMatrix = g.getPositionMatrix();
+		HashMap<Integer, Boolean> oAsk = g.getAskFrames();
+		
+		futurePlayers =new HashMap<Integer, iPlayer>();
+		players = new HashMap<Integer, iPlayer>();
+		matrix = new PositionMatrix(width, height);
+		askFrames = new HashMap<Integer, Boolean>();
+		gameThreads = new HashMap<Integer, iClientGame>();
+		
+		frames = g.getFrames();
+		playing = g.isPlaying();
+		votes = g.getVotes();
+		
+		for (Integer id: oPlayers.keySet()){
+			players.put(id, new Player(oPlayers.get(id))); //.clone()
+		}
+		
+		for (Integer id: oFuture.keySet()){
+			players.put(id, new Player(oFuture.get(id))); //.clone()
+		}
+		for (Integer id: oClientGames.keySet()){
+			gameThreads.put(id, oClientGames.get(id));
+		}
+		
+		matrix = new PositionMatrix(oMatrix);
+		
+		for (Integer id: oAsk.keySet()){
+			askFrames.put(id, oAsk.get(id));
+		}
+		
+	}
+
 	@Override
-	public synchronized void updateScores() throws RemoteException{
+	public synchronized void updateScores() {
 		for (iPlayer p : players()){
 			if (p.isAlive()) {
 				p.addScore();
@@ -64,7 +91,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 		}
 	}
 	@Override
-	public synchronized void startGame(ArrayList<iClient> clients) throws RemoteException {
+	public synchronized void startGame(ArrayList<iClient> clients) throws RemoteException  {
 		for (iClient client: clients){
 			client.getClientGame().setStarted(true);
 			client.getClientGame().setCountdown(90);
@@ -73,17 +100,17 @@ public class Game extends UnicastRemoteObject implements iGame{
 	}
 	
 	@Override
-	public int getHeight() throws RemoteException{
+	public int getHeight() {
 		return this.height;
 	}
 	
 	@Override
-	public int getWidth() throws RemoteException{
+	public int getWidth() {
 		return this.width;
 	}
 	
 	@Override
-	public synchronized boolean checkCollision(int clientId) throws RemoteException {
+	public synchronized boolean checkCollision(int clientId)  {
 		iPlayer player = gettingPlayer(clientId);
 		if (player.getBody().size() == 0) return false;
 		Point head = player.getHead();
@@ -97,7 +124,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 	}
 	
 	@Override
-	public synchronized void addClient(int id, iClientGame clientGame) throws RemoteException {
+	public synchronized void addClient(int id, iClientGame clientGame)  {
 ;
 		gameThreads.put(id, clientGame);
 		
@@ -137,22 +164,22 @@ public class Game extends UnicastRemoteObject implements iGame{
 	}
 	
 	@Override
-	public synchronized ArrayList<iPlayer> players() throws RemoteException {
+	public synchronized ArrayList<iPlayer> players()  {
 
 		return new ArrayList<iPlayer>(this.players.values());
 	}
 
 	
-	public synchronized iPlayer gettingPlayer(int clientId) throws RemoteException {
+	public synchronized iPlayer gettingPlayer(int clientId)  {
 		return players.get(clientId);
 	}
 	
-	public synchronized iPlayer newPlayer(int clientId) throws RemoteException {
+	public synchronized iPlayer newPlayer(int clientId)  {
 		iPlayer player = new Player(assignColor(clientId), assignPoint(), clientId + 1);
 		players.put(clientId,player);
 		return player;
 	}
-	public synchronized int getAlives() throws RemoteException {
+	public synchronized int getAlives()  {
 		int n = 0;
 		for (iPlayer p: players()) {
 			if (p.isAlive()) n++;
@@ -160,7 +187,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 		return n;
 	}
 
-	public synchronized void sortPlayers() throws RemoteException {
+	public synchronized void sortPlayers()  {
 		return;
 		/*Collections.sort(this.players, new Comparator<iPlayer>() {
 	        @Override
@@ -176,7 +203,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 	    });*/
 	}
 	
-	public synchronized boolean isPlaying() throws RemoteException {
+	public synchronized boolean isPlaying()  {
 		return this.playing;
 	}
 	private synchronized Point assignPoint() {
@@ -187,13 +214,13 @@ public class Game extends UnicastRemoteObject implements iGame{
 	private synchronized Color assignColor(int id){
 		return colorList[id];
 	}
-	public synchronized int getFrames() throws RemoteException{
+	public synchronized int getFrames() {
 		return this.frames;
 	}
-	public synchronized void increaseFrames(int id) throws RemoteException{
+	public synchronized void increaseFrames(int id) {
 		boolean someoneask = false;
 		for(int id2 : gameThreads.keySet()){
-			if (askFrames.get(id2) == true){
+			if (askFrames.get(id2)!=null && askFrames.get(id2) == true){
 				someoneask = true;
 				break;
 			}
@@ -205,7 +232,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 		askFrames.put(id, true);
 		boolean allask = true;
 		for(int id2 : gameThreads.keySet()){
-			if (askFrames.get(id2) == false){
+			if (askFrames.get(id2)==null || askFrames.get(id2) == false){
 				allask = false;
 				break;
 			}
@@ -216,47 +243,71 @@ public class Game extends UnicastRemoteObject implements iGame{
 			}
 		}
 	}
-	public synchronized int getGrowRate() throws RemoteException{
+	public synchronized int getGrowRate() {
 		return this.growRate;
 	}
 	
-	public synchronized void moveUp(int clientId) throws RemoteException{
+	public synchronized void moveUp(int clientId) {
 		this.gettingPlayer(clientId).moveUp();
 	}
 	
-	public synchronized void moveDown(int clientId) throws RemoteException{
+	public synchronized void moveDown(int clientId) {
 		this.gettingPlayer(clientId).moveDown();
 	}
 
 	@Override
-	public synchronized boolean isAlive(int clientId) throws RemoteException {
+	public synchronized boolean isAlive(int clientId)  {
 		return this.gettingPlayer(clientId).isAlive();
 	}
 
 	@Override
-	public synchronized void growUp(int clientId, boolean visibility) throws RemoteException {
+	public synchronized void growUp(int clientId, boolean visibility)  {
 		this.gettingPlayer(clientId).growUp(visibility);
 	}
 	
-	public synchronized ArrayList<Point> getBody(int clientId) throws RemoteException{
+	public synchronized ArrayList<Point> getBody(int clientId) {
 		return this.gettingPlayer(clientId).getBody();
 	}
 	
-	public synchronized Point getHead(int clientId) throws RemoteException{
+	public synchronized Point getHead(int clientId) {
 		return this.gettingPlayer(clientId).getHead();
 	}
 	
-	public synchronized HashSet<Integer> clientIds() throws RemoteException{
+	public synchronized HashSet<Integer> clientIds() {
 		return new HashSet<Integer>(this.gameThreads.keySet());
 	}
 	
-	public synchronized Color getColor(int clientId) throws RemoteException{
+	public synchronized Color getColor(int clientId) {
 		return this.gettingPlayer(clientId).getColor();
 	}
 
 	@Override
-	public iServer getServer() throws RemoteException {
+	public iServer getServer()  {
 		return this.server;
+	}
+	
+	public PositionMatrix getPositionMatrix() {
+		return this.matrix;
+	}
+	
+	public HashMap<Integer, Boolean> getAskFrames() {
+		return this.askFrames;
+	}
+	
+	public HashMap<Integer, iPlayer> getPlayers() {
+		return this.players;
+	}
+	
+	public HashMap<Integer, iPlayer> getFuturePlayers() {
+		return this.futurePlayers;
+	}
+	
+	public int getVotes(){
+		return this.votes;
+	}
+	
+	public HashMap<Integer,iClientGame> getClientGames() {
+		return this.gameThreads;
 	}
 }
 	
