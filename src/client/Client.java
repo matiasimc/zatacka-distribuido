@@ -19,6 +19,10 @@ public class Client extends UnicastRemoteObject implements iClient {
 
 	}
 	
+	public void setServer(iServer server) {
+		this.server = server;
+	}
+	
 	public iClientGame getClientGame() throws RemoteException{
 		return this.cGame;
 	}

@@ -3,6 +3,9 @@ package server;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Stack;
 
 import client.iClient;
 import game.iGame;
@@ -16,4 +19,11 @@ public interface iServer extends Remote {
 	public iGame getGame() throws RemoteException;
 	public int getIDClient() throws RemoteException;
 	public boolean canPlay() throws RemoteException;
+	public void setQueue(LinkedList<iServer> s) throws RemoteException;
+	public void setIdCounter(int id) throws RemoteException;
+	public void setWaitPlayers(int w) throws RemoteException;
+	public void setGame(iGame g) throws RemoteException;
+	public void setClients(ArrayList<iClient> l) throws RemoteException;
+	public void addServer(iServer server) throws RemoteException;
+	public String getDir() throws RemoteException;
 }

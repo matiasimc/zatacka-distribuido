@@ -20,7 +20,7 @@ for dir in ./*/ ; do
 	echo "Compiling in package $dir..."
 	javac "$dir"/*.java
 done
-if [ "$2" == "-n" ]
+if [ "$2" == "-n" ] || [ "$2" == "-s" ]
 then
 	java server.MainServer "$1" "$2" "$3"
 else
