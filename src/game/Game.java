@@ -46,7 +46,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 	public synchronized void startGame(ArrayList<iClient> clients) throws RemoteException {
 		for (iClient client: clients){
 			client.getClientGame().setStarted(true);
-			client.getClientGame().setCountdown(300);
+			client.getClientGame().setCountdown(90);
 		}
 		playing = true;
 	}
@@ -170,7 +170,7 @@ public class Game extends UnicastRemoteObject implements iGame{
 		return matrix.getPlace();
 	}
 	
-	public ArrayList<iClientGame> getClientGames() throws RemoteException {
+	public synchronized ArrayList<iClientGame> getClientGames() throws RemoteException {
 		return this.gameThreads;
 	}
 	
