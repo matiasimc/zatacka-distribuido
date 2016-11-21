@@ -2,6 +2,7 @@ package client;
 
 
 import java.net.MalformedURLException;
+import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -14,7 +15,7 @@ public interface iClient extends Remote {
 
 	int getID() throws RemoteException;
 	void start() throws RemoteException;
-	public void setServer(iServer server) throws MalformedURLException, RemoteException, NotBoundException;
+	public void setServer(iServer server) throws MalformedURLException, RemoteException, NotBoundException, AlreadyBoundException;
 
 
 }

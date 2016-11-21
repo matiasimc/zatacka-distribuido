@@ -2,6 +2,7 @@ package server;
 
 
 import java.net.MalformedURLException;
+import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -28,5 +29,5 @@ public interface iServer extends Remote {
 	public void setClients(ArrayList<iClient> l) throws RemoteException;
 	public void addServer(iServer server) throws RemoteException;
 	public String getDir() throws RemoteException;
-	public void migrate() throws RemoteException, MalformedURLException, NotBoundException;
+	public void migrate() throws RemoteException, MalformedURLException, NotBoundException, AlreadyBoundException;
 }

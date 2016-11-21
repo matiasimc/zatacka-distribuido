@@ -2,6 +2,7 @@ package game;
 
 
 import java.net.MalformedURLException;
+import java.rmi.AlreadyBoundException;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -41,7 +42,7 @@ public interface iGame extends Remote {
 	
 	public ArrayList<iClientGame> getClientGames() throws RemoteException;
 	
-	public void setServer(iServer server) throws MalformedURLException, RemoteException, NotBoundException;
+	public void setServer(iServer server) throws MalformedURLException, RemoteException, NotBoundException, AlreadyBoundException;
 	
 	public iServer getServer() throws RemoteException;
 

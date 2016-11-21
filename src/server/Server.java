@@ -3,6 +3,7 @@ package server;
 
 import java.awt.Color;
 import java.net.MalformedURLException;
+import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -48,7 +49,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 		System.out.println("Server "+server.getDir()+" enqueued");
 	}
 	
-	public void migrate() throws RemoteException, MalformedURLException, NotBoundException {
+	public void migrate() throws RemoteException, MalformedURLException, NotBoundException, AlreadyBoundException {
 		this.serverQueue.removeFirst();
 		iServer newServer = serverQueue.peek();
 		newServer.setQueue(this.serverQueue);

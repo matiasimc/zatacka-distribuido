@@ -3,6 +3,7 @@ package game;
 
 import java.awt.Color;
 import java.net.MalformedURLException;
+import java.rmi.AlreadyBoundException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -36,15 +37,16 @@ public class Game extends UnicastRemoteObject implements iGame{
 		matrix = new PositionMatrix(width, height);
 		playing = false;
 		this.server = server;
+		
 	}
 	
 	public iServer getServer() {
 		return server;
 	}
 
-	public void setServer(iServer server) throws MalformedURLException, RemoteException, NotBoundException {
+	public void setServer(iServer server) throws MalformedURLException, RemoteException, NotBoundException, AlreadyBoundException {
 		this.server = server;
-		this.server = (iServer) Naming.lookup("rmi://"+server.getDir()+":1099/ABC");
+		Naming.bind("rmi://"+server.getDir()+":1099/ABC", this.server);
 	}
 
 	@Override
@@ -141,7 +143,6 @@ public class Game extends UnicastRemoteObject implements iGame{
 	
 	@Override
 	public synchronized ArrayList<iPlayer> players() throws RemoteException {
-
 		return this.players;
 	}
 
