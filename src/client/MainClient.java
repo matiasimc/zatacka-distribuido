@@ -22,6 +22,7 @@ public class MainClient {
 			
 			
 		}catch(Exception e){
+			System.out.println("aca mori");
 			e.printStackTrace();
 		}
 	}	

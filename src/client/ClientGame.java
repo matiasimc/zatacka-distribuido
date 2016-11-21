@@ -1,7 +1,7 @@
 package client;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.KeyListener;import java.nio.file.WatchService;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -40,6 +40,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
     private boolean voted;
     private Scores scores;
     public volatile int countdown = 0;
+    private String changed = "no";
     
     public ClientGame(iClient client, iGame game, int id) throws RemoteException{
     	this.client = client;
@@ -157,6 +158,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 	
 	@Override
 	public void close() throws RemoteException {
+		System.out.println("hice close");
 		System.exit(1);
 	}
 	@Override
@@ -218,6 +220,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 	
 	public void setGame(iGame game){
 		this.game = game;
+		this.changed = "yes";
 	}
 }
 

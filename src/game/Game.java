@@ -2,6 +2,7 @@ package game;
 
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ class fHashMap extends HashMap<Integer, Boolean>{
 		else return super.get(key);
 	}
 }
-public class Game extends UnicastRemoteObject implements iGame{
+public class Game extends UnicastRemoteObject implements iGame, Serializable{
 
 	/**
 	 * 

@@ -22,8 +22,8 @@ for dir in ./*/ ; do
 done
 if [ "$2" == "-n" ] || [ "$2" == "-s" ]
 then
-	java server.MainServer "$1" "$2" "$3"
+	java -Djava.rmi.server.hostname="$1" server.MainServer "$1" "$2" "$3"
 else
-	java server.MainServer "$1"
+	java -Djava.rmi.server.hostname="$1" server.MainServer "$1"
 fi
 ctrl_c

@@ -31,7 +31,6 @@ public class Client extends UnicastRemoteObject implements iClient {
 		this.server = (iServer) Naming.lookup("rmi://"+server.getDir()+":1099/ABC");
 		System.out.println("esta deberia ser "+server.getDir());
 		System.out.println("esta es "+this.server.getDir());
-		System.exit(1);
 		this.cGame.setGame(this.server.getGame());
 	}
 	
@@ -45,7 +44,6 @@ public class Client extends UnicastRemoteObject implements iClient {
 				try {
 					cGame.start();
 				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
