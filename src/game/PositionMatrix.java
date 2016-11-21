@@ -1,4 +1,5 @@
 package game;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -9,7 +10,7 @@ class CollisionException extends Exception {
 	 */
 	private static final long serialVersionUID = 1067667527103670246L;}
 
-public class PositionMatrix {
+public class PositionMatrix implements Serializable {
 	/*
 	 * matrix[x][y] = clientID indica si un cliente paso
 	 * por esa posicion, y 0 si no ha pasado nadie
