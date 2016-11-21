@@ -1,12 +1,13 @@
 package game;
 import java.awt.Color;
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 
-public class Player extends UnicastRemoteObject implements iPlayer{
+public class Player extends UnicastRemoteObject implements iPlayer, Serializable{
 	public int angle;
 	private int id;
 	public Color color;
@@ -50,12 +51,12 @@ public class Player extends UnicastRemoteObject implements iPlayer{
 	}
 
 	
-	public ArrayList<Point> getBody() throws RemoteException {
+	public synchronized ArrayList<Point> getBody() throws RemoteException {
 		return this.body;
 	}
 	
 	@Override
-	public Point getHead() throws RemoteException {
+	public synchronized Point getHead() throws RemoteException {
 		return this.body.get(this.body.size() - 1);
 	}
 	
