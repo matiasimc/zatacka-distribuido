@@ -1,6 +1,9 @@
 package client;
 
 
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -19,8 +22,9 @@ public class Client extends UnicastRemoteObject implements iClient {
 
 	}
 	
-	public void setServer(iServer server) {
+	public void setServer(iServer server) throws MalformedURLException, RemoteException, NotBoundException {
 		this.server = server;
+		this.server = (iServer) Naming.lookup("rmi://"+server.getDir()+":1099/ABC");
 	}
 	
 	public iClientGame getClientGame() throws RemoteException{

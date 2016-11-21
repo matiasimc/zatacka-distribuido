@@ -2,6 +2,9 @@ package game;
 
 
 import java.awt.Color;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -39,8 +42,9 @@ public class Game extends UnicastRemoteObject implements iGame{
 		return server;
 	}
 
-	public void setServer(iServer server) {
+	public void setServer(iServer server) throws MalformedURLException, RemoteException, NotBoundException {
 		this.server = server;
+		this.server = (iServer) Naming.lookup("rmi://"+server.getDir()+":1099/ABC");
 	}
 
 	@Override

@@ -71,7 +71,6 @@ public class Server extends UnicastRemoteObject implements iServer{
 	
 	public void setClients(ArrayList<iClient> l) throws RemoteException {
 		this.clients = l;
-		System.out.println("Te migre desde "+this.getDir());
 	}
 	
 	public void setIdCounter(int id) throws RemoteException {
