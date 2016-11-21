@@ -111,7 +111,7 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	}
 	
 	@Override
-	public synchronized boolean checkCollision(int clientId)  {
+	public synchronized boolean checkCollision(int clientId) throws RemoteException{
 		iPlayer player = gettingPlayer(clientId);
 		if (player.getBody().size() == 0) return false;
 		Point head = player.getHead();
@@ -120,7 +120,19 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 			return false;
 		}
 		catch (CollisionException e) {
-			return false;
+			matrix.deletePlayer(player.getBody(), player.getId());
+			player.die();
+			updateScores();
+			if (getAlives() == 1){
+				sortPlayers();
+				playing = false;
+				votes = 0;
+				matrix = new PositionMatrix(height, width);
+				for (iClientGame cGame: gameThreads.values()) cGame.resetVote();
+				for (iPlayer p: players()) p.resetBody();
+				futurePlayers = new HashMap<Integer, iPlayer>();
+			}
+			return true;
 		}
 	}
 	

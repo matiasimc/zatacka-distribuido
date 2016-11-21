@@ -27,6 +27,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	private LinkedList<iServer> serverQueue;
 	private String myDir;
 	
+	
 	public Server(String myDir) throws RemoteException {
 		this.myDir = myDir;
 	}
@@ -61,6 +62,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 				c.setServer(newServer);
 			}
 			System.out.println("Migrated to "+newServer.getDir());
+			newServer.printMigrate();
 		}
 	}
 	
@@ -123,6 +125,14 @@ public class Server extends UnicastRemoteObject implements iServer{
 		int idGived= id;
 		id++;
 		return idGived;
+	}
+	
+	public double getUsage(){
+		return 2;
+	}
+	
+	public void printMigrate(){
+		System.out.println("Soy el nuevo server");
 	}
 }
 

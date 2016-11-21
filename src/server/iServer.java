@@ -14,7 +14,6 @@ import game.iGame;
 public interface iServer extends Remote {
 	
 	public void addClient(iClient client) throws RemoteException;
-	//public void removeClient(IClient client);
 	public void ready(iClient client) throws RemoteException;
 	public void gettingInformation(iClient client) throws RemoteException;
 	public iGame getGame() throws RemoteException;
@@ -28,4 +27,5 @@ public interface iServer extends Remote {
 	public void addServer(iServer server) throws RemoteException;
 	public String getDir() throws RemoteException;
 	public void migrate() throws RemoteException, MalformedURLException, NotBoundException;
+	public void printMigrate() throws RemoteException;
 }
