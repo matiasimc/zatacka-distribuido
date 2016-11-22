@@ -33,9 +33,8 @@ public class Server extends UnicastRemoteObject implements iServer{
 	int waitPlayers;
 	boolean started;
 	boolean soyelmain;
-	HashMap<Integer, String> carga;
 	private static final int maxPlayers = 5;
-	private static final int cap = 65;
+	private static final int cap = 75;
 	private LinkedList<iServer> serverQueue;
 	private String myDir;
 	
@@ -43,17 +42,13 @@ public class Server extends UnicastRemoteObject implements iServer{
 	public Server(String myDir) throws RemoteException {
 		this.myDir = myDir;
 		soyelmain = false;
-		carga = new HashMap<Integer, String>();
 		new Thread() {
 			public void run() {
 				try {
 					while(true){
-						if (soyelmain) {
-							System.out.println(getUsage());
-							carga.put(carga.size()+1, "perrin");
-						}
+						if (soyelmain) System.out.println(getUsage());
 						if (soyelmain && getUsage()>=cap) migrate();
-						Thread.sleep(2000);
+						Thread.sleep(100);
 					}
 				} catch (Exception e) {
 					System.out.println("falle en thread de server");
@@ -73,17 +68,13 @@ public class Server extends UnicastRemoteObject implements iServer{
 		this.game = new Game(this);
 		this.clients = new HashMap<Integer, iClient>();
 		this.soyelmain = true;
-		carga = new HashMap<Integer, String>();
 		new Thread() {
 			public void run() {
 				try {
 					while(true){
-						if (soyelmain) {
-							System.out.println(getUsage());
-							carga.put(carga.size()+1, "perrin");
-						}
+						if (soyelmain) System.out.println(getUsage());
 						if (soyelmain && getUsage()>=cap) migrate();
-						Thread.sleep(2000);
+						Thread.sleep(100);
 					}
 				} catch (Exception e) {
 					System.out.println("falle en thread de server");
@@ -107,7 +98,6 @@ public class Server extends UnicastRemoteObject implements iServer{
 			iServer newServer = this.getNew();
 			newServer.setMain(true);
 			this.soyelmain = false;
-			this.carga = new HashMap<Integer, String>();
 			newServer.setStarted(this.started);
 			newServer.setQueue(this.serverQueue);
 			newServer.setIdCounter(this.id);
@@ -225,16 +215,5 @@ public class Server extends UnicastRemoteObject implements iServer{
 	public synchronized void removeClient(int clientId) throws RemoteException{
 		clients.remove(clientId);
 	}
-	
-	@Override
-	public void load() throws RemoteException{
-		new Thread() {
-			public void run() {
-				HashMap<Integer,Integer> map = new HashMap<Integer,Integer>();
-				for(int i = 0; i< 1000000000; i++){
-					map.put(i, i);
-				}
-			}
-		}.start();
-	}
+
 }
