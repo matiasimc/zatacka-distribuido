@@ -18,12 +18,12 @@ cd src
 rmiregistry &
 for dir in ./*/ ; do
 	echo "Compiling in package $dir..."
-	javac "$dir"/*.java
+	javac -cp ".:sigar.jar" "$dir"/*.java
 done
 if [ "$2" == "-n" ] || [ "$2" == "-s" ]
 then
-	java server.MainServer "$1" "$2" "$3"
+	java -cp ".:sigar.jar:" server.MainServer "$1" "$2" "$3"
 else
-	java server.MainServer "$1"
+	java -cp ".:sigar.jar:" server.MainServer "$1"
 fi
 ctrl_c

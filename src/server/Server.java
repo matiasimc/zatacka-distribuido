@@ -12,6 +12,11 @@ import client.iClient;
 import game.Game;
 import game.iGame;
 
+import org.hyperic.sigar.Mem;
+import org.hyperic.sigar.Sigar;
+import org.hyperic.sigar.SigarException;
+
+
 public class Server extends UnicastRemoteObject implements iServer{
 
 
@@ -19,6 +24,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	 * 
 	 */
 	private static final long serialVersionUID = -5827401619662767775L;
+	private Sigar sigar = new Sigar();
 	iGame game;
 	HashMap<Integer, iClient> clients;
 	int id;
@@ -141,7 +147,13 @@ public class Server extends UnicastRemoteObject implements iServer{
 	}
 	
 	public double getUsage(){
-		return 2;
+		Mem mem = null;
+        try {
+            mem = sigar.getMem();
+        } catch (SigarException se) {
+            se.printStackTrace();
+        }
+        return mem.getUsedPercent();
 	}
 	
 	public void printMigrate(){
