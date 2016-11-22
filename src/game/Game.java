@@ -40,7 +40,7 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		gameThreads = new HashMap<Integer, iClientGame>();
 		colors = new HashMap<Color, Boolean>();
 		this.server = server;
-		matrix = new PositionMatrix(width, height);
+		matrix = new PositionMatrix(height, width);
 		askFrames = new HashMap<Integer, Boolean>();
 		futurePlayers = new HashMap<Integer, iPlayer>();
 		frames = 0;
