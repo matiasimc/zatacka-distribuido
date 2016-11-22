@@ -46,9 +46,8 @@ public class Server extends UnicastRemoteObject implements iServer{
 			public void run() {
 				try {
 					while(true){
-						if (soyelmain) System.out.println(getUsage());
-						if (soyelmain && getUsage()>=cap) migrate();
-						Thread.sleep(100);
+						//if (soyelmain) System.out.println(getUsage());
+						if (soyelmain && getUsage()>=cap) migrate();	
 					}
 				} catch (Exception e) {
 					System.out.println("falle en thread de server");
@@ -72,9 +71,8 @@ public class Server extends UnicastRemoteObject implements iServer{
 			public void run() {
 				try {
 					while(true){
-						if (soyelmain) System.out.println(getUsage());
+						//if (soyelmain) System.out.println(getUsage());
 						if (soyelmain && getUsage()>=cap) migrate();
-						Thread.sleep(100);
 					}
 				} catch (Exception e) {
 					System.out.println("falle en thread de server");

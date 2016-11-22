@@ -93,7 +93,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
             }
             
             if (keys[KeyEvent.VK_Q]) {
-            	if (started && this.game.isPlaying()) this.game.forceCollision(id);
+            	if (started && this.game.isPlaying() && countdown > 0) this.game.forceCollision(id);
             	this.game.removeClient(id);
             }
             
