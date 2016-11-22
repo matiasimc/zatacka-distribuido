@@ -30,4 +30,6 @@ public interface iServer extends Remote {
 	public void migrate() throws RemoteException, MalformedURLException, NotBoundException;
 	public void printMigrate() throws RemoteException;
 	public void removeClient(int clientId) throws RemoteException;
+	public void setMain(boolean b) throws RemoteException;
+	public boolean getMain() throws RemoteException;
 }

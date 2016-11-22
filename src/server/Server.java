@@ -8,6 +8,8 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import javax.print.attribute.standard.Severity;
+
 import client.iClient;
 import game.Game;
 import game.iGame;
@@ -30,6 +32,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	int id;
 	int waitPlayers;
 	boolean started;
+	boolean soyelmain;
 	private static final int maxPlayers = 5;
 	private LinkedList<iServer> serverQueue;
 	private String myDir;
@@ -37,16 +40,19 @@ public class Server extends UnicastRemoteObject implements iServer{
 	
 	public Server(String myDir) throws RemoteException {
 		this.myDir = myDir;
+		soyelmain = false;
 	}
 	
 	public Server(int waitPlayers, String myDir) throws RemoteException {
 		this.setIdCounter(0);
 		this.started = false;
 		this.serverQueue = new LinkedList<iServer>();
+		this.serverQueue.add(this);
 		this.myDir = myDir;
 		this.waitPlayers = waitPlayers;
 		this.game = new Game(this);
 		this.clients = new HashMap<Integer, iClient>();
+		this.soyelmain = true;
 	}
 	
 	public String getDir() throws RemoteException {
@@ -59,8 +65,10 @@ public class Server extends UnicastRemoteObject implements iServer{
 	}
 	
 	public void migrate() throws RemoteException, MalformedURLException, NotBoundException {
-		if(!this.serverQueue.isEmpty()){
-			iServer newServer = this.serverQueue.removeFirst();
+		if(this.serverQueue.size()>1){
+			iServer newServer = this.getNew();
+			newServer.setMain(true);
+			this.soyelmain = false;
 			newServer.setStarted(this.started);
 			newServer.setQueue(this.serverQueue);
 			newServer.setIdCounter(this.id);
@@ -75,6 +83,13 @@ public class Server extends UnicastRemoteObject implements iServer{
 		}
 	}
 	
+	private iServer getNew() throws RemoteException {
+		for (iServer server: serverQueue){
+			if (!server.getMain()) return server;
+		}
+		return this;
+	}
+
 	public void setWaitPlayers(int w) throws RemoteException {
 		this.waitPlayers = w;
 	}
@@ -100,7 +115,15 @@ public class Server extends UnicastRemoteObject implements iServer{
 	}
 	
 	public void setStarted(boolean b){
-		started = b;
+		this.started = b;
+	}
+	
+	public void setMain(boolean b){
+		this.soyelmain = b;
+	}
+	
+	public boolean getMain(){
+		return this.soyelmain;
 	}
 	
 	public void addClient(iClient client) throws RemoteException{
