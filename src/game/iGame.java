@@ -78,6 +78,8 @@ public interface iGame extends Remote {
 	
 	public HashMap<Color, Boolean> getColors() throws RemoteException;
 	
+	public void forceCollision(int clientId) throws RemoteException;
+	
 	//public int getMaxVotes() throws RemoteException;
 
 }

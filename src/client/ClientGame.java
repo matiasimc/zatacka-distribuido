@@ -93,6 +93,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
             }
             
             if (keys[KeyEvent.VK_Q]) {
+            	this.game.forceCollision(id);
             	this.game.removeClient(id);
             }
             ////

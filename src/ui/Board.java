@@ -90,7 +90,7 @@ public class Board extends Canvas{
 	        if (len > 0){
 		        Point head = this.cGame.getHead(clientId);
 				this.buffer.setColor(headColor);
-				this.buffer.fillOval(head.x - Point.dHip/2, head.y - Point.dHip/2, 5, 5);
+				this.buffer.fillOval(head.x - Point.dHip/2, head.y - Point.dHip/2, Point.dHip+1, Point.dHip+1);
 	        }
 		}
 		catch (Exception e){

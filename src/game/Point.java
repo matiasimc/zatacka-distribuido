@@ -6,7 +6,7 @@ public class Point implements Serializable{
 	public int x,y;
     public boolean visible;
 
-    public static final int dHip = 4;
+    public static final int dHip = 6;
 
     public Point(int x, int y) {
         this.x = x;
