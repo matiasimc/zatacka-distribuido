@@ -92,9 +92,14 @@ public class Server extends UnicastRemoteObject implements iServer{
 	}
 	
 	public void migrate() throws RemoteException, MalformedURLException, NotBoundException {
+		System.out.println("Llamaron a migrar");
 		if(this.serverQueue.size()>1){
+			System.out.println("Migrando");
 			iServer newServer = this.getNew();
-			if (newServer == this) return;
+			if (newServer == this) {
+				System.out.println("Fuiste elegido nuevamente");
+				return;
+			}
 			this.soyelmain = false;
 			newServer.setMain(true);
 			newServer.setStarted(this.started);
