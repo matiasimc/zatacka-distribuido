@@ -23,7 +23,7 @@ public class Window extends JFrame{
     	this.tablero = tablero;
     	this.scores = scores;
     	this.width = tablero.width+scores.width+20;
-    	this.height = tablero.height*105/100;
+    	this.height = tablero.height*108/100;
     	buildWindow();
     }
     
