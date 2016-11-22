@@ -122,8 +122,13 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	public synchronized void forceCollision(int clientId) throws RemoteException {
 		System.out.println("forzando");
 		iPlayer player = gettingPlayer(clientId);
-		matrix.deletePlayer(player.getBody(), player.getId());
-		player.die();
+		try {
+			matrix.deletePlayer(player.getBody(), player.getId());
+			player.die();
+		}
+		catch(NullPointerException e){
+			;
+		}
 		updateScores();
 		if (getAlives() == 1){
 			playing = false;
