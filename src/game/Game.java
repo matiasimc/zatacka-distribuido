@@ -191,7 +191,7 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 
 	@Override
 	public synchronized void voteNo(int clientId) throws RemoteException {
-		removeClient(clientId);
+		removeClient(clientId, false);
 		reset();
 	}
 	
@@ -204,7 +204,7 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		return this.paused;
 	}
 	
-	public synchronized void removeClient(int clientId) throws RemoteException{
+	public synchronized void removeClient(int clientId, boolean migrate) throws RemoteException{
 		colors.put(players.remove(clientId).getColor(),false);
 		server.removeClient(clientId);
 		gameThreads.remove(clientId).close();
@@ -215,6 +215,12 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 			}
 			System.out.println("cerrandome");
 			System.exit(1);
+		}
+		if (migrate) try{
+			this.server.migrate();
+		}
+		catch(Exception e){
+			System.out.println(e.toString());
 		}
 	}
 	private synchronized void reset() throws RemoteException{
