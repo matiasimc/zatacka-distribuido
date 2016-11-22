@@ -33,6 +33,7 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	private boolean playing;
 	private int frames;
 	private iServer server;
+	private boolean paused;
 	
 	public Game(iServer server) throws RemoteException{
 		players = new HashMap<Integer, iPlayer>();
@@ -46,6 +47,7 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		votes = 0;
 		//maxVotes = 0;
 		playing = false;
+		paused = false;
 	}
 	
 	public Game(iServer server, iGame g) throws RemoteException {
@@ -130,6 +132,11 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	}
 	
 	@Override
+	public synchronized void setCountdown(int time) throws RemoteException {
+		for (iClientGame cGame: gameThreads.values()) cGame.setCountdown(time);
+	}
+	
+	@Override
 	public synchronized boolean checkCollision(int clientId) throws RemoteException{
 		iPlayer player = gettingPlayer(clientId);
 		if (player.getBody().size() == 0) return false;
@@ -176,6 +183,15 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	public synchronized void voteNo(int clientId) throws RemoteException {
 		removeClient(clientId);
 		reset();
+	}
+	
+	public synchronized void setPaused(boolean p) throws RemoteException {
+		this.paused = p;
+	}
+	
+	
+	public synchronized boolean getPaused() throws RemoteException {
+		return this.paused;
 	}
 	
 	public synchronized void removeClient(int clientId) throws RemoteException{
@@ -235,6 +251,9 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	
 	public synchronized boolean isPlaying()  {
 		return this.playing;
+	}
+	public synchronized void setPlaying(boolean p)  {
+		this.playing = false;
 	}
 	private synchronized Point assignPoint() {
 		return matrix.getPlace();

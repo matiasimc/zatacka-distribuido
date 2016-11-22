@@ -4,7 +4,9 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.UnmarshalException;
 import java.util.ArrayList;
@@ -25,8 +27,18 @@ public class Scores extends Canvas {
 	private ClientGame cGame;
 	private Image img;
     private Graphics buffer;
+    private Font cf;
 	
 	public Scores(int height, ClientGame cGame) {
+		try {
+			cf = Font.createFont(Font.TRUETYPE_FONT, new File("IndieFlower.ttf"));
+			cf = cf.deriveFont(20.0f);
+		     GraphicsEnvironment ge = 
+		         GraphicsEnvironment.getLocalGraphicsEnvironment();
+		     ge.registerFont(cf);
+		} catch (Exception e) {
+		     //Handle exception
+		}
 		this.height = height;
 		this.cGame = cGame;
 		this.setSize(width, height);
@@ -56,7 +68,7 @@ public class Scores extends Canvas {
 	private void showScores(ArrayList<iPlayer> players) throws RemoteException{
 		if (this.buffer == null) this.buffer = this.img.getGraphics()	;
 		buffer.setColor(Color.WHITE);
-		buffer.setFont(new Font("Impact", Font.PLAIN, 20));
+		buffer.setFont(cf);
 		buffer.drawString("Puntajes:" , 10 , 100);
 		int offset = 50;
 		Collections.sort(players, new Comparator<iPlayer>() {
@@ -75,6 +87,9 @@ public class Scores extends Canvas {
 				buffer.drawString(toDraw, 10, 100+offset);
 				offset += 50;
 			}
+			buffer.setColor(Color.WHITE);
+			buffer.drawString("Pause: SPACE", 10, 500);
+			buffer.drawString("Close: Q", 10, 550);
 		}
 		catch(UnmarshalException e){
 			return;

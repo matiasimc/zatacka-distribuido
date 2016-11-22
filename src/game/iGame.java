@@ -72,6 +72,8 @@ public interface iGame extends Remote {
 	
 	public HashMap<Integer, iPlayer> getFuturePlayers() throws RemoteException; 
 	
+	public void setPlaying(boolean p) throws RemoteException;
+	
 	public int getVotes() throws RemoteException;
 	
 	public HashMap<Integer,iClientGame> getClientGames() throws RemoteException;
@@ -79,6 +81,12 @@ public interface iGame extends Remote {
 	public HashMap<Color, Boolean> getColors() throws RemoteException;
 	
 	public void forceCollision(int clientId) throws RemoteException;
+	
+	public void setPaused(boolean p) throws RemoteException;
+	
+	public boolean getPaused() throws RemoteException;
+	
+	public void setCountdown(int time) throws RemoteException;
 	
 	//public int getMaxVotes() throws RemoteException;
 

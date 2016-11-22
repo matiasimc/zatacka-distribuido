@@ -60,6 +60,7 @@ public class Board extends Canvas{
             	drawSnake(clientId);
         	}
         	if (!this.cGame.started || (this.cGame.started && this.cGame.game.isPlaying() && this.cGame.countdown>0)) showWaitingMessage();
+        	if (this.cGame.game.getPaused()) showPausedMessage();
         	if(show) showVotation();
 		} catch (RemoteException e) {
 			e.printStackTrace();
@@ -97,6 +98,18 @@ public class Board extends Canvas{
 			return;
 		}
     }
+	
+	private void showPausedMessage() {
+		try{
+			if (this.buffer == null) this.buffer = this.img.getGraphics();
+			buffer.setColor(Color.WHITE);
+			buffer.setFont(new Font("Impact", Font.PLAIN, 20));
+			buffer.drawString("Paused, press P to continue", 10, 550);
+		}
+		catch(Exception e){
+			return;
+		}
+	}
 	
 	private void showWaitingMessage() {
 		try{
