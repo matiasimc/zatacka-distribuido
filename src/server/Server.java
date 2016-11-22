@@ -97,8 +97,8 @@ public class Server extends UnicastRemoteObject implements iServer{
 		if(this.serverQueue.size()>1){
 			iServer newServer = this.getNew();
 			if (newServer == this) return;
-			newServer.setMain(true);
 			this.soyelmain = false;
+			newServer.setMain(true);
 			newServer.setStarted(this.started);
 			newServer.setQueue(this.serverQueue);
 			newServer.setIdCounter(this.id);
