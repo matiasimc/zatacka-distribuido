@@ -32,7 +32,7 @@ public class Scores extends Canvas {
 	public Scores(int height, ClientGame cGame) {
 		try {
 			cf = Font.createFont(Font.TRUETYPE_FONT, new File("IndieFlower.ttf"));
-			cf = cf.deriveFont(20.0f);
+			cf = cf.deriveFont(18.0f);
 		     GraphicsEnvironment ge = 
 		         GraphicsEnvironment.getLocalGraphicsEnvironment();
 		     ge.registerFont(cf);
@@ -85,11 +85,11 @@ public class Scores extends Canvas {
 				toDraw = toDraw + ": "+p.getScore();
 				buffer.setColor(p.getColor());
 				buffer.drawString(toDraw, 10, 100+offset);
-				offset += 50;
+				offset += 30;
 			}
 			buffer.setColor(Color.WHITE);
 			buffer.drawString("Pause: SPACE", 10, 500);
-			buffer.drawString("Close: Q", 10, 550);
+			buffer.drawString("Close: Q", 10, 540);
 		}
 		catch(UnmarshalException e){
 			return;

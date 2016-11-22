@@ -7,8 +7,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.geom.Line2D;
+import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.UnmarshalException;
 import java.util.ArrayList;
@@ -31,9 +33,19 @@ public class Board extends Canvas{
     // doble buffer para dibujar
     public Image img;
     public Graphics buffer;
+    private Font cf;
 
 
     public Board(int width, int height, ClientGame cGame) {
+    	try {
+			cf = Font.createFont(Font.TRUETYPE_FONT, new File("IndieFlower.ttf"));
+			cf = cf.deriveFont(20.0f);
+		     GraphicsEnvironment ge = 
+		         GraphicsEnvironment.getLocalGraphicsEnvironment();
+		     ge.registerFont(cf);
+		} catch (Exception e) {
+		     //Handle exception
+		}
         this.width = width;
         this.height = height;
     	this.cGame = cGame;
@@ -103,8 +115,8 @@ public class Board extends Canvas{
 		try{
 			if (this.buffer == null) this.buffer = this.img.getGraphics();
 			buffer.setColor(Color.WHITE);
-			buffer.setFont(new Font("Impact", Font.PLAIN, 20));
-			buffer.drawString("Paused, press P to continue", 10, 550);
+			buffer.setFont(cf);
+			buffer.drawString("Paused, press SPACE to continue", 10, 550);
 		}
 		catch(Exception e){
 			return;
@@ -115,8 +127,8 @@ public class Board extends Canvas{
 		try{
 			if (this.buffer == null) this.buffer = this.img.getGraphics();
 			buffer.setColor(Color.WHITE);
-			buffer.setFont(new Font("Impact", Font.PLAIN, 20));
-			if (cGame.game.isPlaying() && cGame.countdown > 0) {
+			buffer.setFont(cf);
+			if (cGame.game.isPlaying() && cGame.countdown > 0 && !cGame.game.getPaused()) {
 				buffer.drawString("Desbloqueo en "+cGame.countdown/30+" segundos", 140, 300);
 			}
 			else buffer.drawString("Esperando a otros jugadores...", 140, 300);
@@ -130,7 +142,7 @@ public class Board extends Canvas{
 	private void showVotation() {
 		if (this.buffer == null) this.buffer = this.img.getGraphics();
 		buffer.setColor(Color.WHITE);
-		buffer.setFont(new Font("Impact", Font.PLAIN, 20));
+		buffer.setFont(cf);
 		buffer.drawString("Apreta Y para seguir jugando o N para abandonar", 140, 300);
 	}
 	
