@@ -39,6 +39,7 @@ public class PositionMatrix implements Serializable {
 						if (matrix[i][j] != 0) return matrix[i][j];
 					}
 					catch (IndexOutOfBoundsException e) {
+						System.out.println("Alguién chocó contra el borde");
 						throw new CollisionException();
 					}
 				}
@@ -78,7 +79,11 @@ public class PositionMatrix implements Serializable {
 	}
 	
 	public void fill(int x, int y, int id, boolean visible) throws CollisionException {
-		if (checkCircle(x,y, Point.dHip/2) != 0 && visible) throw new CollisionException();
+		int cho;
+		if ((cho = checkCircle(x,y, Point.dHip/2)) != 0 && visible){
+			System.out.println("Alguien choco contra "+cho);
+			throw new CollisionException();
+		}
 		else if (visible) fillCircle(x,y, Point.dHip/2, id);
 	}
 	
