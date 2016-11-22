@@ -20,7 +20,7 @@ public interface iGame extends Remote {
 
 	iPlayer gettingPlayer(int id) throws RemoteException;
 	
-	iPlayer newPlayer(int id) throws RemoteException;
+	iPlayer newPlayer(int id, boolean started) throws RemoteException;
 	
 	public int getAlives() throws RemoteException;
 	

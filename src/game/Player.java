@@ -30,6 +30,16 @@ public class Player implements iPlayer, Serializable{
 		
 	}
 	
+	public Player(Color color, int id) {
+		this.color = color;
+		this.body = new ArrayList<Point>();
+		this.id = id;
+		this.angle = ThreadLocalRandom.current().nextInt(0, 361);
+		this.alive = true;
+		this.score = 0;
+		
+	}
+	
 	public Player(iPlayer p){
 		this.color = p.getColor();
 		this.body = p.getBody();

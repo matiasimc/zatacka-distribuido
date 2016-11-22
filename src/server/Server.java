@@ -23,6 +23,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	HashMap<Integer, iClient> clients;
 	int id;
 	int waitPlayers;
+	boolean started;
 	private static final int maxPlayers = 5;
 	private LinkedList<iServer> serverQueue;
 	private String myDir;
@@ -34,6 +35,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	
 	public Server(int waitPlayers, String myDir) throws RemoteException {
 		this.setIdCounter(0);
+		this.started = false;
 		this.serverQueue = new LinkedList<iServer>();
 		this.myDir = myDir;
 		this.waitPlayers = waitPlayers;
@@ -53,6 +55,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	public void migrate() throws RemoteException, MalformedURLException, NotBoundException {
 		if(!this.serverQueue.isEmpty()){
 			iServer newServer = this.serverQueue.removeFirst();
+			newServer.setStarted(this.started);
 			newServer.setQueue(this.serverQueue);
 			newServer.setIdCounter(this.id);
 			newServer.setWaitPlayers(this.waitPlayers);
@@ -90,17 +93,27 @@ public class Server extends UnicastRemoteObject implements iServer{
 		this.serverQueue = s;
 	}
 	
+	public void setStarted(boolean b){
+		started = b;
+	}
+	
 	public void addClient(iClient client) throws RemoteException{
 		this.clients.put(client.getID(),client);
 		client.getClientGame();
 		this.game.addClient(client.getID(), client.getClientGame());
-		client.start();
-		if(this.clients.size()>=this.waitPlayers){
+		if(!started && this.clients.size()>=this.waitPlayers) {
+			client.start(false);
 			System.out.println("Comenzando juego...");
-			if (!this.game.isPlaying()) this.game.startGame();
-			else client.getClientGame().setStarted(true);
+			this.game.startGame();
+			started = true;
+		}
+		else if(started){
+			client.start(true);
+			client.getClientGame().setCountdown(90);
+			client.getClientGame().setStarted(true);
 		}
 		else {
+			client.start(false);
 			System.out.println("Esperando jugadores...");
 		}
 	}

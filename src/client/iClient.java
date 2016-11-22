@@ -13,7 +13,7 @@ public interface iClient extends Remote {
 	iClientGame getClientGame()throws RemoteException;
 
 	int getID() throws RemoteException;
-	void start() throws RemoteException;
+	void start(boolean b) throws RemoteException;
 	public void setServer(iServer server) throws MalformedURLException, RemoteException, NotBoundException;
 
 	public iServer getServer() throws RemoteException;

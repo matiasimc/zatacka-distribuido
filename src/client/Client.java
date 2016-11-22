@@ -38,10 +38,11 @@ public class Client extends UnicastRemoteObject implements iClient {
 		return this.cGame;
 	}
 	
-	public void start() {
+	public void start(boolean b) {
 		new Thread() {
 			public void run() {
 				try {
+					cGame.setStarted(b);
 					cGame.start();
 				} catch (RemoteException e) {
 					// TODO Auto-generated catch block
@@ -50,7 +51,6 @@ public class Client extends UnicastRemoteObject implements iClient {
 			}
 		}.start();
 	}
-
 	
 	public int getID() throws RemoteException {
 		return id;

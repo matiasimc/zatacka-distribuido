@@ -48,7 +48,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 		this.width = game.getWidth();
 		this.height = game.getHeight();
 		this.voted = false;
-		this.started = false;
+		this.started = true;
 		this.GROW_RATE = game.getGrowRate();
     }
 	
@@ -56,7 +56,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 	@Override
 	public void start() throws RemoteException {
         keys = new boolean[KeyEvent.KEY_LAST];
-        game.newPlayer(id);
+        game.newPlayer(id, started);
         tablero = new Board(width, height, this);
         scores = new Scores(height, this);
         window = new Window(TITLE, tablero, scores);
@@ -82,42 +82,45 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
         while (true) { // Main loop
         	tablero.repaint();
             scores.repaint();
-            if (countdown > 0) {
-            	if (started) {
-            		countdown--;
+            // Controles
+            if (keys[KeyEvent.VK_UP]) {
+            	this.game.moveUp(id);
+            	System.out.println("Arriba");
+            }
+            if (keys[KeyEvent.VK_DOWN]) {	
+            	this.game.moveDown(id);
+            	System.out.println("Abajo");
+            }
+            
+            if (keys[KeyEvent.VK_M]) {
+            	try{
+            		this.game.getServer().migrate();
+            	}
+            	catch (Exception e) {
+            		e.printStackTrace();
             	}
             }
-            if (started && countdown < 1) {
-        		// Controles
-                if (keys[KeyEvent.VK_UP]) {
-                	this.game.moveUp(id);
-                	System.out.println("Arriba");
-                	System.out.println(this.client.getServer().getDir());
-                }
-                if (keys[KeyEvent.VK_DOWN]) {	
-                	this.game.moveDown(id);
-                	System.out.println("Abajo");
-                	System.out.println(this.client.getServer().getDir());
-                }
-                
-                if (keys[KeyEvent.VK_M]) {
-                	try{
-                		this.game.getServer().migrate();
-                	}
-                	catch (Exception e) {
-                		e.printStackTrace();
-                	}
-                }
-                if (keys[KeyEvent.VK_Q]) {
-                	this.game.removeClient(id);
-                }
-                
+            if (keys[KeyEvent.VK_Q]) {
+            	this.game.removeClient(id);
+            }
+            ////
+            
+            if (!game.isPlaying() && started && countdown > 0){
+            	countdown = 0;
+            	System.out.println("primero");
+            }
+            else if (game.isPlaying() && countdown > 0) {
+            	System.out.println("segundo");
+            	countdown--;
+            }
+            else if (game.isPlaying() && countdown < 1) {
+            	System.out.println("tercero");
                 
                 game.increaseFrames(id);
                 
                 
                 if (game.getFrames() == GROW_RATE && this.game.isAlive(id) && this.game.isPlaying()){
-                	System.out.println("hola");
+                	System.out.println(".");
                 	if(!this.game.checkCollision(id)){
                 		if (skipFrames-- > 0){
                 			this.game.growUp(id, false);
@@ -134,22 +137,21 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 	}	
       
                 }
-                
-                if (!this.game.isPlaying() && !voted){
-                	this.tablero.setShow(true);
-                	if (keys[KeyEvent.VK_Y]) {
-                		voted = true;
-                    	System.out.println("Votaste si");
-                    	this.game.addPlayer(this.game.gettingPlayer(id));
-                    }
-                    if (keys[KeyEvent.VK_N]) {
-                    	voted = true;
-                    	System.out.println("Votaste no");
-                    	this.game.voteNo(id);
-                    }
-                }
-                
         	}
+
+            else if (started && !this.game.isPlaying() && !voted){
+            	this.tablero.setShow(true);
+            	if (keys[KeyEvent.VK_Y]) {
+            		voted = true;
+                	System.out.println("Votaste si");
+                	this.game.addPlayer(this.game.gettingPlayer(id));
+                }
+                if (keys[KeyEvent.VK_N]) {
+                	voted = true;
+                	System.out.println("Votaste no");
+                	this.game.voteNo(id);
+                }
+            }
             try {
                 Thread.sleep(1000 / UPDATE_RATE);
             } catch (InterruptedException ex) {

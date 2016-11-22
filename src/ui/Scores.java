@@ -54,7 +54,7 @@ public class Scores extends Canvas {
 	}
 	
 	private void showScores(ArrayList<iPlayer> players) throws RemoteException{
-		if (this.buffer == null) this.buffer = this.img.getGraphics();
+		if (this.buffer == null) this.buffer = this.img.getGraphics()	;
 		buffer.setColor(Color.WHITE);
 		buffer.setFont(new Font("Impact", Font.PLAIN, 20));
 		buffer.drawString("Puntajes:" , 10 , 100);

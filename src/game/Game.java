@@ -125,6 +125,8 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 			return false;
 		}
 		catch (CollisionException e) {
+			return false;
+			/*
 			matrix.deletePlayer(player.getBody(), player.getId());
 			player.die();
 			updateScores();
@@ -137,7 +139,7 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 				for (iPlayer p: players()) p.resetBody();
 				futurePlayers = new HashMap<Integer, iPlayer>();
 			}
-			return true;
+			return true; */
 		}
 	}
 	
@@ -197,8 +199,15 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		return players.get(clientId);
 	}
 	
-	public synchronized iPlayer newPlayer(int clientId)  {
-		iPlayer player = new Player(assignColor(), assignPoint(), clientId + 1);
+	public synchronized iPlayer newPlayer(int clientId, boolean started)  {
+		iPlayer player;
+		if (started && !isPlaying()) {
+			System.out.println("no tengo cabeza");
+			player = new Player(assignColor(), clientId+1);
+		}
+		else {
+			player = new Player(assignColor(), assignPoint(), clientId + 1);
+		}
 		players.put(clientId,player);
 		return player;
 	}
@@ -214,7 +223,6 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		return this.playing;
 	}
 	private synchronized Point assignPoint() {
-
 		return matrix.getPlace();
 	}
 	

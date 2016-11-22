@@ -59,10 +59,9 @@ public class Board extends Canvas{
         	for(int clientId: this.cGame.clientIds()){
             	drawSnake(clientId);
         	}
-        	if (!this.cGame.started || this.cGame.countdown > 0) showWaitingMessage();
+        	if (!this.cGame.started || (this.cGame.started && this.cGame.game.isPlaying() && this.cGame.countdown>0)) showWaitingMessage();
         	if(show) showVotation();
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
        
@@ -100,13 +99,18 @@ public class Board extends Canvas{
     }
 	
 	private void showWaitingMessage() {
-		if (this.buffer == null) this.buffer = this.img.getGraphics();
-		buffer.setColor(Color.WHITE);
-		buffer.setFont(new Font("Impact", Font.PLAIN, 20));
-		if (cGame.started && cGame.countdown > 0) {
-			buffer.drawString("Partida inicia en "+cGame.countdown/30+" segundos", 140, 300);
+		try{
+			if (this.buffer == null) this.buffer = this.img.getGraphics();
+			buffer.setColor(Color.WHITE);
+			buffer.setFont(new Font("Impact", Font.PLAIN, 20));
+			if (cGame.game.isPlaying() && cGame.countdown > 0) {
+				buffer.drawString("Desbloqueo en "+cGame.countdown/30+" segundos", 140, 300);
+			}
+			else buffer.drawString("Esperando a otros jugadores...", 140, 300);
 		}
-		else buffer.drawString("Esperando a otros jugadores...", 140, 300);
+		catch(Exception e){
+			return;
+		}
 		
 	}
 	

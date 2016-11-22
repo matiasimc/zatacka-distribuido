@@ -24,6 +24,7 @@ public interface iServer extends Remote {
 	public void setWaitPlayers(int w) throws RemoteException;
 	public void setGame(iGame g) throws RemoteException;
 	public void setClients(HashMap<Integer, iClient> l) throws RemoteException;
+	public void setStarted(boolean b) throws RemoteException;
 	public void addServer(iServer server) throws RemoteException;
 	public String getDir() throws RemoteException;
 	public void migrate() throws RemoteException, MalformedURLException, NotBoundException;
