@@ -92,27 +92,17 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
             	System.out.println("Abajo");
             }
             
-            if (started && this.game.isPlaying() && keys[KeyEvent.VK_Q]) {
-            	this.game.forceCollision(id);
+            if (keys[KeyEvent.VK_Q]) {
+            	if (started && this.game.isPlaying()) this.game.forceCollision(id);
             	this.game.removeClient(id);
             }
             
-            if (keys[KeyEvent.VK_SPACE]) {
+            if (game.isPlaying() && keys[KeyEvent.VK_SPACE]) {
             	boolean isPaused = this.game.getPaused();
             	this.game.setPaused(!isPaused);
             	if (isPaused)
             		this.game.setCountdown(90);
             	try {
-            		Thread.sleep(200);
-            	}
-            	catch (Exception e) {
-            		e.printStackTrace();
-            	}
-            }
-            
-            if (keys[KeyEvent.VK_M]) {
-            	try {
-            		this.game.getServer().migrate();
             		Thread.sleep(200);
             	}
             	catch (Exception e) {

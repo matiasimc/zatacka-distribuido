@@ -189,7 +189,7 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		this.paused = p;
 	}
 	
-	
+	@Override
 	public synchronized boolean getPaused() throws RemoteException {
 		return this.paused;
 	}

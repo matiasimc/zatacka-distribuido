@@ -75,7 +75,7 @@ public class Board extends Canvas{
         	if (this.cGame.game.getPaused()) showPausedMessage();
         	if(show) showVotation();
 		} catch (RemoteException e) {
-			e.printStackTrace();
+			e.printStackTrace();	
 		}
        
         graphics.drawImage(img, 0, 0, null);
