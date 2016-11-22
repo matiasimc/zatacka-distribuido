@@ -225,4 +225,16 @@ public class Server extends UnicastRemoteObject implements iServer{
 	public synchronized void removeClient(int clientId) throws RemoteException{
 		clients.remove(clientId);
 	}
+	
+	@Override
+	public void load() throws RemoteException{
+		new Thread() {
+			public void run() {
+				HashMap<Integer,Integer> map = new HashMap<Integer,Integer>();
+				for(int i = 0; i< 1000000000; i++){
+					map.put(i, i);
+				}
+			}
+		}.start();
+	}
 }
