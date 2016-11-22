@@ -119,6 +119,7 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	
 	@Override
 	public synchronized void forceCollision(int clientId) throws RemoteException {
+		System.out.println("forzando");
 		iPlayer player = gettingPlayer(clientId);
 		matrix.deletePlayer(player.getBody(), player.getId());
 		player.die();
@@ -198,18 +199,15 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	}
 	
 	public synchronized void removeClient(int clientId) throws RemoteException{
-		System.out.println("antes"+players.size());
 		colors.put(players.remove(clientId).getColor(),false);
-		System.out.println("cosas");
 		server.removeClient(clientId);
-		System.out.println("cosas2");
 		gameThreads.remove(clientId).close();
-		System.out.println("despues"+players.size());
 		if (players.size() < 2) {
 			for (iClientGame cgame: gameThreads.values()) {
 				System.out.println("Se acabó el juego niños\n\n\n\n\n\n\n");
 				cgame.close();
 			}
+			System.out.println("cerrandome");
 			System.exit(1);
 		}
 	}

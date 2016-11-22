@@ -92,8 +92,8 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
             	System.out.println("Abajo");
             }
             
-            if (keys[KeyEvent.VK_Q]) {
-            	if (started && this.game.isPlaying() && countdown > 0) this.game.forceCollision(id);
+            if (started && this.game.isPlaying() && keys[KeyEvent.VK_Q]) {
+            	if (!voted) this.game.forceCollision(id);
             	this.game.removeClient(id);
             }
             
@@ -171,7 +171,13 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 	
 	@Override
 	public void close() throws RemoteException {
-		System.exit(1);
+		new Thread() {
+		    @Override
+		    public void run() {
+		      System.exit(0);
+		    }
+
+		  }.start();
 	}
 	@Override
 	public boolean isRunning() throws RemoteException {
