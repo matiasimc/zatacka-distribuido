@@ -38,7 +38,7 @@ public class Client extends UnicastRemoteObject implements iClient {
 		return this.cGame;
 	}
 	
-	public void start(boolean b) {
+	public void start(final boolean b) {
 		new Thread() {
 			public void run() {
 				try {

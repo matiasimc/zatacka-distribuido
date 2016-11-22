@@ -69,6 +69,7 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		frames = g.getFrames();
 		playing = g.isPlaying();
 		votes = g.getVotes();
+		paused = g.getPaused();
 		//maxVotes = g.getMaxVotes();
 		
 		for (Integer id: oPlayers.keySet()){
