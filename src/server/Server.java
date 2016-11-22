@@ -32,7 +32,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	int id;
 	int waitPlayers;
 	boolean started;
-	boolean soyelmain;
+	volatile boolean soyelmain;
 	private static final int maxPlayers = 5;
 	private static final int cap = 75;
 	private LinkedList<iServer> serverQueue;
@@ -93,6 +93,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	
 	public void migrate() throws RemoteException, MalformedURLException, NotBoundException {
 		if(this.serverQueue.size()>1){
+			System.out.println("Me meti al if pa migrar");
 			iServer newServer = this.getNew();
 			if (newServer == this) return;
 			this.soyelmain = false;
@@ -112,6 +113,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	}
 	
 	private iServer getNew() throws RemoteException {
+                System.out.println("Dame un server");
 		double minLoad = 101;
 		iServer newServer = this;
 		for (iServer s: serverQueue) {

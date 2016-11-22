@@ -91,6 +91,13 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
             	this.game.moveDown(id);
             	System.out.println("Abajo");
             }
+
+	    if (keys[KeyEvent.VK_M]) {
+                try {
+	        this.game.getServer().migrate();
+                Thread.sleep(200);}
+                catch (Exception e) {}
+	    }
             
             if (started && this.game.isPlaying() && keys[KeyEvent.VK_Q]) {
             	if (!voted) this.game.forceCollision(id);
