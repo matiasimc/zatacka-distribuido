@@ -34,6 +34,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	boolean started;
 	boolean soyelmain;
 	private static final int maxPlayers = 5;
+	private static final int cap = 65;
 	private LinkedList<iServer> serverQueue;
 	private String myDir;
 	
@@ -41,6 +42,20 @@ public class Server extends UnicastRemoteObject implements iServer{
 	public Server(String myDir) throws RemoteException {
 		this.myDir = myDir;
 		soyelmain = false;
+		new Thread() {
+			public void run() {
+				try {
+					while(true){
+						System.out.println(getUsage());
+						if (getUsage()>=cap) migrate();
+						
+					}
+				} catch (Exception e) {
+					System.out.println("falle en thread de server");
+					e.printStackTrace();
+				}
+			}
+		}.start();
 	}
 	
 	public Server(int waitPlayers, String myDir) throws RemoteException {
@@ -53,6 +68,19 @@ public class Server extends UnicastRemoteObject implements iServer{
 		this.game = new Game(this);
 		this.clients = new HashMap<Integer, iClient>();
 		this.soyelmain = true;
+		new Thread() {
+			public void run() {
+				try {
+					while(true){
+						System.out.println(getUsage());
+						if (getUsage()>=cap) migrate();
+					}
+				} catch (Exception e) {
+					System.out.println("falle en thread de server");
+					e.printStackTrace();
+				}
+			}
+		}.start();
 	}
 	
 	public String getDir() throws RemoteException {
@@ -186,5 +214,16 @@ public class Server extends UnicastRemoteObject implements iServer{
 	public synchronized void removeClient(int clientId) throws RemoteException{
 		clients.remove(clientId);
 	}
-}
 
+	@Override
+	public void load() throws RemoteException{
+		new Thread() {
+			public void run() {
+				HashMap<Integer,Integer> map = new HashMap<Integer,Integer>();
+				for(int i = 0; i< 1000000000; i++){
+					map.put(i, i);
+				}
+			}
+		}.start();
+	}
+}

@@ -4,6 +4,6 @@ echo "your local hostname is $localip"
 cd src
 for dir in ./*/ ; do
 	echo "Compiling in package $dir..."
-	javac "$dir"/*.java
+	javac -cp ".:sigar.jar" "$dir"/*.java
 done
-java -Djava.rmi.server.hostname="$localip" client.MainClient "$1"
+java -cp ".:sigar.jar" -Djava.rmi.server.hostname="$localip" client.MainClient "$1"
