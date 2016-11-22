@@ -71,7 +71,7 @@ public class Board extends Canvas{
         	for(int clientId: this.cGame.clientIds()){
             	drawSnake(clientId);
         	}
-        	if (!this.cGame.started || (this.cGame.started && this.cGame.game.isPlaying() && this.cGame.countdown>0)) showWaitingMessage();
+        	if (!this.cGame.started || (this.cGame.started && this.cGame.game.isPlaying() && this.cGame.countdown>0 && !this.cGame.game.getPaused())) showWaitingMessage();
         	if (this.cGame.game.getPaused()) showPausedMessage();
         	if(show) showVotation();
 		} catch (RemoteException e) {

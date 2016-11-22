@@ -91,7 +91,7 @@ public class Scores extends Canvas {
 			buffer.drawString("Pause: SPACE", 10, 500);
 			buffer.drawString("Close: Q", 10, 540);
 		}
-		catch(UnmarshalException e){
+		catch(Exception e){
 			return;
 		}
 	}
