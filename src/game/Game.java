@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import client.iClient;
 import client.iClientGame;
 import server.iServer;
 
@@ -21,14 +20,15 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	private static final long serialVersionUID = 3463318830429467314L;
 	private int height = 600;
 	private int width = 800;
-	private int growRate = 2; 
+	private int growRate = 3; 
 	PositionMatrix matrix; 
 	private HashMap<Integer, iClientGame> gameThreads;
 	private HashMap<Integer, Boolean> askFrames;
 	private HashMap<Integer, iPlayer> players;
 	private HashMap<Integer, iPlayer> futurePlayers;
+	private HashMap<Color, Boolean> colors;
 	private int votes;
-	static int numberOfPlayers = 5;
+	//private int maxVotes;
 	static final Color[] colorList = {Color.red, Color.green, Color.pink, Color.blue, Color.orange};
 	private boolean playing;
 	private int frames;
@@ -37,11 +37,14 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	public Game(iServer server) throws RemoteException{
 		players = new HashMap<Integer, iPlayer>();
 		gameThreads = new HashMap<Integer, iClientGame>();
+		colors = new HashMap<Color, Boolean>();
 		this.server = server;
 		matrix = new PositionMatrix(width, height);
 		askFrames = new HashMap<Integer, Boolean>();
 		futurePlayers = new HashMap<Integer, iPlayer>();
 		frames = 0;
+		votes = 0;
+		//maxVotes = 0;
 		playing = false;
 	}
 	
@@ -53,16 +56,18 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		HashMap<Integer, iPlayer> oFuture = g.getFuturePlayers();
 		PositionMatrix oMatrix = g.getPositionMatrix();
 		HashMap<Integer, Boolean> oAsk = g.getAskFrames();
+		HashMap<Color, Boolean> oColors = g.getColors();
 		
 		futurePlayers =new HashMap<Integer, iPlayer>();
 		players = new HashMap<Integer, iPlayer>();
-		matrix = new PositionMatrix(width, height);
 		askFrames = new HashMap<Integer, Boolean>();
 		gameThreads = new HashMap<Integer, iClientGame>();
 		
+		colors = oColors;
 		frames = g.getFrames();
 		playing = g.isPlaying();
 		votes = g.getVotes();
+		//maxVotes = g.getMaxVotes();
 		
 		for (Integer id: oPlayers.keySet()){
 			players.put(id, new Player(oPlayers.get(id))); //.clone()
@@ -92,10 +97,10 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		}
 	}
 	@Override
-	public synchronized void startGame(ArrayList<iClient> clients) throws RemoteException  {
-		for (iClient client: clients){
-			client.getClientGame().setStarted(true);
-			client.getClientGame().setCountdown(90);
+	public synchronized void startGame() throws RemoteException  {
+		for (iClientGame cg: gameThreads.values()){
+			cg.setStarted(true);
+			cg.setCountdown(90);
 		}
 		playing = true;
 	}
@@ -124,9 +129,9 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 			player.die();
 			updateScores();
 			if (getAlives() == 1){
-				sortPlayers();
 				playing = false;
 				votes = 0;
+				//maxVotes = players.size();
 				matrix = new PositionMatrix(height, width);
 				for (iClientGame cGame: gameThreads.values()) cGame.resetVote();
 				for (iPlayer p: players()) p.resetBody();
@@ -152,22 +157,27 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	}
 
 	@Override
-	public synchronized void voteNo() throws RemoteException {
-		votes++;
+	public synchronized void voteNo(int clientId) throws RemoteException {
+		removeClient(clientId);
 		reset();
 	}
 	
+	public synchronized void removeClient(int clientId) throws RemoteException{
+		colors.put(players.remove(clientId).getColor(),false);
+		server.removeClient(clientId);
+		gameThreads.remove(clientId).close();
+		if (players.size() < 2) {
+			for (iClientGame cgame: gameThreads.values()) {
+				System.out.println("Se acabó el juego niños\n\n\n\n\n\n\n");
+				cgame.close();
+			}
+			System.exit(1);
+		}
+	}
 	private synchronized void reset() throws RemoteException{
-		if (votes == players.size()){
+		if (votes >= players.size()){
 			for (iClientGame cgame: gameThreads.values()) cgame.resetBuffer();
 			players = futurePlayers;
-			if (players.size() < 2) {
-				for (iClientGame cgame: gameThreads.values()) {
-					System.out.println("Mate un cgame\n\n\n\n\n\n\n");
-					cgame.close();
-				}
-				System.exit(1);
-			}
 			for (iPlayer pl: players.values()){
 				System.out.println("Revivido");
 				pl.revive(assignPoint());
@@ -188,7 +198,7 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	}
 	
 	public synchronized iPlayer newPlayer(int clientId)  {
-		iPlayer player = new Player(assignColor(clientId), assignPoint(), clientId + 1);
+		iPlayer player = new Player(assignColor(), assignPoint(), clientId + 1);
 		players.put(clientId,player);
 		return player;
 	}
@@ -199,22 +209,6 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		}
 		return n;
 	}
-
-	public synchronized void sortPlayers()  {
-		return;
-		/*Collections.sort(this.players, new Comparator<iPlayer>() {
-	        @Override
-	        public int compare(iPlayer p2, iPlayer p1)
-	        {
-	        	try {
-	        		return  p1.getScore() - p2.getScore();
-	        	}
-	        	catch (RemoteException e){
-	        		return 0;
-	        	}
-	        }	
-	    });*/
-	}
 	
 	public synchronized boolean isPlaying()  {
 		return this.playing;
@@ -224,8 +218,15 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		return matrix.getPlace();
 	}
 	
-	private synchronized Color assignColor(int id){
-		return colorList[id];
+	private synchronized Color assignColor(){
+		for (Color c:colorList){
+			if(colors.get(c) == null || colors.get(c) == false) {
+				colors.put(c, true);
+				return c;
+			}
+		}
+		//this should not happen
+		return Color.white;
 	}
 	public synchronized int getFrames() {
 		return this.frames;
@@ -322,6 +323,17 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	public HashMap<Integer,iClientGame> getClientGames() throws RemoteException{
 		return this.gameThreads;
 	}
+	
+	public HashMap<Color, Boolean> getColors() throws RemoteException{
+		return this.colors;
+	}
+
+	/*
+	@Override
+	public int getMaxVotes() throws RemoteException {
+		return this.maxVotes;
+	}
+	*/
 }
 	
 

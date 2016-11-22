@@ -108,6 +108,9 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 		e.printStackTrace();
                 	}
                 }
+                if (keys[KeyEvent.VK_Q]) {
+                	this.game.removeClient(id);
+                }
                 
                 
                 game.increaseFrames(id);
@@ -142,7 +145,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                     if (keys[KeyEvent.VK_N]) {
                     	voted = true;
                     	System.out.println("Votaste no");
-                    	this.game.voteNo();
+                    	this.game.voteNo(id);
                     }
                 }
                 

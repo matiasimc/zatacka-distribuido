@@ -5,7 +5,7 @@ import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 import client.iClient;
@@ -23,9 +23,10 @@ public interface iServer extends Remote {
 	public void setIdCounter(int id) throws RemoteException;
 	public void setWaitPlayers(int w) throws RemoteException;
 	public void setGame(iGame g) throws RemoteException;
-	public void setClients(ArrayList<iClient> l) throws RemoteException;
+	public void setClients(HashMap<Integer, iClient> l) throws RemoteException;
 	public void addServer(iServer server) throws RemoteException;
 	public String getDir() throws RemoteException;
 	public void migrate() throws RemoteException, MalformedURLException, NotBoundException;
 	public void printMigrate() throws RemoteException;
+	public void removeClient(int clientId) throws RemoteException;
 }

@@ -60,7 +60,7 @@ public class Board extends Canvas{
             	drawSnake(clientId);
         	}
         	if (!this.cGame.started || this.cGame.countdown > 0) showWaitingMessage();
-        	if(show) showVotation (this.cGame.gamePlayers());
+        	if(show) showVotation();
 		} catch (RemoteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -70,33 +70,33 @@ public class Board extends Canvas{
     }
     
 
-	public void drawSnake(int clientId) throws RemoteException {
-		if (this.buffer == null) this.buffer = this.img.getGraphics();
-		ArrayList<Point> points;
+	public void drawSnake(int clientId) {
 		try{
+			if (this.buffer == null) this.buffer = this.img.getGraphics();
+			ArrayList<Point> points;
 			points = this.cGame.getBody(clientId);
+			Graphics2D g2 = (Graphics2D) this.buffer;
+			g2.setColor(this.cGame.getColor(clientId));
+			g2.setStroke(new BasicStroke(4));
+			
+			
+			int len = points.size();
+	        for (int i = 0; i<len-1;i++){
+	        	Point p1 = points.get(i);
+	        	Point p2 = points.get(i+1);
+	            if (p1.visible && p2.visible){
+	                g2.draw(new Line2D.Float(p1.x,p1.y,p2.x,p2.y));
+	        	}
+			}
+	        if (len > 0){
+		        Point head = this.cGame.getHead(clientId);
+				this.buffer.setColor(headColor);
+				this.buffer.fillOval(head.x - Point.dHip/2, head.y - Point.dHip/2, 5, 5);
+	        }
 		}
-		catch(UnmarshalException e){
+		catch (Exception e){
 			return;
 		}
-		Graphics2D g2 = (Graphics2D) this.buffer;
-		g2.setColor(this.cGame.getColor(clientId));
-		g2.setStroke(new BasicStroke(4));
-		
-		
-		int len = points.size();
-        for (int i = 0; i<len-1;i++){
-        	Point p1 = points.get(i);
-        	Point p2 = points.get(i+1);
-            if (p1.visible && p2.visible){
-                g2.draw(new Line2D.Float(p1.x,p1.y,p2.x,p2.y));
-        	}
-		}
-        if (len > 0){
-	        Point head = this.cGame.getHead(clientId);
-			this.buffer.setColor(headColor);
-			this.buffer.fillOval(head.x - Point.dHip/2, head.y - Point.dHip/2, 5, 5);
-        }
     }
 	
 	private void showWaitingMessage() {
@@ -110,7 +110,7 @@ public class Board extends Canvas{
 		
 	}
 	
-	private void showVotation(ArrayList<iPlayer> players) {
+	private void showVotation() {
 		if (this.buffer == null) this.buffer = this.img.getGraphics();
 		buffer.setColor(Color.WHITE);
 		buffer.setFont(new Font("Impact", Font.PLAIN, 20));

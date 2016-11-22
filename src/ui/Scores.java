@@ -6,7 +6,10 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.rmi.RemoteException;
+import java.rmi.UnmarshalException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import client.ClientGame;
 import game.iPlayer;
@@ -44,8 +47,7 @@ public class Scores extends Canvas {
         try {
         	showScores(this.cGame.gamePlayers());
 		} catch (RemoteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return;
 		}
        
         graphics.drawImage(img, 0, 0, null);
@@ -57,15 +59,26 @@ public class Scores extends Canvas {
 		buffer.setFont(new Font("Impact", Font.PLAIN, 20));
 		buffer.drawString("Puntajes:" , 10 , 100);
 		int offset = 50;
-		for (iPlayer p: players){
-			String toDraw = "Player "+p.getId();
-			if (cGame.getPlayer().getId() == p.getId()) toDraw = toDraw+" (you)";
-			toDraw = toDraw + ": "+p.getScore();
-			buffer.setColor(p.getColor());
-			buffer.drawString(toDraw, 10, 100+offset);
-			offset += 50;
+		Collections.sort(players, new Comparator<iPlayer>() {
+			@Override
+        	public int compare(iPlayer p2, iPlayer p1)
+        	{
+        		return  p1.getScore() - p2.getScore();		
+        	}
+		});
+		try{
+			for (iPlayer p: players){
+				String toDraw = "Player "+p.getId();
+				if (cGame.getPlayer().getId() == p.getId()) toDraw = toDraw+" (you)";
+				toDraw = toDraw + ": "+p.getScore();
+				buffer.setColor(p.getColor());
+				buffer.drawString(toDraw, 10, 100+offset);
+				offset += 50;
+			}
 		}
-		buffer.setColor(Color.WHITE);
+		catch(UnmarshalException e){
+			return;
+		}
 	}
 	
 }

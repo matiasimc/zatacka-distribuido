@@ -7,13 +7,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import client.iClient;
 import client.iClientGame;
 import server.iServer;
 
 public interface iGame extends Remote {
 
-	void startGame(ArrayList<iClient> clients) throws RemoteException ;
+	void startGame() throws RemoteException ;
 
 	void addClient(int id, iClientGame clientGame) throws RemoteException;
 
@@ -33,13 +32,11 @@ public interface iGame extends Remote {
 	
 	void updateScores() throws RemoteException ;
 	
-	void sortPlayers() throws RemoteException;
-	
 	boolean isPlaying() throws RemoteException;
 	
 	public void addPlayer(iPlayer player) throws RemoteException ;
 	
-	public void voteNo() throws RemoteException ;
+	public void voteNo(int clientId) throws RemoteException ;
 
 	public void increaseFrames(int id) throws RemoteException ;
 	
@@ -63,7 +60,7 @@ public interface iGame extends Remote {
 	
 	public Color getColor(int clientId) throws RemoteException;
 
-	//public ArrayList<iClientGame> getClientGames() ;
+	public void removeClient(int clientId) throws RemoteException;
 	
 	public iServer getServer() throws RemoteException;
 	
@@ -78,5 +75,9 @@ public interface iGame extends Remote {
 	public int getVotes() throws RemoteException;
 	
 	public HashMap<Integer,iClientGame> getClientGames() throws RemoteException;
+	
+	public HashMap<Color, Boolean> getColors() throws RemoteException;
+	
+	//public int getMaxVotes() throws RemoteException;
 
 }
