@@ -123,10 +123,15 @@ public class Server extends UnicastRemoteObject implements iServer{
 	}
 	
 	private iServer getNew() throws RemoteException {
-		for (iServer server: serverQueue){
-			if (!server.getMain()) return server;
+		double minLoad = 101;
+		iServer newServer = this;
+		for (iServer s: serverQueue) {
+			if (s.getUsage() < minLoad) {
+				minLoad = s.getUsage();
+				newServer = s;
+			}
 		}
-		return this;
+		return newServer;
 	}
 
 	public void setWaitPlayers(int w) throws RemoteException {
@@ -208,7 +213,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 		return idGived;
 	}
 	
-	public double getUsage(){
+	public double getUsage() throws RemoteException {
 		Mem mem = null;
         try {
             mem = sigar.getMem();
