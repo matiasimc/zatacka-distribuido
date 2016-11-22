@@ -32,4 +32,5 @@ public interface iServer extends Remote {
 	public void removeClient(int clientId) throws RemoteException;
 	public void setMain(boolean b) throws RemoteException;
 	public boolean getMain() throws RemoteException;
+	public double getUsage() throws RemoteException;
 }

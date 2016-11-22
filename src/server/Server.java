@@ -96,6 +96,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	public void migrate() throws RemoteException, MalformedURLException, NotBoundException {
 		if(this.serverQueue.size()>1){
 			iServer newServer = this.getNew();
+			if (newServer == this) return;
 			newServer.setMain(true);
 			this.soyelmain = false;
 			newServer.setStarted(this.started);
@@ -113,10 +114,15 @@ public class Server extends UnicastRemoteObject implements iServer{
 	}
 	
 	private iServer getNew() throws RemoteException {
-		for (iServer server: serverQueue){
-			if (!server.getMain()) return server;
+		double minLoad = 101;
+		iServer newServer = this;
+		for (iServer s: serverQueue) {
+			if (s.getUsage() < minLoad) {
+				minLoad = s.getUsage();
+				newServer = s;
+			}
 		}
-		return this;
+		return newServer;
 	}
 
 	public void setWaitPlayers(int w) throws RemoteException {
@@ -198,7 +204,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 		return idGived;
 	}
 	
-	public double getUsage(){
+	public double getUsage() throws RemoteException {
 		Mem mem = null;
         try {
             mem = sigar.getMem();
@@ -214,6 +220,19 @@ public class Server extends UnicastRemoteObject implements iServer{
 	
 	public synchronized void removeClient(int clientId) throws RemoteException{
 		clients.remove(clientId);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	}
 
 }
