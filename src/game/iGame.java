@@ -60,7 +60,7 @@ public interface iGame extends Remote {
 	
 	public Color getColor(int clientId) throws RemoteException;
 
-	public void removeClient(int clientId) throws RemoteException;
+	public void removeClient(int clientId, boolean migrate) throws RemoteException;
 	
 	public iServer getServer() throws RemoteException;
 	
