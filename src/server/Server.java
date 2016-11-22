@@ -146,11 +146,11 @@ public class Server extends UnicastRemoteObject implements iServer{
 		this.started = b;
 	}
 	
-	public void setMain(boolean b){
+	public synchronized void setMain(boolean b){
 		this.soyelmain = b;
 	}
 	
-	public boolean getMain(){
+	public synchronized boolean getMain(){
 		return this.soyelmain;
 	}
 	

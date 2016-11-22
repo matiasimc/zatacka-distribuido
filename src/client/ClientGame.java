@@ -92,14 +92,6 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
             	System.out.println("Abajo");
             }
             
-            if (keys[KeyEvent.VK_M]) {
-            	try{
-            		this.game.getServer().load();
-            	}
-            	catch (Exception e) {
-            		e.printStackTrace();
-            	}
-            }
             if (keys[KeyEvent.VK_Q]) {
             	this.game.removeClient(id);
             }
