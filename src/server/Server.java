@@ -96,7 +96,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 		if(this.serverQueue.size()>1){
 			System.out.println("Migrando");
 			iServer newServer = this.getNew();
-			if (newServer == this) {
+			if (newServer.getDir().equals(this.getDir())) {
 				System.out.println("Fuiste elegido nuevamente");
 				return;
 			}
