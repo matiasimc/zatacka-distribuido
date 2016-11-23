@@ -15,6 +15,7 @@
 - Soporta un máximo de 5 jugadores, los cuales se pueden unir a una partida en cualquier momento.
 - Permite indicar la cantidad mínima de jugadores para iniciar una partida al momento de lanzar el servidor.
 - Muestra una listado con los puntajes de cada jugador.
+
 ## Cómo jugar
 
 El movimiento del jugador se controla con las teclas UP y DOWN.
