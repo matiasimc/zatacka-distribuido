@@ -100,12 +100,12 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 	    }
             
             if (!started && !this.game.isPlaying() && keys[KeyEvent.VK_Q]) {
-            	this.game.removeClient(id, true);
+            	this.game.removeClient(id, false);
             }
             
             if (started && this.game.isPlaying() && keys[KeyEvent.VK_Q]) {
             	if (!voted) this.game.forceCollision(id);
-            	this.game.removeClient(id, true);
+            	this.game.removeClient(id, false);
             }
             
             if (game.isPlaying() && keys[KeyEvent.VK_SPACE]) {
@@ -170,7 +170,8 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 	voted = true;
                 	System.out.println("Votaste no");
                 	if(keys[KeyEvent.VK_N])this.game.voteNo(id);
-                	if(keys[KeyEvent.VK_Q])game.removeClient(id, true);
+                	if(keys[KeyEvent.VK_Q])game.removeClient(id, 
+false);
                 }
             }
             try {
