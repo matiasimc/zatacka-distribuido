@@ -3,6 +3,7 @@ package server;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.rmi.ConnectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -13,7 +14,6 @@ import java.util.Map.Entry;
 
 import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.Sigar;
-import org.hyperic.sigar.SigarException;
 
 import client.iClient;
 import game.Game;
@@ -146,10 +146,17 @@ public class Server extends UnicastRemoteObject implements iServer{
         System.out.println("Dame un server");
 		double minLoad = 101;
 		iServer newServer = this;
-		for (iServer s: serverQueue) {
-			if (s.getUsage() < minLoad) {
-				minLoad = s.getUsage();
-				newServer = s;
+		LinkedList<iServer> queueCopy = new LinkedList<iServer>(this.serverQueue);
+		for (iServer s: queueCopy) {
+			try{
+				double usage = s.getUsage();
+				if (usage < minLoad) {
+					minLoad = usage;
+					newServer = s;
+				}
+			}
+			catch(ConnectException ex){
+				this.serverQueue.remove(s);
 			}
 		}
 		return newServer;
@@ -251,19 +258,6 @@ public class Server extends UnicastRemoteObject implements iServer{
 	
 	public synchronized void removeClient(int clientId) throws RemoteException{
 		clients.remove(clientId);
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 	}
 
 }
