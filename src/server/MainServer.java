@@ -64,11 +64,12 @@ public class MainServer {
 				File f = new File("snapshot.txt");
 				if(f.exists()) {
 					serverS = new Server(ip, f);
+					// se hara en el constructor de server Naming.bind("rmi://"+ip+":1099/ABC", serverS);
 				}
 				else {
 					serverS = new Server(waitPlayers, ip);
+					Naming.bind("rmi://"+ip+":1099/ABC", serverS);
 				}
-				Naming.bind("rmi://"+ip+":1099/ABC", serverS);
 				System.out.println("Main server UP, in execution");
 			}
 		}catch(Exception e){

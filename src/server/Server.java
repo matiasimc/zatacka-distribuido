@@ -101,6 +101,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	
 	public Server(String ip, File f) throws Exception{
 		int auxSize=0;
+		this.myDir = ip;
 		soyelmain = true;
 		this.addressToId = new HashMap<String,Integer>();
 		this.serverQueue = new LinkedList<iServer>();
@@ -201,15 +202,31 @@ public class Server extends UnicastRemoteObject implements iServer{
 		
 		
 		auxSize = Integer.parseInt(br.readLine());
+		this.clients = new HashMap<Integer, iClient>();
+		Naming.bind("rmi://"+ip+":1099/ABC", this);
 		for(int i=0; i <auxSize; i++){
 			int idClient = Integer.parseInt(br.readLine());
 			String ipClient = br.readLine();
 			System.out.println(ipClient);
 			iClient client = (iClient) Naming.lookup("rmi://"+ipClient+":1099/Client");
 			this.clients.put(idClient, client);
+			client.restoreServer(this);
 		}
 		this.started= Boolean.parseBoolean(br.readLine());
-		
+		new Thread() {
+			public void run() {
+				try {
+					while(true){
+						updateUsage();
+						if (soyelmain) System.out.println(getUsage());
+						if (soyelmain && getUsage()>=cap) migrate();
+					}
+				} catch (Exception e) {
+					System.out.println("falle en thread de server");
+					e.printStackTrace();
+				}
+			}
+		}.start();
 		
 	}
 

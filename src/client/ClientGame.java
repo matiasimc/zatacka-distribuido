@@ -42,6 +42,7 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
     private boolean voted;
     private Scores scores;
     public volatile int countdown = 0;
+    private volatile boolean continu;
     
     public ClientGame(iClient client, iGame game, int id) throws RemoteException{
     	this.client = client;
@@ -51,13 +52,13 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 		this.height = game.getHeight();
 		this.voted = false;
 		this.started = true;
+		this.continu = true;
 		this.GROW_RATE = game.getGrowRate();
     }
 	
     
 	@Override
 	public void start() throws RemoteException {
-		try{
 	        keys = new boolean[KeyEvent.KEY_LAST];
 	        game.newPlayer(id, started);
 	        tablero = new Board(width, height, this);
@@ -82,7 +83,8 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 	        window.setVisible(true);
 	        
 			int skipFrames = 0;
-	        while (true) { // Main loop
+	        while (continu) { // Main loop
+	        	try{
 	        	tablero.repaint();
 	            scores.repaint();
 	            // Controles
@@ -187,10 +189,15 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 	
 	            }
 	        }
-        }
-        catch(ConnectException e){
-        	System.out.println("Ayura");
-        	
+	        	catch(ConnectException e){
+	        		System.out.println("Servidor caido, esperando reconexion");
+	            	try {
+						Thread.sleep(4000);
+					} catch (InterruptedException e1) {}
+	            }
+	        	catch(Exception e) {
+	        		
+	        	}
         }
     }
 	
@@ -263,6 +270,10 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 	
 	public void setGame(iGame game){
 		this.game = game;
+	}
+	
+	public void setContinu(boolean b) {
+		this.continu = b;
 	}
 	
 	public int getId() throws RemoteException{

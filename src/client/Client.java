@@ -18,6 +18,7 @@ public class Client extends UnicastRemoteObject implements iClient {
 	public iClientGame cGame;
 	public int id;
 	public String address;
+	private Thread t;
 	
 	public Client(iServer server, String address) throws RemoteException {
 		//super();
@@ -34,6 +35,17 @@ public class Client extends UnicastRemoteObject implements iClient {
 		}
 	}
 	
+	public void restoreServer(iServer server) throws MalformedURLException, RemoteException, NotBoundException {
+		System.out.println("Reconectando con servidor...");
+		this.server = (iServer) Naming.lookup("rmi://"+server.getDir()+":1099/ABC");
+		System.out.println("esta deberia ser "+server.getDir());
+		System.out.println("esta es "+this.server.getDir());
+		this.cGame.setGame(this.server.getGame());
+		server.update(this, this.cGame);
+		System.out.println("Comunicacion establecida, restaurando juego");
+	}
+	
+	
 	public void setServer(iServer server) throws MalformedURLException, RemoteException, NotBoundException {
 		System.out.println("cambiando server");
 		this.server = (iServer) Naming.lookup("rmi://"+server.getDir()+":1099/ABC");
@@ -47,7 +59,7 @@ public class Client extends UnicastRemoteObject implements iClient {
 	}
 	
 	public void start(final boolean b) {
-		new Thread() {
+		t = new Thread() {
 			public void run() {
 				try {
 					cGame.setStarted(b);
@@ -57,7 +69,8 @@ public class Client extends UnicastRemoteObject implements iClient {
 					e.printStackTrace();
 				}
 			}
-		}.start();
+		};
+		t.start();
 	}
 	
 	public int getID() throws RemoteException {

@@ -100,6 +100,7 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 			HashMap<Integer, iPlayer> futurePlayers,
 			HashMap<Color, Boolean> colorMap, PositionMatrix matrix,
 			boolean playing, iServer server) throws RemoteException{
+		this.gameThreads = new HashMap<Integer, iClientGame>();
 		this.votes=votes;
 		this.frames=frames;
 		this.paused=paused;
@@ -110,7 +111,6 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		this.matrix = matrix;
 		this.playing = playing;
 		this.server = server;
-		
 		
 	}
 

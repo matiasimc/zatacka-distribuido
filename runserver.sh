@@ -3,7 +3,7 @@
 ctrl_c() {
 	echo ""
 	echo "Closing server..."
-	ps -ef | grep rmiregistry | awk '{print  $2}' | xargs kill
+        ps -ef | grep rmiregistry | awk '{print $2}' | xargs kill
 	exit
 }
 
