@@ -389,6 +389,12 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		return this.colors;
 	}
 
+	@Override
+	public String getSnapshot() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	/*
 	@Override
 	public int getMaxVotes() throws RemoteException {

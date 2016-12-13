@@ -96,11 +96,18 @@ public class Server extends UnicastRemoteObject implements iServer{
 		    PrintWriter writer = new PrintWriter("snapshot.txt", "UTF-8");
 		    writer.println(this.id);
 		    writer.println(this.waitPlayers);
-		    writer.println(this.started);
 		    writer.println(this.serverQueue.size());
-		    writer.println();
-		    writer.println();
-		    writer.println();
+		    for(iServer s: serverQueue){
+			    writer.println(s.getDir());
+		    }
+		    writer.println(this.myDir);
+		    writer.println(this.game.getSnapshot());
+		    writer.println(this.clients.size());
+		    for(){
+			    writer.println(this.started);
+		    	writer.println(this.started);
+		    }
+		    writer.println(this.started);
 		    writer.close();
 		} catch (IOException e) {
 		   	System.out.println("Falló Snapshot");
