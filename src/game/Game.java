@@ -326,9 +326,19 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		return this.frames;
 	}
 
-	public synchronized void increaseFrames(int id) {
+	public synchronized void increaseFrames(int id) throws RemoteException {
 		boolean someoneask = false;
-		for(int id2 : gameThreads.keySet()){
+		HashMap<Integer, iClientGame> clone = new HashMap<Integer, iClientGame>();
+		for (iClientGame gc: gameThreads.values()){
+			try{
+				int key = gc.getId();
+				clone.put(key, gc);
+			}
+			catch(ConnectException ex) {
+				
+			}
+		}
+		for(int id2 : clone.keySet()){
 			if (askFrames.get(id2)!=null && askFrames.get(id2) == true){
 				someoneask = true;
 				break;
@@ -340,14 +350,14 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		}
 		askFrames.put(id, true);
 		boolean allask = true;
-		for(int id2 : gameThreads.keySet()){
+		for(int id2 : clone.keySet()){
 			if (askFrames.get(id2)==null || askFrames.get(id2) == false){
 				allask = false;
 				break;
 			}
 		}
 		if (allask){
-			for(int id2 : gameThreads.keySet()){
+			for(int id2 : clone.keySet()){
 				askFrames.put(id2, false);
 			}
 		}
