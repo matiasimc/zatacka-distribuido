@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import client.iClient;
+import client.iClientGame;
 import game.iGame;
 
 public interface iServer extends Remote {
@@ -17,7 +18,7 @@ public interface iServer extends Remote {
 	public void ready(iClient client) throws RemoteException;
 	public void gettingInformation(iClient client) throws RemoteException;
 	public iGame getGame() throws RemoteException;
-	public int getIDClient() throws RemoteException;
+	public int getIDClient(String address) throws RemoteException;
 	public boolean canPlay() throws RemoteException;
 	public void setQueue(LinkedList<iServer> s) throws RemoteException;
 	public void setIdCounter(int id) throws RemoteException;
@@ -33,4 +34,8 @@ public interface iServer extends Remote {
 	public void setMain(boolean b) throws RemoteException;
 	public boolean getMain() throws RemoteException;
 	public double getUsage() throws RemoteException;
+	public boolean alreadyExist(String address) throws RemoteException;
+	public int addressToId(String address) throws RemoteException;
+	public void update(iClient client, iClientGame cgame) throws RemoteException;
+	public void setAdressToId(HashMap<String, Integer> map) throws RemoteException;
 }

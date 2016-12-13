@@ -8,11 +8,12 @@ import server.iServer;
 public class MainClient {
 	public static void main(String[] args) {
 		iServer server;
-		String ip = args[0];
-		System.out.println(ip);
+		String serverip = args[0];
+		String myip = args[1];
+		System.out.println(serverip);
 		try {
-			server = (iServer) Naming.lookup("rmi://"+ip+":1099/ABC");
-			iClient client = new Client(server);
+			server = (iServer) Naming.lookup("rmi://"+serverip+":1099/ABC");
+			iClient client = new Client(server, myip);
 			System.out.println("Me estoy conectando");
 			if (!server.canPlay()) {
 				System.out.println("No hay espacio disponible para jugar");

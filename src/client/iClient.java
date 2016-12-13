@@ -17,6 +17,7 @@ public interface iClient extends Remote {
 	public void setServer(iServer server) throws MalformedURLException, RemoteException, NotBoundException;
 
 	public iServer getServer() throws RemoteException;
+	public String getAddress() throws RemoteException;
 
 
 }

@@ -252,6 +252,10 @@ false);
 	public void setGame(iGame game){
 		this.game = game;
 	}
+	
+	public int getId() throws RemoteException{
+		return this.id;
+	}
 }
 
 

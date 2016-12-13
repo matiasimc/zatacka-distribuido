@@ -17,13 +17,21 @@ public class Client extends UnicastRemoteObject implements iClient {
 	public iServer server;
 	public iClientGame cGame;
 	public int id;
+	public String address;
 	
-	public Client(iServer server) throws RemoteException {
+	public Client(iServer server, String address) throws RemoteException {
 		//super();
+		iClient c;
+		this.address = address;
 		this.server = server;
-		this.id = server.getIDClient();
-		this.cGame = new ClientGame(this, this.server.getGame(), id);
-
+		if (server.alreadyExist(address)){
+			this.id = server.addressToId(address);
+			this.cGame = new ClientGame(this, this.server.getGame(), this.id);
+		}
+		else{
+			this.id = server.getIDClient(address);
+			this.cGame = new ClientGame(this, this.server.getGame(), this.id);
+		}
 	}
 	
 	public void setServer(iServer server) throws MalformedURLException, RemoteException, NotBoundException {
@@ -62,6 +70,10 @@ public class Client extends UnicastRemoteObject implements iClient {
 	
 	public iServer getServer() throws RemoteException  {
 		return this.server;
+	}
+	
+	public String getAddress() throws RemoteException  {
+		return this.address;
 	}
 
 }
