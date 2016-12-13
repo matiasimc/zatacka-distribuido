@@ -118,7 +118,13 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	public synchronized void updateScores() {
 		for (iPlayer p : players()){
 			if (p.isAlive()) {
-				p.addScore();
+				try {
+					gameThreads.get(p.getId()-1).getId();
+					p.addScore();
+				}
+				catch (Exception e){
+					
+				}
 			}
 		}
 	}
@@ -153,7 +159,7 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 			;
 		}
 		updateScores();
-		if (getAlives() == 1){
+		if (getAlives() <= 1){
 			playing = false;
 			votes = 0;
 			//maxVotes = players.size();
@@ -198,7 +204,14 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 				votes = 0;
 				//maxVotes = players.size();
 				matrix = new PositionMatrix(height, width);
-				for (iClientGame cGame: gameThreads.values()) cGame.resetVote();
+				for (iClientGame cGame: gameThreads.values()){
+					try{
+						cGame.resetVote();
+					}
+					catch(Exception ex){
+						
+					}
+				}
 				for (iPlayer p: players()) p.resetBody();
 				futurePlayers = new HashMap<Integer, iPlayer>();
 			}
@@ -240,14 +253,14 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		colors.put(players.remove(clientId).getColor(),false);
 		server.removeClient(clientId);
 		gameThreads.remove(clientId).close();
-		/*if (players.size() < 2) {
+		if (players.size() < 2) {
 			for (iClientGame cgame: gameThreads.values()) {
 				System.out.println("Se acabó el juego niños\n\n\n\n\n\n\n");
 				cgame.close();
 			}
 			System.out.println("cerrandome");
 			System.exit(1);
-		}*/
+		}
 		if (migrate) try{
 			this.server.migrate();
 		}
@@ -296,7 +309,15 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	public synchronized int getAlives()  {
 		int n = 0;
 		for (iPlayer p: players()) {
-			if (p.isAlive()) n++;
+			if (p.isAlive()) {
+				try{
+					gameThreads.get(p.getId()-1).getId();
+					n++;
+				}
+				catch (Exception e){
+					
+				}
+			}
 		}
 		return n;
 	}
