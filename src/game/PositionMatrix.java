@@ -78,13 +78,14 @@ public class PositionMatrix implements Serializable {
 		}
 	}
 	
-	public void fill(int x, int y, int id, boolean visible) throws CollisionException {
+	public int fill(int x, int y, int id, boolean visible) throws CollisionException {
 		int cho;
 		if ((cho = checkCircle(x,y, Point.dHip/2)) != 0 && visible){
 			System.out.println("Alguien choco contra "+cho);
-			throw new CollisionException();
+			return cho;
 		}
 		else if (visible) fillCircle(x,y, Point.dHip/2, id);
+		return 0;
 	}
 	
 	public void deletePlayer(ArrayList<Point> body, int id) {

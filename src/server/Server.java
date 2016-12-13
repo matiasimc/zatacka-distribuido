@@ -151,7 +151,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 			boolean alive = Boolean.parseBoolean(br.readLine());
 			int score = Integer.parseInt(br.readLine());
 			
-			players.put(key, new Player(angle, id, color, body, alive, score));
+			players.put(key, new Player(angle, idPlayer, color, body, alive, score));
 		}
 		auxSize = Integer.parseInt(br.readLine());
 		HashMap<Integer,iPlayer> futurePlayers = new HashMap<Integer,iPlayer>();
@@ -166,7 +166,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 			Color color = new Color(r,g,b);
 			int j= Integer.parseInt(br.readLine());
 			ArrayList<Point> body = new ArrayList<Point>();
-			for(int k=0; k<j; j++){
+			for(int k=0; k<j; k++){
 				st= new StringTokenizer(br.readLine());
 				int x= Integer.parseInt(st.nextToken());
 				int y= Integer.parseInt(st.nextToken());
@@ -175,7 +175,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 			boolean alive = Boolean.parseBoolean(br.readLine());
 			int score = Integer.parseInt(br.readLine());
 			
-			futurePlayers.put(key, new Player(angle, id, color, body, alive, score));
+			futurePlayers.put(key, new Player(angle, idPlayer, color, body, alive, score));
 		}
 		auxSize = Integer.parseInt(br.readLine());
 		HashMap<Color, Boolean> colorMap = new HashMap<Color, Boolean>();

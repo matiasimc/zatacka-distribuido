@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+ctrl_c() {
+	echo ""
+	echo "Closing server..."
+	exit
+}
+
+trap 'ctrl_c' SIGINT
+
+if [ "$#" -ne 1 ] && [ "$#" -ne 3 ]
+then
+	echo "Bad number of arguments"
+	exit
+fi
+cd src
+rmiregistry &
+for dir in ./*/ ; do
+	echo "Compiling in package $dir..."
+	javac -cp ".:sigar.jar" "$dir"/*.java
+done
+if [ "$2" == "-n" ] || [ "$2" == "-s" ]
+then
+	java -cp ".:sigar.jar:" server.MainServer "$1" "$2" "$3"
+else
+	java -cp ".:sigar.jar:" server.MainServer "$1"
+fi
+ctrl_c

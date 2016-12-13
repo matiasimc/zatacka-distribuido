@@ -3,6 +3,7 @@ package game;
 
 import java.awt.Color;
 import java.io.Serializable;
+import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -10,9 +11,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 
-import client.iClient;
-import client.iClientGame;
 import server.iServer;
+import client.iClientGame;
 
 public class Game extends UnicastRemoteObject implements iGame, Serializable{
 
@@ -175,8 +175,17 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		if (player.getBody().size() == 0) return false;
 		Point head = player.getHead();
 		try{
-			matrix.fill(head.x, head.y, player.getId(), head.visible);
-			return false;
+			int col = matrix.fill(head.x, head.y, player.getId(), head.visible);
+			try{
+				if (col > 0) {
+					gameThreads.get(col-1).getId();
+					throw new CollisionException();
+				}
+				else return false;
+			}
+			catch(ConnectException e){
+				return false;	
+			}
 		}
 		catch (CollisionException e) {
 			//return false;
@@ -361,12 +370,23 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	}
 
 	@Override
-	public synchronized void growUp(int clientId, boolean visibility)  {
-		this.gettingPlayer(clientId).growUp(visibility);
+	public synchronized void growUp(int clientId, boolean visibility) throws RemoteException  {
+		try{
+			gameThreads.get(clientId).getId();
+			this.gettingPlayer(clientId).growUp(visibility);
+		}
+		catch (ConnectException e){
+		}
 	}
 	
-	public synchronized ArrayList<Point> getBody(int clientId) {
-		return this.gettingPlayer(clientId).getBody();
+	public synchronized ArrayList<Point> getBody(int clientId) throws RemoteException{
+		try{
+			gameThreads.get(clientId).getId();
+			return this.gettingPlayer(clientId).getBody();
+		}
+		catch (ConnectException e){
+			return new ArrayList<Point>();
+		}
 	}
 	
 	public synchronized Point getHead(int clientId) {

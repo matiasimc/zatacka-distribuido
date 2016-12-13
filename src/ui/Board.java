@@ -66,10 +66,13 @@ public class Board extends Canvas{
         this.buffer = this.img.getGraphics();
         this.buffer.setColor(Color.black);
         this.buffer.fillRect(0, 0, this.width, this.height);
+        try {
+			if (this.cGame.getConnectionLost()) showConnectionLostMessage();
+		} catch (RemoteException e1) {}
 
         // dibujar elementos del juego
         try {
-        	for(int clientId: this.cGame.clientIds()){
+    		for(int clientId: this.cGame.clientIds()){
             	drawSnake(clientId);
         	}
         	if (!this.cGame.started || (this.cGame.started && this.cGame.game.isPlaying() && this.cGame.countdown>0 && !this.cGame.game.getPaused())) showWaitingMessage();
@@ -120,7 +123,19 @@ public class Board extends Canvas{
 			if (this.buffer == null) this.buffer = this.img.getGraphics();
 			buffer.setColor(Color.WHITE);
 			buffer.setFont(cf);
-			buffer.drawString("Paused, press SPACE to continue", 10, 550);
+			buffer.drawString("Juego pausado, presione ESPACIO para continuar", 10, 550);
+		}
+		catch(Exception e){
+			return;
+		}
+	}
+	
+	private void showConnectionLostMessage() {
+		try{
+			if (this.buffer == null) this.buffer = this.img.getGraphics();
+			buffer.setColor(Color.YELLOW);
+			buffer.setFont(cf);
+			buffer.drawString("Conexion al servidor perdida, esperando reconectar", 10, 550);
 		}
 		catch(Exception e){
 			return;
