@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 
 import org.hyperic.sigar.CpuPerc;
-import org.hyperic.sigar.Mem;
 import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 
@@ -210,8 +209,9 @@ public class Server extends UnicastRemoteObject implements iServer{
 	public double getUsage() throws RemoteException {
 		CpuPerc perc= null;
         try {
+        	Thread.sleep(1000);
         	perc = sigar.getCpuPerc();
-        } catch (SigarException se) {
+        } catch (Exception se) {
             se.printStackTrace();
         }
         return perc.getCombined()*100.0;
