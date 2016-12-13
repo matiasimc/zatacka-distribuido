@@ -100,6 +100,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	}
 	
 	public Server(String ip, File f) throws Exception{
+		Naming.bind("rmi://"+ip+":1099/ABC", this);
 		int auxSize=0;
 		this.myDir = ip;
 		soyelmain = true;
@@ -115,8 +116,8 @@ public class Server extends UnicastRemoteObject implements iServer{
 		this.waitPlayers= Integer.parseInt(br.readLine());
 		auxSize = Integer.parseInt(br.readLine());
 		for(int i=0; i <auxSize; i++){
-			iServer serv = (iServer) Naming.lookup("rmi://"+br.readLine()+":1099/ABC");
-			this.serverQueue.add(serv);
+			iServer serv = (iServer) Naming.lookup("rmi://"+br.readLine()+":1099/ABC")
+			this.serverQueue.add(new Server(br.readLine()));
 		}
 		this.id= Integer.parseInt(br.readLine());
 		//game
@@ -204,7 +205,6 @@ public class Server extends UnicastRemoteObject implements iServer{
 		
 		auxSize = Integer.parseInt(br.readLine());
 		this.clients = new HashMap<Integer, iClient>();
-		Naming.bind("rmi://"+ip+":1099/ABC", this);
 		for(int i=0; i <auxSize; i++){
 			int idClient = Integer.parseInt(br.readLine());
 			String ipClient = br.readLine();
