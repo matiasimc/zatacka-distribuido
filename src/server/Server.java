@@ -9,15 +9,14 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import javax.print.attribute.standard.Severity;
+import org.hyperic.sigar.CpuPerc;
+import org.hyperic.sigar.Mem;
+import org.hyperic.sigar.Sigar;
+import org.hyperic.sigar.SigarException;
 
 import client.iClient;
 import game.Game;
 import game.iGame;
-
-import org.hyperic.sigar.Mem;
-import org.hyperic.sigar.Sigar;
-import org.hyperic.sigar.SigarException;
 
 
 public class Server extends UnicastRemoteObject implements iServer{
@@ -47,7 +46,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 			public void run() {
 				try {
 					while(true){
-						//if (soyelmain) System.out.println(getUsage());
+						if (soyelmain) System.out.println(getUsage());
 						if (soyelmain && getUsage()>=cap) migrate();	
 					}
 				} catch (Exception e) {
@@ -72,7 +71,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 			public void run() {
 				try {
 					while(true){
-						//if (soyelmain) System.out.println(getUsage());
+						if (soyelmain) System.out.println(getUsage());
 						if (soyelmain && getUsage()>=cap) migrate();
 					}
 				} catch (Exception e) {
@@ -134,7 +133,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	}
 	
 	private iServer getNew() throws RemoteException {
-                System.out.println("Dame un server");
+        System.out.println("Dame un server");
 		double minLoad = 101;
 		iServer newServer = this;
 		for (iServer s: serverQueue) {
@@ -226,13 +225,13 @@ public class Server extends UnicastRemoteObject implements iServer{
 	}
 	
 	public double getUsage() throws RemoteException {
-		Mem mem = null;
+		CpuPerc perc= null;
         try {
-            mem = sigar.getMem();
+        	perc = sigar.getCpuPerc();
         } catch (SigarException se) {
             se.printStackTrace();
         }
-        return mem.getUsedPercent();
+        return perc.getCombined()*100.0;
 	}
 	
 	public void printMigrate(){
