@@ -115,7 +115,8 @@ public class Server extends UnicastRemoteObject implements iServer{
 		this.waitPlayers= Integer.parseInt(br.readLine());
 		auxSize = Integer.parseInt(br.readLine());
 		for(int i=0; i <auxSize; i++){
-			this.serverQueue.add(new Server(br.readLine()));
+			iServer serv = (iServer) Naming.lookup("rmi://"+br.readLine()+":1099/ABC");
+			this.serverQueue.add(serv);
 		}
 		this.id= Integer.parseInt(br.readLine());
 		//game
