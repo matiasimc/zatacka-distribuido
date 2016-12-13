@@ -94,11 +94,16 @@ public class Server extends UnicastRemoteObject implements iServer{
 	
 	public void createSnapshot(){
 		try{
-		    PrintWriter writer = new PrintWriter("the-file-name.txt", "UTF-8");
-		    writer.println("The first line");
-		    writer.println("The second line");
+		    PrintWriter writer = new PrintWriter("snapshot.txt", "UTF-8");
+		    writer.println(this.id);
+		    writer.println(this.waitPlayers);
+		    writer.println(this.started);
+		    writer.println(this.serverQueue.size());
+		    writer.println();
+		    writer.println();
+		    writer.println();
 		    writer.close();
-		} catch (IOExceptionption e) {
+		} catch (IOException e) {
 		   	System.out.println("Falló Snapshot");
 		}
 	}
