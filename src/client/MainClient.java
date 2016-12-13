@@ -21,7 +21,7 @@ public class MainClient {
 				System.exit(0);
 			}
 			server.addClient(client);
-			Naming.bind("rmi://"+myip+":1089/Client", client);
+			Naming.bind("rmi://"+myip+":1099/Client", client);
 			System.out.println("Client ="+ myip);
 			
 			
