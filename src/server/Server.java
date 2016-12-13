@@ -106,6 +106,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 		soyelmain = true;
 		this.addressToId = new HashMap<String,Integer>();
 		this.serverQueue = new LinkedList<iServer>();
+		this.serverQueue.add(this);
 		BufferedReader br = new BufferedReader(new FileReader(f));
 		auxSize = Integer.parseInt(br.readLine());
 		for(int i=0; i <auxSize; i++){
@@ -116,8 +117,11 @@ public class Server extends UnicastRemoteObject implements iServer{
 		this.waitPlayers= Integer.parseInt(br.readLine());
 		auxSize = Integer.parseInt(br.readLine());
 		for(int i=0; i <auxSize; i++){
-			iServer serv = (iServer) Naming.lookup("rmi://"+br.readLine()+":1099/ABC");
-			this.serverQueue.add(new Server(br.readLine()));
+			String line = br.readLine();
+			if (!line.equals(ip)){
+				iServer serv = (iServer) Naming.lookup("rmi://"+line+":1099/ABC");
+				this.serverQueue.add(serv);
+			}
 		}
 		this.id= Integer.parseInt(br.readLine());
 		//game
