@@ -66,9 +66,6 @@ public class Board extends Canvas{
         this.buffer = this.img.getGraphics();
         this.buffer.setColor(Color.black);
         this.buffer.fillRect(0, 0, this.width, this.height);
-        try {
-			if (this.cGame.getConnectionLost()) showConnectionLostMessage();
-		} catch (RemoteException e1) {}
 
         // dibujar elementos del juego
         try {
@@ -79,7 +76,7 @@ public class Board extends Canvas{
         	if (this.cGame.game.getPaused()) showPausedMessage();
         	if(show) showVotation();
 		}catch (ConnectException c){
-			
+			showConnectionLostMessage();
         }
         catch (RemoteException e) {
 			e.printStackTrace();

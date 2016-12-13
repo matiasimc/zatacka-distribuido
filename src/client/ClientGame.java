@@ -43,7 +43,6 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
     private Scores scores;
     public volatile int countdown = 0;
     private volatile boolean continu;
-	private volatile boolean connectionLost;
     
     public ClientGame(iClient client, iGame game, int id) throws RemoteException{
     	this.client = client;
@@ -55,7 +54,6 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 		this.started = true;
 		this.continu = true;
 		this.GROW_RATE = game.getGrowRate();
-		this.connectionLost = false;
     }
 	
     
@@ -88,8 +86,6 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 	        while (continu) { // Main loop
 	        	try{
 		        	tablero.repaint();
-		        	//System.out.println("llego hasta aca");
-		        	this.connectionLost = false;
 		            scores.repaint();
 		            // Controles
 		            if (keys[KeyEvent.VK_UP]) {
@@ -194,11 +190,10 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 		            }
 		        }
 	        	catch(ConnectException e){
-	        		this.connectionLost = true;
-	        		//System.out.println("Servidor caido, esperando reconexion");
-	            	//try {
-					//	Thread.sleep(4000);
-					//} catch (InterruptedException e1) {}
+	        		System.out.println("Servidor caido, esperando reconexion");
+	            	try {
+						Thread.sleep(4000);
+					} catch (InterruptedException e1) {}
 	            }
 	        	catch(Exception e) {
 	        		
@@ -285,11 +280,6 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 		return this.id;
 	}
 
-
-	@Override
-	public boolean getConnectionLost() throws RemoteException {
-		return this.connectionLost;
-	}
 }
 
 
