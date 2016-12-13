@@ -1,6 +1,7 @@
 package server;
 
 
+import java.io.*;
 import java.net.MalformedURLException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -89,6 +90,17 @@ public class Server extends UnicastRemoteObject implements iServer{
 	public void addServer(iServer server) throws RemoteException {
 		this.serverQueue.add(server);
 		System.out.println("Server "+server.getDir()+" enqueued");
+	}
+	
+	public void createSnapshot(){
+		try{
+		    PrintWriter writer = new PrintWriter("the-file-name.txt", "UTF-8");
+		    writer.println("The first line");
+		    writer.println("The second line");
+		    writer.close();
+		} catch (IOExceptionption e) {
+		   	System.out.println("Falló Snapshot");
+		}
 	}
 	
 	public void migrate() throws RemoteException, MalformedURLException, NotBoundException {
