@@ -271,7 +271,10 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	
 	public synchronized iPlayer newPlayer(int clientId, boolean started)  {
 		iPlayer player;
-		if (started && !isPlaying()) {
+		if (players.containsKey(clientId)){
+			return players.get(clientId);
+		}
+		else if (started && !isPlaying()) {
 			System.out.println("no tengo cabeza");
 			player = new Player(assignColor(), clientId+1);
 		}
@@ -410,7 +413,6 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	public HashMap<Color, Boolean> getColors() throws RemoteException{
 		return this.colors;
 	}
-
 	@Override
 	public String getSnapshot() throws RemoteException{
 		StringBuilder text = new StringBuilder();
@@ -455,6 +457,10 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		this.server.createSnapshot();
 	}
 
+	
+	public synchronized void update(iClientGame cgame) throws RemoteException{
+		gameThreads.put(cgame.getId(), cgame); 
+	}
 	/*
 	@Override
 	public int getMaxVotes() throws RemoteException {

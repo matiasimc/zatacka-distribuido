@@ -92,6 +92,7 @@ public interface iGame extends Remote {
 
 	public void snapshot() throws RemoteException;
 	
+	public void update(iClientGame cgame) throws RemoteException;
 	//public int getMaxVotes() throws RemoteException;
 
 }

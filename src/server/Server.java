@@ -20,6 +20,7 @@ import org.hyperic.sigar.Sigar;
 import org.hyperic.sigar.SigarException;
 
 import client.iClient;
+import client.iClientGame;
 import game.Game;
 import game.Player;
 import game.Point;
@@ -37,6 +38,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 	private static final long serialVersionUID = -5827401619662767775L;
 	private Sigar sigar = new Sigar();
 	iGame game;
+	HashMap<String, Integer> addressToId;
 	HashMap<Integer, iClient> clients;
 	int id;
 	int waitPlayers;
@@ -46,15 +48,18 @@ public class Server extends UnicastRemoteObject implements iServer{
 	private static final int cap = 75;
 	private LinkedList<iServer> serverQueue;
 	private String myDir;
-	
+	private CpuPerc perc;
 	
 	public Server(String myDir) throws RemoteException {
+		this.addressToId = new HashMap<String, Integer>();
 		this.myDir = myDir;
+		perc = null;
 		soyelmain = false;
 		new Thread() {
 			public void run() {
 				try {
 					while(true){
+						updateUsage();
 						if (soyelmain) System.out.println(getUsage());
 						if (soyelmain && getUsage()>=cap) migrate();	
 					}
@@ -67,6 +72,8 @@ public class Server extends UnicastRemoteObject implements iServer{
 	}
 	
 	public Server(int waitPlayers, String myDir) throws RemoteException {
+		this.addressToId = new HashMap<String, Integer>();
+		perc = null;
 		this.setIdCounter(0);
 		this.started = false;
 		this.serverQueue = new LinkedList<iServer>();
@@ -80,6 +87,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 			public void run() {
 				try {
 					while(true){
+						updateUsage();
 						if (soyelmain) System.out.println(getUsage());
 						if (soyelmain && getUsage()>=cap) migrate();
 					}
@@ -94,8 +102,15 @@ public class Server extends UnicastRemoteObject implements iServer{
 	public Server(String ip, File f) throws Exception{
 		int auxSize=0;
 		soyelmain = true;
+		this.addressToId = new HashMap<String,Integer>();
 		this.serverQueue = new LinkedList<iServer>();
 		BufferedReader br = new BufferedReader(new FileReader(f));
+		auxSize = Integer.parseInt(br.readLine());
+		for(int i=0; i <auxSize; i++){
+			String key = br.readLine();
+			Integer value = Integer.parseInt(br.readLine());
+			this.addressToId.put(key, value);			
+		}
 		this.waitPlayers= Integer.parseInt(br.readLine());
 		auxSize = Integer.parseInt(br.readLine());
 		for(int i=0; i <auxSize; i++){
@@ -207,8 +222,16 @@ public class Server extends UnicastRemoteObject implements iServer{
 	
 	public void createSnapshot() throws RemoteException{
 		System.out.println("Empezaré el snapshot");
+		HashMap<String, Integer> addressToId;
 		try{
 		    PrintWriter writer = new PrintWriter("snapshot.txt", "UTF-8");
+		    writer.println(this.addressToId.size());
+		    for (Entry<String, Integer> entry : addressToId.entrySet()) {
+		        String key = entry.getKey();
+		        Integer value = entry.getValue();
+		        writer.println(key.toString());
+		        writer.println(value.toString());
+		    }
 		    writer.println(this.waitPlayers);
 		    writer.println(this.serverQueue.size());
 		    for(iServer s: serverQueue){
@@ -248,6 +271,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 			newServer.setIdCounter(this.id);
 			newServer.setWaitPlayers(this.waitPlayers);
 			newServer.setGame(this.game);
+			newServer.setAdressToId(this.addressToId);
 			newServer.setClients(this.clients);
 			for (iClient c: this.clients.values()) {
 				c.setServer(newServer);
@@ -272,6 +296,10 @@ public class Server extends UnicastRemoteObject implements iServer{
 
 	public void setWaitPlayers(int w) throws RemoteException {
 		this.waitPlayers = w;
+	}
+	
+	public void setAdressToId(HashMap<String, Integer> map) throws RemoteException {
+		this.addressToId = map;
 	}
 	
 	public void setGame(iGame g) throws RemoteException {
@@ -343,21 +371,31 @@ public class Server extends UnicastRemoteObject implements iServer{
 	}
 	
 	
-	public synchronized int getIDClient() throws RemoteException {
+	public synchronized int getIDClient(String address) throws RemoteException {
 		int idGived= id;
+		this.addressToId.put(address, id);
 		id++;
 		return idGived;
 	}
 	
-	public double getUsage() throws RemoteException {
-		CpuPerc perc= null;
-        try {
+	public void updateUsage() throws RemoteException {
+		try {
         	Thread.sleep(1000);
         	perc = sigar.getCpuPerc();
-        } catch (Exception se) {
-            se.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return perc.getCombined()*100.0;
+	}
+	public double getUsage() throws RemoteException {
+        try{
+        	if (perc == null){
+            	perc = sigar.getCpuPerc();
+    		}
+        	return perc.getCombined()*100.0;
+        }
+        catch (Exception e){
+        	return 0;
+        }
 	}
 	
 	public void printMigrate(){
@@ -366,19 +404,20 @@ public class Server extends UnicastRemoteObject implements iServer{
 	
 	public synchronized void removeClient(int clientId) throws RemoteException{
 		clients.remove(clientId);
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+		iClient client = clients.remove(clientId);
+		addressToId.remove(client.getAddress());
 	}
-
+	
+	public synchronized boolean alreadyExist(String address) throws RemoteException{
+		return this.addressToId.containsKey(address);
+	}
+	
+	public synchronized int addressToId(String address) throws RemoteException{
+		return this.addressToId.get(address);
+	}
+	
+	public synchronized void update(iClient client, iClientGame cgame) throws RemoteException{
+		clients.put(client.getID(), client);
+		game.update(cgame);
+	}
 }

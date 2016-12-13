@@ -20,4 +20,5 @@ public interface iClientGame extends Remote {
 	public void setStarted(boolean s) throws RemoteException;
 	public void setCountdown(int n) throws RemoteException;
 	public void setGame(iGame game) throws RemoteException;
+	public int getId() throws RemoteException;
 }

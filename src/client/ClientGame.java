@@ -264,6 +264,10 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 	public void setGame(iGame game){
 		this.game = game;
 	}
+	
+	public int getId() throws RemoteException{
+		return this.id;
+	}
 }
 
 
