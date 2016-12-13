@@ -91,8 +91,9 @@ public class Server extends UnicastRemoteObject implements iServer{
 		}.start();
 	}
 	
-	public Server(String ip, File f) throws RemoteException{
+	public Server(String ip, File f) throws Exception{
 		int auxSize=0;
+		soyelmain = true;
 		this.serverQueue = new LinkedList<iServer>();
 		BufferedReader br = new BufferedReader(new FileReader(f));
 		this.waitPlayers= Integer.parseInt(br.readLine());
@@ -125,7 +126,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 			Color color = new Color(r,g,b);
 			int j= Integer.parseInt(br.readLine());
 			ArrayList<Point> body = new ArrayList<Point>();
-			for(int k=0; k<j; j++){
+			for(int k=0; k<j; k++){
 				st= new StringTokenizer(br.readLine());
 				int x= Integer.parseInt(st.nextToken());
 				int y= Integer.parseInt(st.nextToken());
@@ -181,7 +182,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 			}
 		}
 		boolean playing = Boolean.parseBoolean(br.readLine());
-		this.game = new Game(votes, frames, paused, askFrames, players, futurePlayers, colorMap, matrix, playing);
+		this.game = new Game(votes, frames, paused, askFrames, players, futurePlayers, colorMap, matrix, playing, this);
 		
 		
 		auxSize = Integer.parseInt(br.readLine());

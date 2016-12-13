@@ -11,6 +11,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.geom.Line2D;
 import java.io.File;
+import java.rmi.ConnectException;
 import java.rmi.RemoteException;
 import java.rmi.UnmarshalException;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ public class Board extends Canvas{
     }
 
     @Override
-    public void paint(Graphics graphics) {
+    public void paint(Graphics graphics){
 
         this.img = createImage(this.width, this.height);
         this.buffer = this.img.getGraphics();
@@ -74,8 +75,11 @@ public class Board extends Canvas{
         	if (!this.cGame.started || (this.cGame.started && this.cGame.game.isPlaying() && this.cGame.countdown>0 && !this.cGame.game.getPaused())) showWaitingMessage();
         	if (this.cGame.game.getPaused()) showPausedMessage();
         	if(show) showVotation();
-		} catch (RemoteException e) {
-			e.printStackTrace();	
+		}catch (ConnectException c){
+			
+        }
+        catch (RemoteException e) {
+			e.printStackTrace();
 		}
        
         graphics.drawImage(img, 0, 0, null);

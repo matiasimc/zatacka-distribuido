@@ -6,4 +6,4 @@ for dir in ./*/ ; do
 	echo "Compiling in package $dir..."
 	javac -cp ".:sigar.jar" "$dir"/*.java
 done
-java -cp ".:sigar.jar" -Djava.rmi.server.hostname="$localip" client.MainClient "$localip" "$1"
+java -cp ".:sigar.jar" -Djava.rmi.server.hostname="$localip" client.MainClient "$1" "$2"
