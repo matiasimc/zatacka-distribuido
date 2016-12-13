@@ -21,5 +21,6 @@ public interface iPlayer {
 	void resetBody();
 	void revive(Point p);
 	int getAngle();
+	String getSnapshot();
 
 }

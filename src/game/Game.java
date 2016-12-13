@@ -8,7 +8,9 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
 
+import client.iClient;
 import client.iClientGame;
 import server.iServer;
 
@@ -390,9 +392,46 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 	}
 
 	@Override
-	public String getSnapshot() {
-		// TODO Auto-generated method stub
-		return null;
+	public String getSnapshot() throws RemoteException{
+		String text ="";
+		text.concat(this.votes+"\n");
+		text.concat(this.frames+"\n");
+		text.concat(this.paused+"\n");
+		text.concat(this.askFrames.size()+"\n");
+		for (Entry<Integer, Boolean> entry : askFrames.entrySet()) {
+	        Integer key = entry.getKey();
+	        Boolean value = entry.getValue();
+	        text.concat(key.toString()+"\n");
+	        text.concat(value.toString()+"\n");
+	    }
+		for (Entry<Integer, iClientGame> entry : gameThreads.entrySet()) {
+	        Integer key = entry.getKey();
+	        iClientGame value = entry.getValue();
+	        text.concat(key.toString()+"\n");
+	        text.concat(value.getSnapshot()+"\n");
+	    }
+		for (Entry<Integer, iPlayer> entry : players.entrySet()) {
+	        Integer key = entry.getKey();
+	        iPlayer value = entry.getValue();
+	        text.concat(key.toString()+"\n");
+	        text.concat(value.getSnapshot()+"\n");
+	    }
+		for (Entry<Integer, iPlayer> entry : futurePlayers.entrySet()) {
+	        Integer key = entry.getKey();
+	        iPlayer value = entry.getValue();
+	        text.concat(key.toString()+"\n");
+	        text.concat(value.getSnapshot()+"\n");
+	    }
+		for (Entry<Color, Boolean> entry : colors.entrySet()) {
+	        Color key = entry.getKey();
+	        Boolean value = entry.getValue();
+	        text.concat(key.toString()+"\n");
+	        text.concat(value.toString()+"\n");
+	    }
+		text.concat(matrix.getSnapshot());
+		text.concat(this.playing+"");
+		
+		return text;
 	}
 
 	/*

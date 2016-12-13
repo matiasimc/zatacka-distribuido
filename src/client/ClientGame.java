@@ -252,6 +252,13 @@ false);
 	public void setGame(iGame game){
 		this.game = game;
 	}
+
+
+	@Override
+	public String getSnapshot() throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
 
 

@@ -64,4 +64,10 @@ public class Client extends UnicastRemoteObject implements iClient {
 		return this.server;
 	}
 
+	@Override
+	public String getSnapshot() throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -112,5 +112,10 @@ public class PositionMatrix implements Serializable {
 			}
 		}
 	}
+
+	public String getSnapshot() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

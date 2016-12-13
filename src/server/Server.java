@@ -8,6 +8,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.Sigar;
@@ -102,9 +104,11 @@ public class Server extends UnicastRemoteObject implements iServer{
 		    writer.println(this.myDir);
 		    writer.println(this.game.getSnapshot());
 		    writer.println(this.clients.size());
-		    for(){
-			    writer.println(this.started);
-		    	writer.println(this.started);
+		    for (Entry<Integer, iClient> entry : clients.entrySet()) {
+		        Integer key = entry.getKey();
+		        iClient value = entry.getValue();
+		        writer.println(key.toString());
+		        writer.println(value.getSnapshot());
 		    }
 		    writer.println(this.started);
 		    writer.close();

@@ -127,4 +127,10 @@ public class Player implements iPlayer, Serializable{
 	public int getAngle() {
 		return this.angle;
 	}
+
+	@Override
+	public String getSnapshot() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

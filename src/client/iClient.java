@@ -18,5 +18,7 @@ public interface iClient extends Remote {
 
 	public iServer getServer() throws RemoteException;
 
+	public String getSnapshot() throws RemoteException;
+
 
 }
