@@ -202,9 +202,11 @@ public class Server extends UnicastRemoteObject implements iServer{
 		
 		auxSize = Integer.parseInt(br.readLine());
 		for(int i=0; i <auxSize; i++){
+			int idClient = Integer.parseInt(br.readLine());
 			String ipClient = br.readLine();
+			System.out.println(ipClient);
 			iClient client = (iClient) Naming.lookup("rmi://"+ipClient+":1099/Client");
-			this.clients.put(id, client);
+			this.clients.put(idClient, client);
 		}
 		this.started= Boolean.parseBoolean(br.readLine());
 		
@@ -222,7 +224,6 @@ public class Server extends UnicastRemoteObject implements iServer{
 	
 	public void createSnapshot() throws RemoteException{
 		System.out.println("Empezaré el snapshot");
-		HashMap<String, Integer> addressToId;
 		try{
 		    PrintWriter writer = new PrintWriter("snapshot.txt", "UTF-8");
 		    writer.println(this.addressToId.size());

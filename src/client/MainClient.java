@@ -12,6 +12,7 @@ public class MainClient {
 		String myip = args[1];
 		System.out.println(serverip);
 		try {
+			System.setProperty("java.rmi.server.hostname", myip);
 			server = (iServer) Naming.lookup("rmi://"+serverip+":1099/ABC");
 			iClient client = new Client(server, myip);
 			System.out.println("Me estoy conectando");
@@ -20,7 +21,8 @@ public class MainClient {
 				System.exit(0);
 			}
 			server.addClient(client);
-			Naming.bind("rmi://"+myip+":1099/Client", client);
+			Naming.bind("rmi://"+myip+":1089/Client", client);
+			System.out.println("Client ="+ myip);
 			
 			
 		}catch(Exception e){
