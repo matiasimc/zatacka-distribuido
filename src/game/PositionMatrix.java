@@ -112,10 +112,20 @@ public class PositionMatrix implements Serializable {
 			}
 		}
 	}
+	
+	public void setValue(int width, int height, int val){
+		matrix[height][width] = val;
+	}
 
 	public String getSnapshot() {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuilder text = new StringBuilder();
+		text.append(this.Width+" "+this.Height+"\n");
+		for(int i=0; i<this.Width; i++){
+			for(int j=0; j<this.Height; j++){
+				text.append(matrix[j][i]+"\n");
+			}
+		}
+		return text.toString();
 	}
 	
 }

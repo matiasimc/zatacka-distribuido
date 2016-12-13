@@ -1,23 +1,31 @@
 package server;
 
 
+import java.awt.Color;
 import java.io.*;
 import java.net.MalformedURLException;
-import java.rmi.ConnectException;
+import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.StringTokenizer;
 
 import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.Sigar;
+import org.hyperic.sigar.SigarException;
 
 import client.iClient;
 import game.Game;
+import game.Player;
+import game.Point;
+import game.PositionMatrix;
 import game.iGame;
+import game.iPlayer;
 
 
 public class Server extends UnicastRemoteObject implements iServer{
@@ -83,6 +91,110 @@ public class Server extends UnicastRemoteObject implements iServer{
 		}.start();
 	}
 	
+	public Server(String ip, File f) throws RemoteException{
+		int auxSize=0;
+		this.serverQueue = new LinkedList<iServer>();
+		BufferedReader br = new BufferedReader(new FileReader(f));
+		this.waitPlayers= Integer.parseInt(br.readLine());
+		auxSize = Integer.parseInt(br.readLine());
+		for(int i=0; i <auxSize; i++){
+			this.serverQueue.add(new Server(br.readLine()));
+		}
+		this.id= Integer.parseInt(br.readLine());
+		//game
+		int votes = Integer.parseInt(br.readLine());
+		int frames = Integer.parseInt(br.readLine());
+		boolean paused = Boolean.parseBoolean(br.readLine());
+		auxSize = Integer.parseInt(br.readLine());
+		HashMap<Integer,Boolean> askFrames = new HashMap<Integer,Boolean>();
+		for(int i=0; i <auxSize; i++){
+			int key = Integer.parseInt(br.readLine());
+			boolean value = Boolean.parseBoolean(br.readLine());
+			askFrames.put(key, value);			
+		}
+		auxSize = Integer.parseInt(br.readLine());
+		HashMap<Integer,iPlayer> players = new HashMap<Integer,iPlayer>();
+		for(int i=0; i <auxSize; i++){
+			int key = Integer.parseInt(br.readLine());
+			int angle = Integer.parseInt(br.readLine());
+			int idPlayer = Integer.parseInt(br.readLine());
+			StringTokenizer st= new StringTokenizer(br.readLine());
+			int r= Integer.parseInt(st.nextToken());
+			int g= Integer.parseInt(st.nextToken());
+			int b= Integer.parseInt(st.nextToken());
+			Color color = new Color(r,g,b);
+			int j= Integer.parseInt(br.readLine());
+			ArrayList<Point> body = new ArrayList<Point>();
+			for(int k=0; k<j; j++){
+				st= new StringTokenizer(br.readLine());
+				int x= Integer.parseInt(st.nextToken());
+				int y= Integer.parseInt(st.nextToken());
+				body.add(new Point(x,y));				
+			}
+			boolean alive = Boolean.parseBoolean(br.readLine());
+			int score = Integer.parseInt(br.readLine());
+			
+			players.put(key, new Player(angle, id, color, body, alive, score));
+		}
+		auxSize = Integer.parseInt(br.readLine());
+		HashMap<Integer,iPlayer> futurePlayers = new HashMap<Integer,iPlayer>();
+		for(int i=0; i <auxSize; i++){
+			int key = Integer.parseInt(br.readLine());
+			int angle = Integer.parseInt(br.readLine());
+			int idPlayer = Integer.parseInt(br.readLine());
+			StringTokenizer st= new StringTokenizer(br.readLine());
+			int r= Integer.parseInt(st.nextToken());
+			int g= Integer.parseInt(st.nextToken());
+			int b= Integer.parseInt(st.nextToken());
+			Color color = new Color(r,g,b);
+			int j= Integer.parseInt(br.readLine());
+			ArrayList<Point> body = new ArrayList<Point>();
+			for(int k=0; k<j; j++){
+				st= new StringTokenizer(br.readLine());
+				int x= Integer.parseInt(st.nextToken());
+				int y= Integer.parseInt(st.nextToken());
+				body.add(new Point(x,y));				
+			}
+			boolean alive = Boolean.parseBoolean(br.readLine());
+			int score = Integer.parseInt(br.readLine());
+			
+			futurePlayers.put(key, new Player(angle, id, color, body, alive, score));
+		}
+		auxSize = Integer.parseInt(br.readLine());
+		HashMap<Color, Boolean> colorMap = new HashMap<Color, Boolean>();
+		for(int i=0; i <auxSize; i++){
+			StringTokenizer st= new StringTokenizer(br.readLine());
+			int r= Integer.parseInt(st.nextToken());
+			int g= Integer.parseInt(st.nextToken());
+			int b= Integer.parseInt(st.nextToken());
+			Color color = new Color(r,g,b);
+			boolean occupied = Boolean.parseBoolean(br.readLine());
+			colorMap.put(color, occupied);
+		}
+		StringTokenizer st= new StringTokenizer(br.readLine());
+		int width = Integer.parseInt(st.nextToken());
+		int height = Integer.parseInt(st.nextToken());
+		PositionMatrix matrix = new PositionMatrix(width,height); 
+		for(int i=0; i<width; i++){
+			for(int j=0; j<height; j++){
+				matrix.setValue(i,j,Integer.parseInt(br.readLine()));
+			}
+		}
+		boolean playing = Boolean.parseBoolean(br.readLine());
+		this.game = new Game(votes, frames, paused, askFrames, players, futurePlayers, colorMap, matrix, playing);
+		
+		
+		auxSize = Integer.parseInt(br.readLine());
+		for(int i=0; i <auxSize; i++){
+			String ipClient = br.readLine();
+			iClient client = (iClient) Naming.lookup("rmi://"+ipClient+":1099/Client");
+			this.clients.put(id, client);
+		}
+		this.started= Boolean.parseBoolean(br.readLine());
+		
+		
+	}
+
 	public String getDir() throws RemoteException {
 		return myDir;
 	}
@@ -92,16 +204,16 @@ public class Server extends UnicastRemoteObject implements iServer{
 		System.out.println("Server "+server.getDir()+" enqueued");
 	}
 	
-	public void createSnapshot(){
+	public void createSnapshot() throws RemoteException{
+		System.out.println("Empezaré el snapshot");
 		try{
 		    PrintWriter writer = new PrintWriter("snapshot.txt", "UTF-8");
-		    writer.println(this.id);
 		    writer.println(this.waitPlayers);
 		    writer.println(this.serverQueue.size());
 		    for(iServer s: serverQueue){
 			    writer.println(s.getDir());
 		    }
-		    writer.println(this.myDir);
+		    writer.println(this.id);
 		    writer.println(this.game.getSnapshot());
 		    writer.println(this.clients.size());
 		    for (Entry<Integer, iClient> entry : clients.entrySet()) {
@@ -115,7 +227,9 @@ public class Server extends UnicastRemoteObject implements iServer{
 		} catch (IOException e) {
 		   	System.out.println("Falló Snapshot");
 		}
+		System.out.println("Terminé el snapshot");
 	}
+	
 	
 	public void migrate() throws RemoteException, MalformedURLException, NotBoundException {
 		System.out.println("Llamaron a migrar");
@@ -146,17 +260,10 @@ public class Server extends UnicastRemoteObject implements iServer{
         System.out.println("Dame un server");
 		double minLoad = 101;
 		iServer newServer = this;
-		LinkedList<iServer> queueCopy = new LinkedList<iServer>(this.serverQueue);
-		for (iServer s: queueCopy) {
-			try{
-				double usage = s.getUsage();
-				if (usage < minLoad) {
-					minLoad = usage;
-					newServer = s;
-				}
-			}
-			catch(ConnectException ex){
-				this.serverQueue.remove(s);
+		for (iServer s: serverQueue) {
+			if (s.getUsage() < minLoad) {
+				minLoad = s.getUsage();
+				newServer = s;
 			}
 		}
 		return newServer;
@@ -258,6 +365,19 @@ public class Server extends UnicastRemoteObject implements iServer{
 	
 	public synchronized void removeClient(int clientId) throws RemoteException{
 		clients.remove(clientId);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	}
 
 }

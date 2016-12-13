@@ -19,6 +19,16 @@ public class Player implements iPlayer, Serializable{
 	private boolean alive;
 	private int score;
 	
+	public Player(int angle, int id, Color color, ArrayList<Point> body, boolean alive, int score ){
+		this.angle = angle;
+		this.id = id;
+		this.color = color;
+		this.body = body;
+		this.alive = alive;
+		this.score = score;
+	}
+	
+	
 	public Player(Color color, Point head, int id) {
 		this.color = color;
 		this.body = new ArrayList<Point>();
@@ -130,7 +140,16 @@ public class Player implements iPlayer, Serializable{
 
 	@Override
 	public String getSnapshot() {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuilder text = new StringBuilder();
+		text.append(this.angle+"\n");
+		text.append(this.id+"\n");
+		text.append(this.color.getRed()+" "+this.color.getGreen()+" "+this.color.getBlue() +"\n");
+		text.append(this.body.size()+"\n");
+		for(Point p: body){
+			text.append(p.x+" "+p.y+"\n");
+		}
+		text.append(this.alive+"\n");
+		text.append(this.score+"");
+		return text.toString();
 	}
 }

@@ -99,6 +99,10 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
                 catch (Exception e) {}
 	    }
             
+            if (keys[KeyEvent.VK_S]) {
+            	this.game.snapshot();
+            }
+            
             if (!started && !this.game.isPlaying() && keys[KeyEvent.VK_Q]) {
             	this.game.removeClient(id, true);
             }
@@ -251,13 +255,6 @@ false);
 	
 	public void setGame(iGame game){
 		this.game = game;
-	}
-
-
-	@Override
-	public String getSnapshot() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
 

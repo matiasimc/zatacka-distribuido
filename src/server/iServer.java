@@ -33,4 +33,5 @@ public interface iServer extends Remote {
 	public void setMain(boolean b) throws RemoteException;
 	public boolean getMain() throws RemoteException;
 	public double getUsage() throws RemoteException;
+	public void createSnapshot() throws RemoteException;
 }

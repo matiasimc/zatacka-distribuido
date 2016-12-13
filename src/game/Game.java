@@ -94,6 +94,25 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		
 	}
 
+	public Game(int votes, int frames, boolean paused,
+			HashMap<Integer, Boolean> askFrames,
+			HashMap<Integer, iPlayer> players,
+			HashMap<Integer, iPlayer> futurePlayers,
+			HashMap<Color, Boolean> colorMap, PositionMatrix matrix,
+			boolean playing) throws RemoteException{
+		this.votes=votes;
+		this.frames=frames;
+		this.paused=paused;
+		this.askFrames=askFrames;
+		this.players = players;
+		this.futurePlayers = futurePlayers;
+		this.colors = colorMap;
+		this.matrix = matrix;
+		this.playing = playing;
+		
+		
+	}
+
 	@Override
 	public synchronized void updateScores() {
 		for (iPlayer p : players()){
@@ -393,45 +412,46 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 
 	@Override
 	public String getSnapshot() throws RemoteException{
-		String text ="";
-		text.concat(this.votes+"\n");
-		text.concat(this.frames+"\n");
-		text.concat(this.paused+"\n");
-		text.concat(this.askFrames.size()+"\n");
+		StringBuilder text = new StringBuilder();
+		text.append(this.votes+"\n");
+		text.append(this.frames+"\n");
+		text.append(this.paused+"\n");
+		text.append(this.askFrames.size()+"\n");
 		for (Entry<Integer, Boolean> entry : askFrames.entrySet()) {
 	        Integer key = entry.getKey();
 	        Boolean value = entry.getValue();
-	        text.concat(key.toString()+"\n");
-	        text.concat(value.toString()+"\n");
+	        text.append(key.toString()+"\n");
+	        text.append(value.toString()+"\n");
 	    }
-		for (Entry<Integer, iClientGame> entry : gameThreads.entrySet()) {
-	        Integer key = entry.getKey();
-	        iClientGame value = entry.getValue();
-	        text.concat(key.toString()+"\n");
-	        text.concat(value.getSnapshot()+"\n");
-	    }
+		text.append(this.players.size()+"\n");
 		for (Entry<Integer, iPlayer> entry : players.entrySet()) {
 	        Integer key = entry.getKey();
 	        iPlayer value = entry.getValue();
-	        text.concat(key.toString()+"\n");
-	        text.concat(value.getSnapshot()+"\n");
+	        text.append(key.toString()+"\n");
+	        text.append(value.getSnapshot()+"\n");
 	    }
+		text.append(this.futurePlayers.size()+"\n");
 		for (Entry<Integer, iPlayer> entry : futurePlayers.entrySet()) {
 	        Integer key = entry.getKey();
 	        iPlayer value = entry.getValue();
-	        text.concat(key.toString()+"\n");
-	        text.concat(value.getSnapshot()+"\n");
+	        text.append(key.toString()+"\n");
+	        text.append(value.getSnapshot()+"\n");
 	    }
+		text.append(this.colors.size()+"\n");
 		for (Entry<Color, Boolean> entry : colors.entrySet()) {
 	        Color key = entry.getKey();
 	        Boolean value = entry.getValue();
-	        text.concat(key.toString()+"\n");
-	        text.concat(value.toString()+"\n");
+	        text.append(key.getRed()+" "+key.getGreen()+" "+key.getBlue() +"\n");
+	        text.append(value.toString()+"\n");
 	    }
-		text.concat(matrix.getSnapshot());
-		text.concat(this.playing+"");
+		text.append(matrix.getSnapshot());
+		text.append(this.playing+"");
 		
-		return text;
+		return text.toString();
+	}
+	
+	public void snapshot() throws RemoteException{
+		this.server.createSnapshot();
 	}
 
 	/*

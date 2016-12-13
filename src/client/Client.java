@@ -66,8 +66,10 @@ public class Client extends UnicastRemoteObject implements iClient {
 
 	@Override
 	public String getSnapshot() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuilder text = new StringBuilder();
+		//TODO Agregar ip clientes 
+		text.append(id+"");
+		return text.toString();
 	}
 
 }

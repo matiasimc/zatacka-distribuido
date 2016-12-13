@@ -89,6 +89,8 @@ public interface iGame extends Remote {
 	public void setCountdown(int time) throws RemoteException;
 
 	public String getSnapshot() throws RemoteException;
+
+	public void snapshot() throws RemoteException;
 	
 	//public int getMaxVotes() throws RemoteException;
 

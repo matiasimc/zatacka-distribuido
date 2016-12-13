@@ -1,24 +1,10 @@
 package server;
 
+import java.io.File;
 import java.rmi.Naming;
 
 public class MainServer {
-	/**
-	static int numberOfPlayers = 5;
-	static final Color[] colorList = {Color.blue, Color.red, Color.green, Color.yellow, Color.orange};
-	static final Point[] pointList = {null, null, null, null, null};
-	public static void main(String[] args) {
-		try {
-			PositionMatrix matrix = new PositionMatrix();
-			iSnakeList snakeList = new SnakeList();
-			Naming.rebind("snakeList (CAMBIAR)", snakeList);
-			for (int i = 0; i < numberOfPlayers; i++) {
-				iSnake snake = new Snake(colorList[i], pointList[i], i, "serpiente"+i);
-			}
-			
-		}catch (Exception e) {
-			e.printStackTrace();
-		}**/
+	
 	public static void main(String[] args) {
 		int waitPlayers = 2;
 		String ip = "";
@@ -74,7 +60,14 @@ public class MainServer {
 				System.out.println("Server " + ip + " waiting for migration from server "+ipS);
 			}
 			else {
-				iServer serverS = new Server(waitPlayers, ip);
+				iServer serverS;
+				File f = new File("snapshot.txt");
+				if(f.exists()) {
+					serverS = new Server(ip, f);
+				}
+				else {
+					serverS = new Server(waitPlayers, ip);
+				}
 				Naming.bind("rmi://"+ip+":1099/ABC", serverS);
 				System.out.println("Main server UP, in execution");
 			}
