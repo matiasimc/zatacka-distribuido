@@ -58,10 +58,17 @@ public class Server extends UnicastRemoteObject implements iServer{
 		new Thread() {
 			public void run() {
 				try {
+					long time = System.nanoTime();
 					while(true){
 						updateUsage();
-						if (soyelmain) System.out.println(getUsage());
-						if (soyelmain && getUsage()>=cap) migrate();	
+						if (soyelmain) {
+							if (getUsage()>=cap) migrate();
+							System.out.println(getUsage()); 
+							if ((System.nanoTime()-time)/1000000> 10000){
+								Server.this.createSnapshot();
+								time = System.nanoTime();
+							}
+						}
 					}
 				} catch (Exception e) {
 					System.out.println("falle en thread de server");
@@ -86,10 +93,17 @@ public class Server extends UnicastRemoteObject implements iServer{
 		new Thread() {
 			public void run() {
 				try {
+					long time = System.nanoTime();
 					while(true){
 						updateUsage();
-						if (soyelmain) System.out.println(getUsage());
-						if (soyelmain && getUsage()>=cap) migrate();
+						if (soyelmain) {
+							if (getUsage()>=cap) migrate();
+							System.out.println(getUsage()); 
+							if ((System.nanoTime()-time)/1000000> 10000){
+								Server.this.createSnapshot();
+								time = System.nanoTime();
+							}
+						}
 					}
 				} catch (Exception e) {
 					System.out.println("falle en thread de server");
@@ -222,12 +236,19 @@ public class Server extends UnicastRemoteObject implements iServer{
 		new Thread() {
 			public void run() {
 				try {
+					long time = System.nanoTime();
 					while(true){
 						updateUsage();
-						if (soyelmain) System.out.println(getUsage());
-						if (soyelmain && getUsage()>=cap) migrate();
+						if (soyelmain) {
+							if (getUsage()>=cap) migrate();
+							System.out.println(getUsage()); 
+							if ((System.nanoTime()-time)/1000000> 10000){
+								Server.this.createSnapshot();
+								time = System.nanoTime();
+							}
+						}
 					}
-				} catch (Exception e) {
+				}  catch (Exception e) {
 					System.out.println("falle en thread de server");
 					e.printStackTrace();
 				}
