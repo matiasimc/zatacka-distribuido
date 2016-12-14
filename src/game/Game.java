@@ -80,7 +80,7 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 		}
 		
 		for (Integer id: oFuture.keySet()){
-			players.put(id, new Player(oFuture.get(id))); //.clone()
+			futurePlayers.put(id, new Player(oFuture.get(id))); //.clone()
 		}
 		for (Integer id: oClientGames.keySet()){
 			gameThreads.put(id, oClientGames.get(id));
