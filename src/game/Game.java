@@ -199,7 +199,7 @@ public class Game extends UnicastRemoteObject implements iGame, Serializable{
 			matrix.deletePlayer(player.getBody(), player.getId());
 			player.die();
 			updateScores();
-			if (getAlives() == 1){
+			if (getAlives() <= 1){
 				playing = false;
 				votes = 0;
 				//maxVotes = players.size();
