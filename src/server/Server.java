@@ -303,6 +303,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 			}
 			System.out.println("Migrated to "+newServer.getDir());
 			newServer.printMigrate();
+			newServer.createSnapshot();
 		}
 	}
 	
