@@ -56,7 +56,7 @@ public class Player implements iPlayer, Serializable{
 		this.id = p.getId();
 		this.angle = p.getAngle();
 		this.alive = p.isAlive();
-		this.score = p.getScore();
+		this.score = this.getScore();
 	}
 	@Override
 	public synchronized void moveUp() {
