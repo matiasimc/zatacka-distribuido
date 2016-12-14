@@ -78,8 +78,7 @@ public class Board extends Canvas{
 		}catch (ConnectException c){
 			showConnectionLostMessage();
         }
-        catch (RemoteException e) {
-			e.printStackTrace();
+        catch (Exception e) {
 		}
        
         graphics.drawImage(img, 0, 0, null);

@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.rmi.ConnectException;
+import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -190,10 +191,12 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 		            }
 		        }
 	        	catch(ConnectException e){
-	        		System.out.println("Servidor caido, esperando reconexion");
 	            	try {
+		        		System.out.println("Servidor caido, esperando reconexion");
+		        		this.game.getServer().addClient2(id, client);
+		    			this.client.restoreServer(game.getServer());
 						Thread.sleep(4000);
-					} catch (InterruptedException e1) {}
+					} catch (Exception e1) {}
 	            }
 	        	catch(Exception e) {
 	        		

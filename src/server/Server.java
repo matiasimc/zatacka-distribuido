@@ -213,9 +213,10 @@ public class Server extends UnicastRemoteObject implements iServer{
 			int idClient = Integer.parseInt(br.readLine());
 			String ipClient = br.readLine();
 			System.out.println(ipClient);
-			iClient client = (iClient) Naming.lookup("rmi://"+ipClient+":1099/Client");
-			this.clients.put(idClient, client);
-			client.restoreServer(this);
+			
+			//iClient client = (iClient) Naming.lookup("rmi://"+ipClient+":1099/Client");
+			//this.clients.put(idClient, client);
+			//client.restoreServer(this);
 		}
 		this.started= Boolean.parseBoolean(br.readLine());
 		new Thread() {
@@ -442,5 +443,9 @@ public class Server extends UnicastRemoteObject implements iServer{
 	public synchronized void update(iClient client, iClientGame cgame) throws RemoteException{
 		clients.put(client.getID(), client);
 		game.update(cgame);
+	}
+	
+	public synchronized void addClient2(int id, iClient client) throws RemoteException{
+		clients.put(id, client);
 	}
 }

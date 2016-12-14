@@ -39,4 +39,5 @@ public interface iServer extends Remote {
 	public int addressToId(String address) throws RemoteException;
 	public void update(iClient client, iClientGame cgame) throws RemoteException;
 	public void setAdressToId(HashMap<String, Integer> map) throws RemoteException;
+	public void addClient2(int id, iClient client) throws RemoteException;
 }
