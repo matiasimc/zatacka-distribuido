@@ -299,6 +299,7 @@ public class Server extends UnicastRemoteObject implements iServer{
 			newServer.setClients(this.clients);
 			for (iClient c: this.clients.values()) {
 				c.setServer(newServer);
+				c.setServerIp(newServer.getDir());
 			}
 			System.out.println("Migrated to "+newServer.getDir());
 			newServer.printMigrate();

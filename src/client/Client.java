@@ -18,12 +18,22 @@ public class Client extends UnicastRemoteObject implements iClient {
 	public iClientGame cGame;
 	public int id;
 	public String address;
+	private String serverIp;
+	public String getServerIp() {
+		return serverIp;
+	}
+
+	public void setServerIp(String serverIp) {
+		this.serverIp = serverIp;
+	}
+
 	private Thread t;
 	
 	public Client(iServer server, String address) throws RemoteException {
 		//super();
 		iClient c;
 		this.address = address;
+		this.serverIp = server.getDir();
 		this.server = server;
 		if (server.alreadyExist(address)){
 			this.id = server.addressToId(address);

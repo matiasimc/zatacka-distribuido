@@ -2,6 +2,7 @@ package client;
 import game.Point;
 import game.iGame;
 import game.iPlayer;
+import server.iServer;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -193,10 +194,12 @@ public class ClientGame extends UnicastRemoteObject implements iClientGame {
 	        	catch(ConnectException e){
 	            	try {
 		        		System.out.println("Servidor caido, esperando reconexion");
-		        		this.game.getServer().addClient2(id, client);
-		    			this.client.restoreServer(game.getServer());
-						Thread.sleep(4000);
-					} catch (Exception e1) {}
+		        		Thread.sleep(1000);
+		        		iServer serv = (iServer) Naming.lookup("rmi://"+this.client.getServerIp()+":1099/ABC");
+		        		serv.addClient2(id, client);
+		    			this.client.restoreServer(serv);
+					} catch (Exception e1) {
+					}
 	            }
 	        	catch(Exception e) {
 	        		
